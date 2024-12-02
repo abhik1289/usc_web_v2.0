@@ -1,4 +1,4 @@
-import SignIn from "@/app/components/(auth)/sign-in";
+import SignIn from "@/components/(auth)/sign-in";
 // import SigninForm from "@/app/components/(auth)/sign-in";
 import React from "react";
 

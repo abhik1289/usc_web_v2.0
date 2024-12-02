@@ -48,7 +48,7 @@ export default function VerifyOTP() {
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Verify OTP</CardTitle>
           <CardDescription className="text-gray-400">
-            Enter the 6-digit code sent to your device.
+            Enter the 6-digit code sent to your email.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -102,7 +102,7 @@ export default function VerifyOTP() {
             Didn&apos;t receive the code? Resend
           </Button>
           <Link 
-            href="/login" 
+            href="/sign-in" 
             className="text-sm text-gray-400 hover:text-gray-300 flex items-center"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />

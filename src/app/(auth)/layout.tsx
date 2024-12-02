@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 // import localFont from "next/font/local";
 import "@/app/globals.css";
+import { NextThemeProviders } from "../context/providers";
+// import { ThemeProvider } from "next-themes";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -25,10 +27,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`antialiased`}
-      >
-        {children}
+      <body className={`antialiased`}>
+        <NextThemeProviders>{children}</NextThemeProviders>
       </body>
     </html>
   );

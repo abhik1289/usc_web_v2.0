@@ -1,9 +1,9 @@
-import React from 'react'
+import SignIn from "@/app/components/(auth)/sign-in";
+// import SigninForm from "@/app/components/(auth)/sign-in";
+import React from "react";
 
 function page() {
-  return (
-    <div>page</div>
-  )
+  return <SignIn />;
 }
 
-export default page
+export default page;

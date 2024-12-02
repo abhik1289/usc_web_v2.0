@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased`}>
+      <body className={`antialiased flex justify-center items-center w-screen h-screen`}>
         <NextThemeProviders>{children}</NextThemeProviders>
       </body>
     </html>

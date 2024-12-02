@@ -1,9 +1,10 @@
 import React from 'react'
+import VerifyOTp from './../../components/(auth)/verify-otp';
 
-function page() {
+function VerifyOTPPage() {
   return (
-    <div>page</div>
+    <VerifyOTp/>
   )
 }
 
-export default page
+export default VerifyOTPPage

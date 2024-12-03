@@ -1,7 +1,4 @@
-import * as React from "react"
-
-import { SearchForm } from "@/components/search-form"
-import { VersionSwitcher } from "@/components/version-switcher"
+"use client";
 import {
   Sidebar,
   SidebarContent,
@@ -13,103 +10,110 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
-
+} from "@/components/ui/sidebar";
+import { usePathname } from "next/navigation";
+import Link from 'next/link'
 // This is sample data.
 const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   navMain: [
-    
     {
-      title: "Building Your Application",
-      url: "#",
+      title: "Main",
       items: [
         {
-          title: "Routing",
+          title: "Home",
+          url: "/dashboard",
+        },
+        {
+          title: "Users",
+          url: "/user",
+        },
+        {
+          title: "Leads",
           url: "#",
         },
         {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "Rendering",
+          title: "Projects",
           url: "#",
         },
         {
-          title: "Caching",
+          title: "Events",
           url: "#",
         },
         {
-          title: "Styling",
+          title: "Domains",
           url: "#",
         },
         {
-          title: "Optimizing",
+          title: "Gallery",
           url: "#",
         },
         {
-          title: "Configuring",
+          title: "Champion ",
           url: "#",
         },
         {
-          title: "Testing",
+          title: "Mentor and Advisor",
           url: "#",
         },
         {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
+          title: "Testimonials",
           url: "#",
         },
       ],
     },
-   
+    {
+      title: "Others",
+      items: [
+        {
+          title: "Customization",
+          url: "#",
+        },
+        {
+          title: "Socials",
+          url: "#",
+        },
+        {
+          title: "Cards",
+          url: "#",
+        },
+      ],
+    },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const location = usePathname();
+  console.log(location);
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        {/* <VersionSwitcher
-          
-          versions={data.versions}
-          defaultVersion={data.versions[0]}
-        /> */}
-       
+        <div className="organization_title bg-[#2d3436] p-3 rounded-xl">
+          <div className="title clear-start text-xl">USC KIIT DASHBOARD</div>
+          <div className="description italic text-slate-400">
+            Manage and Operate Website
+          </div>
+        </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="mt-1 pb-3">
         {/* We create a SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
           <SidebarGroup key={item.title}>
-            {/* <SidebarGroupLabel>{item.title}</SidebarGroupLabel> */}
+            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
-              {/* <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
+              <SidebarMenu>
+                {item.items.map((item, i) => (
+                  <SidebarMenuItem key={i}>
+                    <SidebarMenuButton asChild isActive={location === item.url}>
+                      <Link href={`${item.url}`}>{item.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
-              </SidebarMenu> */}
+              </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

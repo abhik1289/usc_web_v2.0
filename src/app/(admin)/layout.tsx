@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 
 import "@/app/globals.css";
 import { NextThemeProviders } from "../context/providers";
+import DashBoard from "./dashboard/page";
+import DashBoardLayout from "../context/dashBoardLayout";
+import toast, { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased`}>
-        <NextThemeProviders>{children}</NextThemeProviders>
+        <NextThemeProviders>
+          <DashBoardLayout>
+            {children}
+            <Toaster />
+          </DashBoardLayout>
+        </NextThemeProviders>
       </body>
     </html>
   );

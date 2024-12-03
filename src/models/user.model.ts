@@ -20,7 +20,6 @@ interface IUser extends Document {
   resetTokenExpires?: Date;
   activeToken?: string;
   activeTokenExpires?: Date;
-  token?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,17 +28,16 @@ interface IUser extends Document {
 const UserSchema: Schema<IUser> = new Schema(
   {
     first_name: { type: String, required: true, trim: true },
-    last_name: { type: String, required: true, trim: true },
+    last_name: { type: String, trim: true },
     email: { type: String, required: true, unique: true, trim: true },
     profile_photo: { type: String, default: null },
     role: { type: String, enum: Object.values(Role), required: true },
     isActive: { type: Boolean, default: false },
-    password: { type: String, required: true, minlength: 10 },
+    password: { type: String, minlength: 4 },
     resetToken: { type: String, default: null },
     resetTokenExpires: { type: Date, default: null },
     activeToken: { type: String, default: null },
     activeTokenExpires: { type: Date, default: null },
-    token: { type: String, default: null },
   },
   {
     timestamps: true,
@@ -47,6 +45,7 @@ const UserSchema: Schema<IUser> = new Schema(
 );
 
 // Create the User model
-const UserModel: Model<IUser> = mongoose.model<IUser>("User", UserSchema);
+const UserModel: Model<IUser> =
+  mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
 
 export default UserModel;

@@ -8,19 +8,16 @@ const connectionState: ConnectionState = {
   isConnected: null,
 };
 
-export async function connect(): Promise<void> {
+export async function connect() {
   if (connectionState.isConnected) {
     console.log("Database already connected");
     return;
   }
 
   try {
-    const db = await mongoose.connect(
-      "mongodb+srv://usc_kiit:bXHipKDidq1dCzle@cluster0.ja54q7c.mongodb.net/USC"
-    );
-    console.log(db);
-    connectionState.isConnected = db.connection.readyState;
+    const db = await mongoose.connect(process.env.DATABASE_URL!);
 
+    connectionState.isConnected = db.connection.readyState;
 
     console.log(
       `Database connection ${
@@ -34,5 +31,6 @@ export async function connect(): Promise<void> {
   } catch (error) {
     console.error("Failed to connect to the database:", error);
     throw new Error("Database connection failed");
+    process.exit(1);
   }
 }

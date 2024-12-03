@@ -1,7 +1,9 @@
 // import  { NextConfig } from "next";
 
 const nextConfig = {
-  /* config options here */
+  images: {
+    domains: ['avatar.iran.liara.run'], // Add other domains here if needed
+  },
 };
 
 export default nextConfig;

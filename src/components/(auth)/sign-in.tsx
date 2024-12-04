@@ -13,19 +13,43 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useSignIn } from "@/hooks/auth/useSignIn";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    console.log(email, password);
+  const handleSubmit = async (e: any) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const response: any = await useSignIn(email, password);
+
+      if (response.status == 200) {
+        toast.success("Login success");
+        setLoading(false);
+
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 2000);
+      } else {
+        setLoading(false);
+
+        toast.error("Login failed");
+      }
+    } catch (error) {
+      setLoading(false);
+
+      console.log("Error", error);
+    }
   };
   return (
     <Card className="w-full max-w-md bg-gray-800 text-gray-100">
@@ -79,7 +103,7 @@ export default function SignInForm() {
             </div>
           </div>
           <Button className="w-full mt-4" type="submit">
-            Sign In
+          {loading?  "Sign In...":"Sign In"}
           </Button>
         </form>
       </CardContent>

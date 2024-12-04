@@ -13,9 +13,9 @@ export async function PUT(request: NextRequest) {
     const { last_name, first_name, password, token } = reqBody.infos;
 
     // Decode the token to get the email or associated data
-    console.log("---------------->",token,reqBody)
+    // console.log("---------------->",token,reqBody)
     const data: any = decodeActiveToken(token);
-    console.log("---------------------------------------->",data)
+    // console.log("---------------------------------------->",data)1
     const email = data.email;
 
     // Check if the user exists

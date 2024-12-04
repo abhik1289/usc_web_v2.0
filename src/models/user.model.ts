@@ -8,7 +8,7 @@ enum Role {
 }
 
 // Define the interface for the User document
-interface IUser extends Document {
+export interface IUser extends Document {
   first_name?: string;
   last_name?: string;
   email: string;

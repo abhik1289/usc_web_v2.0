@@ -1,6 +1,9 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-export const generateActiveToken = (email: string): string => {
+export const generateActiveToken = (
+  email: string,
+  duration?: string
+): string => {
   if (!process.env.VERIFY_TOKEN_KEY) {
     throw new Error(
       "VERIFY_TOKEN_KEY is not defined in the environment variables."
@@ -8,7 +11,7 @@ export const generateActiveToken = (email: string): string => {
   }
 
   return jwt.sign({ email: email }, process.env.VERIFY_TOKEN_KEY, {
-    expiresIn: "1h",
+    expiresIn: duration ? duration : "1h",
   });
 };
 export const decodeActiveToken = (token: string): JwtPayload | string => {
@@ -17,6 +20,6 @@ export const decodeActiveToken = (token: string): JwtPayload | string => {
       "VERIFY_TOKEN_KEY is not defined in the environment variables."
     );
   }
-console.log("Eroro")
+  // console.log("Eroro")
   return jwt.verify(token, process.env.VERIFY_TOKEN_KEY);
 };

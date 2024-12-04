@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 // import localFont from "next/font/local";
 import "@/app/globals.css";
 import { NextThemeProviders } from "../context/providers";
+import { Toaster } from "react-hot-toast";
 // import { ThemeProvider } from "next-themes";
 
 // const geistSans = localFont({
@@ -28,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased flex justify-center items-center w-screen h-screen`}>
-        <NextThemeProviders>{children}</NextThemeProviders>
+        <NextThemeProviders>{children}<Toaster/></NextThemeProviders>
       </body>
     </html>
   );

@@ -1,5 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Role } from './type';
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+interface Role {
+  id: number;
+  title: string;
+}
 
 interface AddRoleDialogProps {
   onClose: () => void;
@@ -8,13 +18,13 @@ interface AddRoleDialogProps {
   onEditRole?: (role: Role) => void;
 }
 
-export default function AddRoleDialog({ 
-  onClose, 
-  onAddRole, 
+export default function AddRoleDialog({
+  onClose,
+  onAddRole,
   editingRole,
-  onEditRole 
+  onEditRole,
 }: AddRoleDialogProps) {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
 
   useEffect(() => {
     if (editingRole) {
@@ -32,31 +42,29 @@ export default function AddRoleDialog({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-        <h2 className="text-xl font-bold mb-4">
-          {editingRole ? 'Edit Role' : 'Add Role'}
-        </h2>
-        <input
-          type="text"
-          placeholder="Role"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full mb-4 p-2 border border-gray-300 rounded"
-        />
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800"
-        >
-          {editingRole ? 'Update' : 'Add'}
-        </button>
-        <button
-          onClick={onClose}
-          className="w-full mt-2 bg-gray-700 text-white py-2 rounded hover:bg-gray-800"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
+    <Dialog open={true} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{editingRole ? "Edit Role" : "Add Role"}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="role-title">Role Title</Label>
+            <Input
+              id="role-title"
+              placeholder="Enter role title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <Button onClick={handleSubmit} className="w-full">
+            {editingRole ? "Update" : "Add"}
+          </Button>
+          <Button variant="secondary" onClick={onClose} className="w-full mt-2">
+            Cancel
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
-} 
+}

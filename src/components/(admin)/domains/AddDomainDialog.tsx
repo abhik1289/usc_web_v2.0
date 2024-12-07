@@ -1,4 +1,11 @@
-import React, { useState } from 'react';
+"use client";
+
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Domain {
   id: number;
@@ -12,8 +19,8 @@ interface AddDomainDialogProps {
 }
 
 export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialogProps) {
-  const [type, setType] = useState('tech');
-  const [name, setName] = useState('');
+  const [type, setType] = useState("tech");
+  const [name, setName] = useState("");
 
   const handleSubmit = () => {
     const newDomain = {
@@ -26,37 +33,43 @@ export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialo
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-        <h2 className="text-xl font-bold mb-4">Add Domain</h2>
-        <select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          className="w-full mb-4 p-2 border border-gray-300 rounded"
-        >
-          <option value="tech">Tech</option>
-          <option value="nonTech">Non-Tech</option>
-        </select>
-        <input
-          type="text"
-          placeholder="Domain Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full mb-4 p-2 border border-gray-300 rounded"
-        />
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800"
-        >
-          Add
-        </button>
-        <button
-          onClick={onClose}
-          className="w-full mt-2 bg-gray-700 text-white py-2 rounded hover:bg-gray-800"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
+    <Dialog open={true} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add Domain</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="type">Domain Type</Label>
+            <Select value={type} onValueChange={(value) => setType(value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select domain type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="tech">Tech</SelectItem>
+                <SelectItem value="nonTech">Non-Tech</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="name">Domain Name</Label>
+            <Input
+              id="name"
+              placeholder="Enter domain name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="mt-4 space-y-2">
+          <Button onClick={handleSubmit} className="w-full">
+            Add
+          </Button>
+          <Button variant="secondary" onClick={onClose} className="w-full">
+            Cancel
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
-} 
+}

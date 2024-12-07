@@ -1,5 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { DomainGroup } from './type';
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+interface DomainGroup {
+  id: number;
+  name: string;
+}
 
 interface AddDomainGroupDialogProps {
   onClose: () => void;
@@ -8,13 +18,13 @@ interface AddDomainGroupDialogProps {
   onEditDomainGroup?: (group: DomainGroup) => void;
 }
 
-export default function AddDomainGroupDialog({ 
-  onClose, 
+export default function AddDomainGroupDialog({
+  onClose,
   onAddDomainGroup,
   editingGroup,
-  onEditDomainGroup 
+  onEditDomainGroup,
 }: AddDomainGroupDialogProps) {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
 
   useEffect(() => {
     if (editingGroup) {
@@ -32,31 +42,31 @@ export default function AddDomainGroupDialog({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-        <h2 className="text-xl font-bold mb-4">
-          {editingGroup ? 'Edit Domain Group' : 'Add Domain Group'}
-        </h2>
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full mb-4 p-2 border border-gray-300 rounded"
-        />
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800"
-        >
-          {editingGroup ? 'Update' : 'Add'}
-        </button>
-        <button
-          onClick={onClose}
-          className="w-full mt-2 bg-gray-700 text-white py-2 rounded hover:bg-gray-800"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
+    <Dialog open={true} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {editingGroup ? "Edit Domain Group" : "Add Domain Group"}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="name">Group Name</Label>
+            <Input
+              id="name"
+              placeholder="Enter group name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <Button onClick={handleSubmit} className="w-full">
+            {editingGroup ? "Update" : "Add"}
+          </Button>
+          <Button variant="secondary" onClick={onClose} className="w-full mt-2">
+            Cancel
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
-} 
+}

@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Champion, ChampionDialogProps } from './type';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { ChampionDialogProps } from './type';
 
-export default function ChampionDialog({ 
-  onClose, 
+export default function ChampionDialog({
+  onClose,
   onAddChampion,
   onEditChampion,
-  editingChampion 
+  editingChampion,
 }: ChampionDialogProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -35,62 +40,67 @@ export default function ChampionDialog({
     onClose();
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setImage(e.target.files ? e.target.files[0] : null);
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(e.target.value);
+  };
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">
-          {editingChampion ? 'Edit Champion' : 'Add Champion'}
-        </h2>
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{editingChampion ? 'Edit Champion' : 'Add Champion'}</DialogTitle>
+        </DialogHeader>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <Label htmlFor="image" className="mb-1">
               Upload Image
-            </label>
-            <input
+            </Label>
+            <Input
+              id="image"
               type="file"
-              title="Upload Image"
-              onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
-              className="w-full"
+              onChange={handleImageChange}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <Label htmlFor="title" className="mb-1">
               Title
-            </label>
-            <input
+            </Label>
+            <Input
+              id="title"
               type="text"
               placeholder="Enter title"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-black focus:outline-none"
+              onChange={handleTitleChange}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <Label htmlFor="description" className="mb-1">
               Description
-            </label>
-            <textarea
+            </Label>
+            <Textarea
+              id="description"
               placeholder="Enter description"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={handleDescriptionChange}
               rows={4}
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-black focus:outline-none"
             />
           </div>
-          <button
-            onClick={handleSubmit}
-            className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition-colors"
-          >
-            {editingChampion ? 'Update' : 'Add'}
-          </button>
-          <button
-            onClick={onClose}
-            className="w-full bg-gray-700 text-white py-2 rounded hover:bg-gray-800 transition-colors"
-          >
-            Cancel
-          </button>
         </div>
-      </div>
-    </div>
+        <DialogFooter className="mt-4 space-y-2 sm:space-y-0 sm:flex sm:justify-end">
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit}>{editingChampion ? 'Update' : 'Add'}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
-} 
+}

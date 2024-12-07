@@ -1,4 +1,18 @@
+"use client"
+
 import React, { useState, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Event {
   id: number;
@@ -25,6 +39,7 @@ export default function EventDialog({
   onEditEvent,
   editingEvent 
 }: EventDialogProps) {
+  const [mounted, setMounted] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [venue, setVenue] = useState('');
@@ -34,6 +49,10 @@ export default function EventDialog({
   const [endDate, setEndDate] = useState('');
   const [socials, setSocials] = useState('');
   const [image, setImage] = useState<File | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (editingEvent) {
@@ -70,103 +89,99 @@ export default function EventDialog({
     onClose();
   };
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">
-          {editingEvent ? 'Edit Event' : 'Add Event'}
-        </h2>
-        <input
+    <Dialog open onOpenChange={onClose}>
+      <DialogContent className="w-96 p-6">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold mb-4">
+            {editingEvent ? 'Edit Event' : 'Add Event'}
+          </DialogTitle>
+        </DialogHeader>
+        <Input
           type="file"
           title="Upload Image"
-          onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+            setImage(e.target.files ? e.target.files[0] : null)
+          }
           className="w-full mb-2"
         />
-        <input
+        <Input
           type="text"
           placeholder="Title"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full mb-2 p-2 border border-gray-300 rounded"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+          className="w-full mb-2"
         />
-        <textarea
+        <Textarea
           placeholder="Description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full mb-2 p-2 border border-gray-300 rounded"
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
+          className="w-full mb-2"
         />
-        <input
+        <Input
           type="text"
           placeholder="Venue"
           value={venue}
-          onChange={(e) => setVenue(e.target.value)}
-          className="w-full mb-2 p-2 border border-gray-300 rounded"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVenue(e.target.value)}
+          className="w-full mb-2"
         />
         <div className="mb-2">
-          <label className="mr-2">
-            <input
-              type="radio"
-              value="single"
-              checked={dateType === 'single'}
-              onChange={() => setDateType('single')}
-            />
-            Single Day
-          </label>
-          <label className="ml-4">
-            <input
-              type="radio"
-              value="multiple"
-              checked={dateType === 'multiple'}
-              onChange={() => setDateType('multiple')}
-            />
-            Multiple Days
-          </label>
+          <RadioGroup value={dateType} onValueChange={setDateType} className="flex gap-4">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="single" id="single" />
+              <Label htmlFor="single">Single Day</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="multiple" id="multiple" />
+              <Label htmlFor="multiple">Multiple Days</Label>
+            </div>
+          </RadioGroup>
         </div>
         {dateType === 'single' ? (
-          <input
+          <Input
             type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="w-full mb-2 p-2 border border-gray-300 rounded"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDate(e.target.value)}
+            className="w-full mb-2"
           />
         ) : (
           <>
-            <input
+            <Input
               type="date"
               placeholder="Start Date"
               value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="w-full mb-2 p-2 border border-gray-300 rounded"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStartDate(e.target.value)}
+              className="w-full mb-2"
             />
-            <input
+            <Input
               type="date"
               placeholder="End Date"
               value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full mb-2 p-2 border border-gray-300 rounded"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEndDate(e.target.value)}
+              className="w-full mb-2"
             />
           </>
         )}
-        <input
+        <Input
           type="text"
           placeholder="Add Socials"
           value={socials}
-          onChange={(e) => setSocials(e.target.value)}
-          className="w-full mb-4 p-2 border border-gray-300 rounded"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSocials(e.target.value)}
+          className="w-full mb-4"
         />
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800"
-        >
-          {editingEvent ? 'Update' : 'Add'}
-        </button>
-        <button
-          onClick={onClose}
-          className="w-full mt-2 bg-gray-700 text-white py-2 rounded hover:bg-gray-800"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
+        <DialogFooter>
+          <Button onClick={handleSubmit} className="w-full">
+            {editingEvent ? 'Update' : 'Add'}
+          </Button>
+          <Button onClick={onClose} variant="secondary" className="w-full mt-2">
+            Cancel
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
-} 
+}

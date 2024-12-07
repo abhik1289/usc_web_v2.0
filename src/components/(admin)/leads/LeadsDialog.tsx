@@ -1,4 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 interface Lead {
   id: number;
@@ -16,16 +21,16 @@ interface LeadsDialogProps {
   editingLead?: Lead | null;
 }
 
-export default function LeadsDialog({ 
-  onClose, 
+export default function LeadsDialog({
+  onClose,
   onAddLead,
   onEditLead,
-  editingLead 
+  editingLead,
 }: LeadsDialogProps) {
-  const [name, setName] = useState('');
-  const [domainType, setDomainType] = useState('');
-  const [domainName, setDomainName] = useState('');
-  const [socials, setSocials] = useState('');
+  const [name, setName] = useState("");
+  const [domainType, setDomainType] = useState("");
+  const [domainName, setDomainName] = useState("");
+  const [socials, setSocials] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
 
   useEffect(() => {
@@ -57,61 +62,69 @@ export default function LeadsDialog({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">
-          {editingLead ? 'Edit Lead' : 'Add Lead'}
-        </h2>
-        <input
-          type="file"
-          title="Upload Photo"
-          onChange={(e) => setPhoto(e.target.files ? e.target.files[0] : null)}
-          className="w-full mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full mb-2 p-2 border border-gray-300 rounded"
-        />
-        <select
-          title="Domain Type"
-          value={domainType}
-          onChange={(e) => setDomainType(e.target.value)}
-          className="w-full mb-2 p-2 border border-gray-300 rounded"
-        >
-          <option value="">Select Domain Type</option>
-          <option value="Tech">Tech</option>
-          <option value="Non-Tech">Non-Tech</option>
-        </select>
-        <input
-          type="text"
-          placeholder="Domain Name"
-          value={domainName}
-          onChange={(e) => setDomainName(e.target.value)}
-          className="w-full mb-2 p-2 border border-gray-300 rounded"
-        />
-        <input
-          type="text"
-          placeholder="Socials"
-          value={socials}
-          onChange={(e) => setSocials(e.target.value)}
-          className="w-full mb-4 p-2 border border-gray-300 rounded"
-        />
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800"
-        >
-          {editingLead ? 'Update' : 'Add'}
-        </button>
-        <button
-          onClick={onClose}
-          className="w-full mt-2 bg-gray-700 text-white py-2 rounded hover:bg-gray-800"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="w-[400px]">
+        <DialogHeader>
+          <DialogTitle>{editingLead ? "Edit Lead" : "Add Lead"}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <Label htmlFor="photo">Photo</Label>
+          <Input
+            id="photo"
+            type="file"
+            onChange={(e) => setPhoto(e.target.files ? e.target.files[0] : null)}
+          />
+
+          <Label htmlFor="name">Name</Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <Label htmlFor="domainType">Domain Type</Label>
+          <Select
+            value={domainType}
+            onValueChange={(value) => setDomainType(value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select Domain Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Tech">Tech</SelectItem>
+              <SelectItem value="Non-Tech">Non-Tech</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Label htmlFor="domainName">Domain Name</Label>
+          <Input
+            id="domainName"
+            type="text"
+            placeholder="Domain Name"
+            value={domainName}
+            onChange={(e) => setDomainName(e.target.value)}
+          />
+
+          <Label htmlFor="socials">Socials</Label>
+          <Input
+            id="socials"
+            type="text"
+            placeholder="Socials"
+            value={socials}
+            onChange={(e) => setSocials(e.target.value)}
+          />
+        </div>
+        <DialogFooter>
+          <Button onClick={handleSubmit}>
+            {editingLead ? "Update" : "Add"}
+          </Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

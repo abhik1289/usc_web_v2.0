@@ -2,14 +2,7 @@
 
 import React, { useState } from "react";
 import LeadsDialog from "@/components/(admin)/leads/LeadsDialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -54,10 +47,7 @@ export default function LeadsPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Core Members</h1>
         <div className="flex items-center space-x-4">
-          <Select
-            value={filter}
-            onValueChange={(value) => setFilter(value)}
-          >
+          <Select value={filter} onValueChange={(value) => setFilter(value)}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Filter Leads" />
             </SelectTrigger>
@@ -70,18 +60,19 @@ export default function LeadsPage() {
           <Button onClick={() => setIsDialogOpen(true)}>Add Lead</Button>
         </div>
       </div>
+
       <div className="bg-white rounded-lg shadow-md">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="text-black ">
               {["ID", "Name", "Domain Type", "Domain Name", "Socials", "Photo", "Actions"].map(
                 (header) => (
-                  <TableHead key={header}>{header}</TableHead>
+                  <TableCell key={header}>{header}</TableCell>
                 )
               )}
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="text-black">
             {filteredLeads.map((lead) => (
               <TableRow key={lead.id}>
                 <TableCell>{lead.id}</TableCell>
@@ -110,7 +101,8 @@ export default function LeadsPage() {
                 </TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
-                    <Button
+                    <Button 
+                    className="text-black"
                       variant="link"
                       onClick={() => {
                         setEditingLead(lead);
@@ -132,6 +124,7 @@ export default function LeadsPage() {
           </TableBody>
         </Table>
       </div>
+
       {isDialogOpen && (
         <LeadsDialog
           onClose={() => {

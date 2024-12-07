@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Testimonial, TestimonialDialogProps } from './type';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { FileInput } from "@/components/ui/file-input";
 
 export default function TestimonialDialog({ 
   onClose, 
@@ -39,73 +45,69 @@ export default function TestimonialDialog({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">
-          {editingTestimonial ? 'Edit Testimonial' : 'Add Testimonial'}
-        </h2>
+    <Dialog open onOpenChange={onClose}>
+      <DialogTrigger />
+      <DialogContent className="w-[500px] p-6">
+        <DialogHeader>
+          <DialogTitle>{editingTestimonial ? 'Edit Testimonial' : 'Add Testimonial'}</DialogTitle>
+          <DialogDescription>
+            {editingTestimonial ? 'Edit the testimonial details below.' : 'Add a new testimonial below.'}
+          </DialogDescription>
+        </DialogHeader>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Upload Image
-            </label>
-            <input
-              type="file"
-              title="Upload Image"
+            <Label>Upload Image</Label>
+            <FileInput
               onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
               className="w-full"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Name
-            </label>
-            <input
+            <Label>Name</Label>
+            <Input
               type="text"
               placeholder="Enter name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-black focus:outline-none"
+              className="w-full"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Position
-            </label>
-            <input
+            <Label>Position</Label>
+            <Input
               type="text"
               placeholder="Enter position"
               value={position}
               onChange={(e) => setPosition(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-black focus:outline-none"
+              className="w-full"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Opinion
-            </label>
-            <textarea
+            <Label>Opinion</Label>
+            <Textarea
               placeholder="Enter opinion"
               value={opinion}
               onChange={(e) => setOpinion(e.target.value)}
               rows={4}
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-black focus:outline-none"
+              className="w-full"
             />
           </div>
-          <button
-            onClick={handleSubmit}
-            className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition-colors"
-          >
-            {editingTestimonial ? 'Update' : 'Add'}
-          </button>
-          <button
-            onClick={onClose}
-            className="w-full bg-gray-700 text-white py-2 rounded hover:bg-gray-800 transition-colors"
-          >
-            Cancel
-          </button>
+          <div className="space-x-2">
+            <Button
+              onClick={handleSubmit}
+              className="w-full bg-black text-white hover:bg-gray-800 transition-colors"
+            >
+              {editingTestimonial ? 'Update' : 'Add'}
+            </Button>
+            <Button
+              onClick={onClose}
+              className="w-full bg-gray-700 text-white hover:bg-gray-800 transition-colors"
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
-} 
+}

@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
-import TestimonialDialog from '@/components/(admin)/testimonials/TestimonialDialog';
-import { Testimonial } from '@/components/(admin)/testimonials/type';
+import React, { useState } from "react";
+import { Testimonial } from "@/components/(admin)/testimonials/type";
+import TestimonialDialog from "@/components/(admin)/testimonials/TestimonialDialog";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export default function TestimonialsPage() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -14,36 +17,33 @@ export default function TestimonialsPage() {
   };
 
   const handleEditTestimonial = (updatedTestimonial: Testimonial) => {
-    setTestimonials(testimonials.map(testimonial => 
+    setTestimonials(testimonials.map((testimonial) =>
       testimonial.id === updatedTestimonial.id ? updatedTestimonial : testimonial
     ));
   };
 
   const handleDeleteTestimonial = (id: number) => {
-    setTestimonials(testimonials.filter(testimonial => testimonial.id !== id));
+    setTestimonials(testimonials.filter((testimonial) => testimonial.id !== id));
   };
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Testimonials</h1>
-        <button
+        <Button
           onClick={() => {
             setEditingTestimonial(null);
             setIsDialogOpen(true);
           }}
-          className="bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors"
+          className="bg-black text-white hover:bg-gray-800 transition-colors"
         >
           Add Testimonial
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {testimonials.map((testimonial) => (
-          <div 
-            key={testimonial.id} 
-            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-          >
+          <Card key={testimonial.id} className="shadow-lg hover:shadow-xl transition-shadow">
             <div className="p-6">
               {testimonial.image && (
                 <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden">
@@ -62,24 +62,26 @@ export default function TestimonialsPage() {
                 <p className="text-gray-500">{testimonial.position}</p>
               </div>
               <div className="flex justify-center space-x-3 mt-4 pt-4 border-t">
-                <button
+                <Button
                   onClick={() => {
                     setEditingTestimonial(testimonial);
                     setIsDialogOpen(true);
                   }}
+                  variant="link"
                   className="text-blue-600 hover:text-blue-800"
                 >
                   Edit
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => handleDeleteTestimonial(testimonial.id)}
+                  variant="link"
                   className="text-red-600 hover:text-red-800"
                 >
                   Delete
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 
@@ -89,17 +91,28 @@ export default function TestimonialsPage() {
         </div>
       )}
 
-      {isDialogOpen && (
-        <TestimonialDialog
-          onClose={() => {
-            setIsDialogOpen(false);
-            setEditingTestimonial(null);
-          }}
-          onAddTestimonial={handleAddTestimonial}
-          onEditTestimonial={handleEditTestimonial}
-          editingTestimonial={editingTestimonial}
-        />
-      )}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogTrigger />
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingTestimonial ? "Edit Testimonial" : "Add Testimonial"}</DialogTitle>
+            <DialogDescription>
+              {editingTestimonial
+                ? "Edit the testimonial details below."
+                : "Add a new testimonial below."}
+            </DialogDescription>
+          </DialogHeader>
+          <TestimonialDialog
+            onClose={() => {
+              setIsDialogOpen(false);
+              setEditingTestimonial(null);
+            }}
+            onAddTestimonial={handleAddTestimonial}
+            onEditTestimonial={handleEditTestimonial}
+            editingTestimonial={editingTestimonial}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

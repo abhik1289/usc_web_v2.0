@@ -1,14 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import AddRoleDialog from "@/components/(admin)/domains/AddRoleDialog";
 import AddDomainGroupDialog from "@/components/(admin)/domains/AddDomainGroupDialog";
 import AddDomainDialog from "@/components/(admin)/domains/AddDomainDialog";
 import { Role, DomainGroup, Domain, EditingItem } from "@/components/(admin)/domains/type";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
+import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function DomainsPage() {
   const [roles, setRoles] = useState<Role[]>([]);
@@ -25,7 +32,8 @@ export default function DomainsPage() {
   const handleAddDomain = (newDomain: Domain) => setDomains([...domains, newDomain]);
 
   const handleDeleteRole = (id: number) => setRoles(roles.filter((role) => role.id !== id));
-  const handleDeleteDomainGroup = (id: number) => setDomainGroups(domainGroups.filter((group) => group.id !== id));
+  const handleDeleteDomainGroup = (id: number) =>
+    setDomainGroups(domainGroups.filter((group) => group.id !== id));
   const handleDeleteDomain = (id: number) => setDomains(domains.filter((domain) => domain.id !== id));
 
   const handleEditRole = (role: Role) => {
@@ -39,177 +47,207 @@ export default function DomainsPage() {
   };
 
   const handleEditDomain = (domain: Domain) => {
-    setEditingItem({ type: "domain", ...domain });
+    // setEditingItem({ type: "domain", ...domain });
     setIsDomainDialogOpen(true);
   };
 
-  const handleUpdateRole = (updatedRole: Role) =>
-    setRoles(roles.map((role) => (role.id === updatedRole.id ? updatedRole : role)));
+  const handleUpdateRole = (updatedRole: Role) => {
+    setRoles((prev) => prev.map((role) => (role.id === updatedRole.id ? updatedRole : role)));
+  };
 
-  const handleUpdateDomainGroup = (updatedGroup: DomainGroup) =>
-    setDomainGroups(domainGroups.map((group) => (group.id === updatedGroup.id ? updatedGroup : group)));
+  const handleUpdateDomainGroup = (updatedGroup: DomainGroup) => {
+    setDomainGroups((prev) =>
+      prev.map((group) => (group.id === updatedGroup.id ? updatedGroup : group))
+    );
+  };
 
-  const handleUpdateDomain = (updatedDomain: Domain) =>
-    setDomains(domains.map((domain) => (domain.id === updatedDomain.id ? updatedDomain : domain)));
+  const handleUpdateDomain = (updatedDomain: Domain) => {
+    setDomains((prev) => prev.map((domain) => (domain.id === updatedDomain.id ? updatedDomain : domain)));
+  };
 
-  const filteredDomains = domains.filter((domain) => selectedDomainType === "all" || domain.type === selectedDomainType);
+  const filteredDomains = domains.filter((domain) =>
+    selectedDomainType === "all" ? true : domain.type === selectedDomainType
+  );
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6 p-6">
       {/* Header Section */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Domain Management</h1>
         <div className="flex space-x-4">
-          <Button onClick={() => setIsRoleDialogOpen(true)}>Add Roles</Button>
+          <Button onClick={() => setIsRoleDialogOpen(true)}>Add Role</Button>
           <Button onClick={() => setIsDomainGroupDialogOpen(true)}>Add Domain Group</Button>
           <Button onClick={() => setIsDomainDialogOpen(true)}>Add Domain</Button>
         </div>
       </div>
 
       {/* Roles Section */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl text-black font-bold mb-4">Roles</h2>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-black">ID</TableHead>
-              <TableHead className="text-black">Role Title</TableHead>
-              <TableHead className="text-black">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {roles.map((role) => (
-              <TableRow  key={role.id}>
-                <TableCell className="text-black">{role.id}</TableCell>
-                <TableCell className="text-black">{role.title}</TableCell>
-                <TableCell>
-                  <Button className="text-black" variant="link" onClick={() => handleEditRole(role)}>
-                    Edit
-                  </Button>
-                  <Button variant="destructive" onClick={() => handleDeleteRole(role.id)}>
-                    Delete
-                  </Button>
-                </TableCell>
+      <Card>
+        <CardHeader>
+          <h2 className="text-xl font-bold">Roles</h2>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Role Title</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {roles.map((role) => (
+                <TableRow key={role.id}>
+                  <TableCell>{role.id}</TableCell>
+                  <TableCell>{role.title}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-3">
+                      <Button variant="link" onClick={() => handleEditRole(role)}>
+                        Edit
+                      </Button>
+                      <Button variant="link" className="text-red-500" onClick={() => handleDeleteRole(role.id)}>
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
       {/* Domain Groups Section */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl text-black font-bold mb-4">Domain Groups</h2>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-black">ID</TableHead>
-              <TableHead className="text-black">Name</TableHead>
-              <TableHead className="text-black">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {domainGroups.map((group) => (
-              <TableRow key={group.id}>
-                <TableCell className="text-black">{group.id}</TableCell>
-                <TableCell className="text-black">{group.name}</TableCell>
-                <TableCell>
-                  <Button className="text-black" variant="link"  onClick={() => handleEditDomainGroup(group)}>
-                    Edit
-                  </Button>
-                  <Button variant="destructive" onClick={() => handleDeleteDomainGroup(group.id)}>
-                    Delete
-                  </Button>
-                </TableCell>
+      <Card>
+        <CardHeader>
+          <h2 className="text-xl font-bold">Domain Groups</h2>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {domainGroups.map((group) => (
+                <TableRow key={group.id}>
+                  <TableCell>{group.id}</TableCell>
+                  <TableCell>{group.name}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-3">
+                      <Button variant="link" onClick={() => handleEditDomainGroup(group)}>
+                        Edit
+                      </Button>
+                      <Button variant="link" className="text-red-500" onClick={() => handleDeleteDomainGroup(group.id)}>
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
       {/* Domains Section */}
-      <div className="bg-white text-black rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-center mb-4">
+      <Card>
+        <CardHeader className="flex justify-between items-center">
           <h2 className="text-xl font-bold">Domains</h2>
-          <Select value={selectedDomainType} onValueChange={setSelectedDomainType}>
+          <Select
+            onValueChange={setSelectedDomainType}
+            value={selectedDomainType}
+          >
             <SelectTrigger>
-              <SelectValue placeholder="Filter Domains" />
+              <SelectValue placeholder="Filter by Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Domains</SelectItem>
+              <SelectItem value="all">All</SelectItem>
               <SelectItem value="tech">Tech</SelectItem>
               <SelectItem value="nonTech">Non-Tech</SelectItem>
             </SelectContent>
           </Select>
-        </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-black">ID</TableHead>
-              <TableHead className="text-black">Type</TableHead>
-              <TableHead className="text-black">Name</TableHead>
-              <TableHead className="text-black">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredDomains.map((domain) => (
-              <TableRow key={domain.id}>
-                <TableCell>{domain.id}</TableCell>
-                <TableCell className="text-black">{domain.type}</TableCell>
-                <TableCell className="text-black">{domain.name}</TableCell>
-                <TableCell>
-                  <Button className="text-black" variant="link" onClick={() => handleEditDomain(domain)}>
-                    Edit
-                  </Button>
-                  <Button variant="destructive" onClick={() => handleDeleteDomain(domain.id)}>
-                    Delete
-                  </Button>
-                </TableCell>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {filteredDomains.map((domain) => (
+                <TableRow key={domain.id}>
+                  <TableCell>{domain.id}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`px-2 py-1 rounded-full text-sm ${
+                        domain.type === "tech"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-green-100 text-green-800"
+                      }`}
+                    >
+                      {domain.type}
+                    </span>
+                  </TableCell>
+                  <TableCell>{domain.name}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-3">
+                      <Button variant="link" onClick={() => handleEditDomain(domain)}>
+                        Edit
+                      </Button>
+                      <Button variant="link" className="text-red-500" onClick={() => handleDeleteDomain(domain.id)}>
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
-      {/* Dialog Components */}
-      <Dialog open={isRoleDialogOpen} onOpenChange={setIsRoleDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editingItem ? "Edit Role" : "Add Role"}</DialogTitle>
-          </DialogHeader>
-          <AddRoleDialog
-            onClose={() => setIsRoleDialogOpen(false)}
-            onAddRole={handleAddRole}
-            onEditRole={handleUpdateRole}
-            editingRole={editingItem?.type === "role" ? editingItem : null}
-          />
-        </DialogContent>
-      </Dialog>
-      <Dialog open={isDomainGroupDialogOpen} onOpenChange={setIsDomainGroupDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editingItem ? "Edit Domain Group" : "Add Domain Group"}</DialogTitle>
-          </DialogHeader>
-          <AddDomainGroupDialog
-            onClose={() => setIsDomainGroupDialogOpen(false)}
-            onAddDomainGroup={handleAddDomainGroup}
-            onEditDomainGroup={handleUpdateDomainGroup}
-            editingGroup={editingItem?.type === "domainGroup" ? editingItem : null}
-          />
-        </DialogContent>
-      </Dialog>
-      <Dialog open={isDomainDialogOpen} onOpenChange={setIsDomainDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editingItem ? "Edit Domain" : "Add Domain"}</DialogTitle>
-          </DialogHeader>
-          <AddDomainDialog
-            onClose={() => setIsDomainDialogOpen(false)}
-            onAddDomain={handleAddDomain}
-            onEditDomain={handleUpdateDomain}
-            editingDomain={editingItem?.type === "domain" ? editingItem : null}
-          />
-        </DialogContent>
-      </Dialog>
+      {/* Dialogs */}
+      {isRoleDialogOpen && (
+        <AddRoleDialog
+          onClose={() => {
+            setIsRoleDialogOpen(false);
+            setEditingItem(null);
+          }}
+          onAddRole={handleAddRole}
+          onEditRole={handleUpdateRole}
+          // editingRole={editingItem?.type === "role" ? editingItem : null}
+        />
+      )}
+      {isDomainGroupDialogOpen && (
+        <AddDomainGroupDialog
+          onClose={() => {
+            setIsDomainGroupDialogOpen(false);
+            setEditingItem(null);
+          }}
+          onAddDomainGroup={handleAddDomainGroup}
+          onEditDomainGroup={handleUpdateDomainGroup}
+          // editingGroup={editingItem?.type === "domainGroup" ? editingItem : null}
+        />
+      )}
+      {isDomainDialogOpen && (
+        <AddDomainDialog
+          onClose={() => {
+            setIsDomainDialogOpen(false);
+            setEditingItem(null);
+          }}
+          onAddDomain={handleAddDomain}
+          // onEditDomain={handleUpdateDomain}
+          // editingDomain={editingItem?.type === "domain" ? editingItem : null}
+        />
+      )}
     </div>
   );
 }

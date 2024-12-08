@@ -10,13 +10,13 @@ export interface DomainGroup {
 
 export interface Domain {
   id: number;
-  type: string;
+  type: 'tech' | 'nonTech' | string;  // Defining more specific types for 'type'
   name: string;
 }
 
 export interface EditingItem {
-  type: 'role' | 'domainGroup' | 'domain';
+  type: 'role' | 'domainGroup' | 'domain';  // Explicitly setting type options
   id: number;
-  title?: string;
-  name?: string;
+  title?: string;  // Optional title for roles
+  name?: string;   // Optional name for domain groups and domains
 }

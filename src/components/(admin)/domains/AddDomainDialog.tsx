@@ -2,10 +2,23 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Domain {
   id: number;
@@ -23,6 +36,10 @@ export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialo
   const [name, setName] = useState("");
 
   const handleSubmit = () => {
+    if (!name.trim()) {
+      alert("Please enter a valid domain name.");
+      return;
+    }
     const newDomain = {
       id: Date.now(),
       type,
@@ -39,7 +56,8 @@ export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialo
           <DialogTitle>Add Domain</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div>
+          {/* Domain Type Selection */}
+          <div className="space-y-2">
             <Label htmlFor="type">Domain Type</Label>
             <Select value={type} onValueChange={(value) => setType(value)}>
               <SelectTrigger>
@@ -51,7 +69,9 @@ export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialo
               </SelectContent>
             </Select>
           </div>
-          <div>
+
+          {/* Domain Name Input */}
+          <div className="space-y-2">
             <Label htmlFor="name">Domain Name</Label>
             <Input
               id="name"
@@ -61,14 +81,16 @@ export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialo
             />
           </div>
         </div>
-        <div className="mt-4 space-y-2">
+
+        {/* Action Buttons */}
+        <DialogFooter className="mt-4 space-y-2">
           <Button onClick={handleSubmit} className="w-full">
             Add
           </Button>
           <Button variant="secondary" onClick={onClose} className="w-full">
             Cancel
           </Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

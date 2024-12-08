@@ -1,21 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Testimonial, TestimonialDialogProps } from './type';
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { FileInput } from "@/components/ui/file-input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogHeader,
+  DialogTitle,
+  DialogContent,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Testimonial, TestimonialDialogProps } from "./type";
 
-export default function TestimonialDialog({ 
-  onClose, 
+export default function TestimonialDialog({
+  onClose,
   onAddTestimonial,
   onEditTestimonial,
-  editingTestimonial 
+  editingTestimonial,
 }: TestimonialDialogProps) {
-  const [name, setName] = useState('');
-  const [position, setPosition] = useState('');
-  const [opinion, setOpinion] = useState('');
+  const [name, setName] = useState<string>("");
+  const [position, setPosition] = useState<string>("");
+  const [opinion, setOpinion] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
 
   useEffect(() => {
@@ -28,7 +35,7 @@ export default function TestimonialDialog({
   }, [editingTestimonial]);
 
   const handleSubmit = () => {
-    const testimonialData = {
+    const testimonialData: Testimonial = {
       id: editingTestimonial?.id || Date.now(),
       name,
       position,
@@ -45,68 +52,59 @@ export default function TestimonialDialog({
   };
 
   return (
-    <Dialog open onOpenChange={onClose}>
-      <DialogTrigger />
-      <DialogContent className="w-[500px] p-6">
+    <Dialog open={true} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>{editingTestimonial ? 'Edit Testimonial' : 'Add Testimonial'}</DialogTitle>
-          <DialogDescription>
-            {editingTestimonial ? 'Edit the testimonial details below.' : 'Add a new testimonial below.'}
-          </DialogDescription>
+          <DialogTitle>
+            {editingTestimonial ? "Edit Testimonial" : "Add Testimonial"}
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <Label>Upload Image</Label>
-            <FileInput
+            <Label htmlFor="image">Upload Image</Label>
+            <Input
+              type="file"
+              id="image"
               onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
-              className="w-full"
             />
           </div>
           <div>
-            <Label>Name</Label>
+            <Label htmlFor="name">Name</Label>
             <Input
-              type="text"
+              id="name"
               placeholder="Enter name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full"
             />
           </div>
           <div>
-            <Label>Position</Label>
+            <Label htmlFor="position">Position</Label>
             <Input
-              type="text"
+              id="position"
               placeholder="Enter position"
               value={position}
               onChange={(e) => setPosition(e.target.value)}
-              className="w-full"
             />
           </div>
           <div>
-            <Label>Opinion</Label>
+            <Label htmlFor="opinion">Opinion</Label>
             <Textarea
+              id="opinion"
               placeholder="Enter opinion"
               value={opinion}
               onChange={(e) => setOpinion(e.target.value)}
               rows={4}
-              className="w-full"
             />
           </div>
-          <div className="space-x-2">
-            <Button
-              onClick={handleSubmit}
-              className="w-full bg-black text-white hover:bg-gray-800 transition-colors"
-            >
-              {editingTestimonial ? 'Update' : 'Add'}
-            </Button>
-            <Button
-              onClick={onClose}
-              className="w-full bg-gray-700 text-white hover:bg-gray-800 transition-colors"
-            >
-              Cancel
-            </Button>
-          </div>
         </div>
+        <DialogFooter>
+          <Button onClick={handleSubmit}>
+            {editingTestimonial ? "Update" : "Add"}
+          </Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

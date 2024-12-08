@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { AdvisorMember, AdvisorDialogProps } from './type';
+import React, { useState, useEffect } from "react";
+import { AdvisorMember, AdvisorDialogProps } from "./type";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 
-export default function AdvisorDialog({ 
-  onClose, 
+export default function AdvisorDialog({
+  onClose,
   onSubmit,
-  editingMember 
+  editingMember,
 }: AdvisorDialogProps) {
-  const [name, setName] = useState('');
-  const [title, setTitle] = useState('');
-  const [type, setType] = useState<'advisor' | 'mentor'>('advisor');
-  const [additionalInfo, setAdditionalInfo] = useState('');
+  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
+  const [type, setType] = useState<"advisor" | "mentor">("advisor");
+  const [additionalInfo, setAdditionalInfo] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
 
   useEffect(() => {
@@ -17,7 +23,7 @@ export default function AdvisorDialog({
       setName(editingMember.name);
       setTitle(editingMember.title);
       setType(editingMember.type);
-      setAdditionalInfo(editingMember.additionalInfo || '');
+      setAdditionalInfo(editingMember.additionalInfo || "");
       setPhoto(editingMember.photo);
     }
   }, [editingMember]);
@@ -37,88 +43,79 @@ export default function AdvisorDialog({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">
-          {editingMember ? 'Edit Member' : 'Add Member'}
-        </h2>
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{editingMember ? "Edit Member" : "Add Member"}</DialogTitle>
+        </DialogHeader>
         <div className="space-y-4">
+          {/* Photo Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Upload Photo
-            </label>
-            <input
+            <Label htmlFor="photo">Upload Photo</Label>
+            <Input
+              id="photo"
               type="file"
-              title="Upload Photo"
               onChange={(e) => setPhoto(e.target.files ? e.target.files[0] : null)}
-              className="w-full"
             />
           </div>
+
+          {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Name
-            </label>
-            <input
-              type="text"
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
               placeholder="Enter name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-black focus:outline-none"
             />
           </div>
+
+          {/* Member Type */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Member Type
-            </label>
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value as 'advisor' | 'mentor')}
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-black focus:outline-none"
-            >
-              <option value="advisor">Advisor</option>
-              <option value="mentor">Mentor</option>
-            </select>
+            <Label>Member Type</Label>
+            <Select value={type} onValueChange={(value) => setType(value as "advisor" | "mentor")}>
+              <SelectTrigger>
+                <span>{type === "advisor" ? "Advisor" : "Mentor"}</span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="advisor">Advisor</SelectItem>
+                <SelectItem value="mentor">Mentor</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+
+          {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              {type === 'advisor' ? 'School' : 'Custom Title'}
-            </label>
-            <input
-              type="text"
-              placeholder={type === 'advisor' ? 'Enter school' : 'Enter custom title'}
+            <Label htmlFor="title">{type === "advisor" ? "School" : "Custom Title"}</Label>
+            <Input
+              id="title"
+              placeholder={type === "advisor" ? "Enter school" : "Enter custom title"}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-black focus:outline-none"
             />
           </div>
-          {type === 'mentor' && (
+
+          {/* Additional Information (for mentors) */}
+          {type === "mentor" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Additional Information
-              </label>
-              <textarea
+              <Label htmlFor="additionalInfo">Additional Information</Label>
+              <Textarea
+                id="additionalInfo"
                 placeholder="Enter additional information"
                 value={additionalInfo}
                 onChange={(e) => setAdditionalInfo(e.target.value)}
                 rows={3}
-                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-black focus:outline-none"
               />
             </div>
           )}
-          <button
-            onClick={handleSubmit}
-            className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition-colors"
-          >
-            {editingMember ? 'Update' : 'Add'}
-          </button>
-          <button
-            onClick={onClose}
-            className="w-full bg-gray-700 text-white py-2 rounded hover:bg-gray-800 transition-colors"
-          >
-            Cancel
-          </button>
         </div>
-      </div>
-    </div>
+        <DialogFooter>
+          <Button onClick={handleSubmit}>{editingMember ? "Update" : "Add"}</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
-} 
+}

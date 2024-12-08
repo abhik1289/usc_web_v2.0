@@ -11,9 +11,29 @@ generator client {
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
+  relationMode = "prisma"
 }
+
+
 model User {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  email   String   @unique
-  name    String?
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName           String?  @map("first_name") // Optional field for first name
+  lastName            String?  @map("last_name")  // Optional field for last name
+  email               String   @unique            // Unique email
+  profilePhoto        String?  @map("profile_photo") // Optional profile photo URL
+  role                Role                       // Enum for role
+  isActive            Boolean  @default(false)   // Account activation status
+  password            String?                    // Optional hashed password
+  resetToken          String?                    // Optional reset token
+  resetTokenExpires   DateTime?                  // Expiration for reset token
+  activeToken         String?                    // Optional activation token
+  activeTokenExpires  DateTime?                  // Expiration for activation token
+  createdAt           DateTime @default(now()) 
+  updatedAt           DateTime @updatedAt 
+}
+
+enum Role {
+  ADMIN       // Corresponds to admin
+  SUPERADMIN  // Corresponds to superadmin
+  MODERATOR   // Corresponds to moderator
 }

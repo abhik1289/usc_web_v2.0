@@ -13,9 +13,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useSignIn } from "@/hooks/auth/useSignIn";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { SignInUser } from "@/actions/user/signInUser";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +31,7 @@ export default function SignInForm() {
     try {
       e.preventDefault();
       setLoading(true);
-      const response: any = await useSignIn(email, password);
+      const response: any = await SignInUser(email, password);
 
       if (response.status == 200) {
         toast.success("Login success");

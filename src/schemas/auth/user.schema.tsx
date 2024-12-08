@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const formSchema = z
+export const addUser = z
   .object({
     firstName: z
       .string()
@@ -19,4 +19,13 @@ export const formSchema = z
   .refine((data) => data.password === data.cPassword, {
     message: "Password and confirm password must match.",
     path: ["cPassword"],
+  });
+
+  export const signInUser = z.object({
+    email: z
+      .string()
+      .email("Please enter a valid email address."),
+    password: z
+      .string()
+      .min(1, "Password is required."),
   });

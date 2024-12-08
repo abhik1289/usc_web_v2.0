@@ -15,8 +15,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import toast from 'react-hot-toast';
-import { formSchema } from "@/schemas/auth/add-user.schema";
+import toast from "react-hot-toast";
+import { addUser as formSchema } from "@/schemas/auth/user.schema";
 import { updateUserCredentials } from "@/hooks/auth/add-user";
 // import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -51,7 +51,7 @@ function AccountSetup() {
     };
     try {
       const response = await updateUserCredentials(data);
-      const message = response?.response?.data||"";
+      const message = response?.response?.data || "";
       if (response.success) {
         toast.success("User updated successfully");
         setLoading(false);

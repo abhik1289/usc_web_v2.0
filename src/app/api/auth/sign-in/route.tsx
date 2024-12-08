@@ -2,7 +2,7 @@ import { connect } from "@/db/connection";
 import UserModel from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { generateActiveToken } from "@/lib/token";
+import { generateActiveToken } from "@/lib/authentication/token";
 
 connect();
 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify password
-    const isValid = await bcrypt.compare(password, user?.password);
+    const isValid = await bcrypt.compare(password, user?.password!);
     if (!isValid) {
       return NextResponse.json(
         { success: false, message: "Invalid password." },

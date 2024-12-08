@@ -2,7 +2,7 @@ import { connect } from "@/db/connection";
 import UserModel from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { decodeActiveToken, generateActiveToken } from "@/lib/token";
+import { decodeActiveToken, generateActiveToken } from "@/lib/authentication/token";
 import { cookies } from "next/headers";
 
 connect();

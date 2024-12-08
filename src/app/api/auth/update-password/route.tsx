@@ -1,7 +1,7 @@
 import { connect } from "@/db/connection";
 import { NextRequest, NextResponse } from "next/server";
 import UserModel, { IUser } from "@/models/user.model";
-import { decodeActiveToken } from "@/lib/token";
+import { decodeActiveToken } from "@/lib/authentication/token";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 

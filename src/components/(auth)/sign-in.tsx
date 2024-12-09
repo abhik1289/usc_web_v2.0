@@ -67,6 +67,7 @@ export default function SignInForm() {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
+                disabled={loading}
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -80,6 +81,7 @@ export default function SignInForm() {
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Input
+                  disabled={loading}
                   id="password"
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
@@ -102,8 +104,8 @@ export default function SignInForm() {
               </div>
             </div>
           </div>
-          <Button className="w-full mt-4" type="submit">
-          {loading?  "Sign In...":"Sign In"}
+          <Button  disabled={loading} className="w-full mt-4" type="submit">
+            {loading ? "Sign In..." : "Sign In"}
           </Button>
         </form>
       </CardContent>

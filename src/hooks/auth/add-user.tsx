@@ -1,10 +1,27 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
-export const updateUserCredentials = async (infos: any) => {
+// Define a type for the input data (replace with the actual expected structure)
+interface UserCredentials {
+  first_name: string;
+  last_name: string;
+  isActive: boolean;
+  password: string;
+  cPassword: string;
+  token: string;
+}
+
+export const updateUserCredentials = async (infos: UserCredentials) => {
   try {
-    const { data } = await axios.put("/api/auth/update-credential", { infos });
-    return data;
+    // Send the POST request
+    const { data } = await axios.post("/api/user/set-up-profile", infos);
+    return { success: true, data };
   } catch (error) {
-    return error;
+    if (axios.isAxiosError(error)) {
+      // Axios-specific error handling
+      const message = error.response?.data?.message || "An error occurred";
+      return { error: true, message, status: error.response?.status };
+    }
+    // Generic error handling
+    return { error: true, message: "An unexpected error occurred" };
   }
 };

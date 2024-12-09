@@ -1,15 +1,21 @@
 import axios, { AxiosError } from "axios";
 
-export const SignInUser = async (email: string, password: string) => {
+export const AddUser = async (
+  firstName: string,
+  email: string,
+  role: string
+) => {
   try {
-    const response = await axios.post("/api/user/sign-in", {
+    console.log(firstName + " " + email + " " + role);
+    const response = await axios.post("/api/user/add-user", {
       email,
-      password,
+      role,
+      firstName: firstName,
     });
-    return response; // Return only the response data for simplicity
+    return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error("Axios Error:", error.response?.data || error.message);
+    //   console.error("Axios Error:", error.response?.data || error.message);
       return {
         success: false,
         error: error.response?.data || "An error occurred",

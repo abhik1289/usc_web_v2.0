@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import toast from "react-hot-toast";
-import { addUser as formSchema } from "@/schemas/auth/user.schema";
+import { setUpUserFront as formSchema } from "@/schemas/auth/user.schema";
 import { updateUserCredentials } from "@/hooks/auth/add-user";
 // import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -41,17 +41,24 @@ function AccountSetup() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
-    const data = {
-      first_name: values.firstName,
-      last_name: values.lastName,
-      isActive: true,
-      password: values.password,
-      cPassword: values.cPassword,
-      token: token,
-    };
+    // const data = {
+    //   first_name: values.firstName,
+    //   last_name: values.lastName,
+    //   isActive: true,
+    //   password: values.password,
+    //   cPassword: values.cPassword,
+    //   token: token!,
+    // };
     try {
-      const response = await updateUserCredentials(data);
-      const message = response?.response?.data || "";
+      const response = await updateUserCredentials({
+        first_name: values.firstName,
+        last_name: values.lastName,
+        isActive: true,
+        password: values.password,
+        cPassword: values.cPassword,
+        token: token!,
+      });
+
       if (response.success) {
         toast.success("User updated successfully");
         setLoading(false);
@@ -60,7 +67,7 @@ function AccountSetup() {
           router.push("/sign-in");
         }, 2000);
       } else {
-        toast.error(message.error);
+        toast.error(response.message);
       }
     } finally {
       setLoading(false);

@@ -1,20 +1,39 @@
-import React from 'react'
+"use client"
+
+import React, { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { IoIosSearch } from "react-icons/io";
+import AddUserDialog from "./add-user-dialog";
+
 function UserHeader() {
+  const [open, setOpen] = useState(false);
+  
+  const handleOpenDialog = () => {
+    setOpen(true);
+  };
+
   return (
-    <div className='wrapper flex justify-between items-center py-4 px-6 relative'>
-   
-      <div className="searchBar relative">
-      <div className="search_btn absolute top-[50%] translate-y-[-50%] left-3">
-      <IoIosSearch />
+    <div className="flex justify-between items-center py-4 px-6">
+      <div className="relative w-[400px]">
+        <IoIosSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
+        <Input
+          type="text"
+          placeholder="Search"
+          className="pl-10"
+        />
       </div>
-        <input type="text" className='w-[400px] px-2 border border-slate-400 pl-10 py-2 rounded-md outline-none' />
-      </div>
-      <div className="addUserButton">
-        <button className='w-[140px] h-[40px]  bg-blue-500 rounded-md'>Add User</button>
-      </div>
+      <Button
+        onClick={handleOpenDialog}
+        variant="default"
+        className="w-[140px] h-[40px]"
+      >
+        Add User
+      </Button>
+      <AddUserDialog open={open} setOpen={setOpen} />
     </div>
-  )
+  );
 }
 
-export default UserHeader
+export default UserHeader;
+

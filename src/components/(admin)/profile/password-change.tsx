@@ -27,20 +27,23 @@ export default function PasswordChange() {
     setIsLoading(true);
     try {
       const response = await axios({
-        url: "/api/auth/update-password",
-        method: "PUT",
+        url: "/api/user/update-password",
+        method: "POST",
         data: {
           oldPassword,
           newPassword,
         },
       });
-      
-      setMessage(response.data.message);
+      if (response.status == 200 && response.data.success == true) {
+        setMessage(response.data.message);
+      } else {
+        setMessage(response.data.error);
+      }
       if (response.status == 200) {
         setOldPassword("");
         setNewPassword("");
         setConfirmPassword("");
-      }else{
+      } else {
         setOldPassword("");
         setNewPassword("");
         setConfirmPassword("");

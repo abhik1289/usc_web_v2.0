@@ -10,7 +10,7 @@ function HomePage() {
             key={item.id}
           >
             <div className="left">
-              <div className="icon w-[50px] h-[50px] bg-blue-600 rounded-md flex justify-center items-center text-xl">
+              <div key={i} className="icon w-[50px] h-[50px] bg-blue-600 rounded-md flex justify-center items-center text-xl">
                 {item.icon}
               </div>
             </div>

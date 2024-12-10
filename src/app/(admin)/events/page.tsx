@@ -3,13 +3,29 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-
-const EventDialog = dynamic(() => import("@/components/(admin)/events/EventDialog"), {
-  ssr: false,
-});
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import Image from "next/image";
+const EventDialog = dynamic(
+  () => import("@/components/(admin)/events/EventDialog"),
+  {
+    ssr: false,
+  }
+);
 
 interface Event {
   id: number;
@@ -35,7 +51,11 @@ export default function EventsPage() {
   };
 
   const handleEditEvent = (updatedEvent: Event) => {
-    setEvents(events.map((event) => (event.id === updatedEvent.id ? updatedEvent : event)));
+    setEvents(
+      events.map((event) =>
+        event.id === updatedEvent.id ? updatedEvent : event
+      )
+    );
   };
 
   const handleDeleteEvent = (id: number) => {
@@ -46,7 +66,10 @@ export default function EventsPage() {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Events</h1>
-        <Dialog open={isDialogOpen} onOpenChange={(open) => !open && setEditingEvent(null)}>
+        <Dialog
+          open={isDialogOpen}
+          onOpenChange={(open) => !open && setEditingEvent(null)}
+        >
           <DialogTrigger asChild>
             <Button
               onClick={() => {
@@ -60,7 +83,9 @@ export default function EventsPage() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{editingEvent ? "Edit Event" : "Add Event"}</DialogTitle>
+              <DialogTitle>
+                {editingEvent ? "Edit Event" : "Add Event"}
+              </DialogTitle>
             </DialogHeader>
             <EventDialog
               onClose={() => {
@@ -91,11 +116,15 @@ export default function EventsPage() {
               <TableRow key={event.id}>
                 <TableCell>{event.id}</TableCell>
                 <TableCell>{event.title}</TableCell>
-                <TableCell>{event.date || `${event.startDate} - ${event.endDate}`}</TableCell>
+                <TableCell>
+                  {event.date || `${event.startDate} - ${event.endDate}`}
+                </TableCell>
                 <TableCell>{event.venue}</TableCell>
                 <TableCell>
                   {event.image && (
-                    <img
+                    <Image
+                      width={100}
+                      height={100}
                       src={URL.createObjectURL(event.image)}
                       alt={event.title}
                       className="h-16 w-16 object-cover rounded"

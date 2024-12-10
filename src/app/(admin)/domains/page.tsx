@@ -14,7 +14,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function DomainsPage() {
@@ -49,6 +49,7 @@ export default function DomainsPage() {
   const handleEditDomain = (domain: Domain) => {
     // setEditingItem({ type: "domain", ...domain });
     setIsDomainDialogOpen(true);
+    console.log(domain)
   };
 
   const handleUpdateRole = (updatedRole: Role) => {
@@ -61,14 +62,14 @@ export default function DomainsPage() {
     );
   };
 
-  const handleUpdateDomain = (updatedDomain: Domain) => {
-    setDomains((prev) => prev.map((domain) => (domain.id === updatedDomain.id ? updatedDomain : domain)));
-  };
+  // const handleUpdateDomain = (updatedDomain: Domain) => {
+  //   setDomains((prev) => prev.map((domain) => (domain.id === updatedDomain.id ? updatedDomain : domain)));
+  // };
 
   const filteredDomains = domains.filter((domain) =>
     selectedDomainType === "all" ? true : domain.type === selectedDomainType
   );
-
+console.log(editingItem)
   return (
     <div className="space-y-6 p-6">
       {/* Header Section */}

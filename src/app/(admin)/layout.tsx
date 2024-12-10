@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { redirect } from "next/navigation";
 // import { useRouter } from "next/navigation";
 import NextTopLoader from "nextjs-toploader";
-import { QueryClient } from "@tanstack/react-query";
+// import { QueryClient } from "@tanstack/react-query";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,7 +26,7 @@ export default async function RootLayout({
     redirect("/sign-in");
   }
 
-  const queryClient = new QueryClient()
+  // const queryClient = new QueryClient()
   return (
     <html lang="en">
       <body className={`antialiased`}>

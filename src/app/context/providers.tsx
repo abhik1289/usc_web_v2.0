@@ -3,7 +3,7 @@
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 // ("use client");
 
-import { useTheme } from "next-themes";
+// import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 export function NextThemeProviders({
   children,

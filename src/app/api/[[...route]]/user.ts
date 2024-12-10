@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db/db";
 import { User } from "@prisma/client";
-import { z } from "zod";
+// import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import {
   addUser,
@@ -20,9 +20,9 @@ import {
 } from "@/lib/authentication/token";
 import { getUserByEmail } from "@/lib/helper/userHelper";
 import axios from "axios";
-import { jwt } from "hono/jwt";
+// import { jwt } from "hono/jwt";
 import type { JwtVariables } from "hono/jwt";
-import { JWTPayload } from "hono/utils/jwt/types";
+// import { JWTPayload } from "hono/utils/jwt/types";
 type Variables = JwtVariables;
 
 export const user = new Hono<{ Variables: Variables }>()
@@ -106,6 +106,7 @@ export const user = new Hono<{ Variables: Variables }>()
       try {
         user = decodeSignInToken(token);
       } catch (error) {
+        console.log(error);
         return c.json(
           { success: false, error: "Invalid or expired token" },
           401
@@ -163,7 +164,7 @@ export const user = new Hono<{ Variables: Variables }>()
       // Create a new user record in the database
       const token = generateActiveToken(email);
       const tokenExpiration = Date.now() + 60 * 60 * 1000;
-      const savedUser = await db.user.create({
+      await db.user.create({
         data: {
           firstName: firstName,
           email: email,
@@ -174,7 +175,7 @@ export const user = new Hono<{ Variables: Variables }>()
       });
       const setupUrl = `${process.env.CLIENT_URL}/set-up?token=${token}`;
       const status: {
-        error?: any;
+        error?: string;
         data?: string;
       } = await axios.post(`${process.env.CLIENT_URL}/api/send`, {
         firstName: firstName,
@@ -202,7 +203,7 @@ export const user = new Hono<{ Variables: Variables }>()
       console.log("This is a test");
       const { last_name, first_name, password, token } = await c.req.json();
       console.log(last_name, first_name, password, token);
-      const data: any = decodeActiveToken(token);
+      const data = decodeActiveToken(token);
       const email = data.email;
       const existingUser = await getUserByEmail(email);
 
@@ -280,6 +281,7 @@ export const user = new Hono<{ Variables: Variables }>()
         );
       }
     } catch (error) {
+      console.log(error)
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
         500
@@ -297,6 +299,7 @@ export const user = new Hono<{ Variables: Variables }>()
         201
       );
     } catch (error) {
+      console.log(error)
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
         500
@@ -336,6 +339,8 @@ export const user = new Hono<{ Variables: Variables }>()
         }
       }
     } catch (error) {
+      console.log(error)
+
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
         500

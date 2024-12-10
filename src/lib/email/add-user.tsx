@@ -17,8 +17,8 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
   >
     <h1 style={{ color: '#4CAF50' }}>Welcome to USC KIIT, {firstName}!</h1>
     <p>
-      We're thrilled to invite you to join our vibrant community. As a member
-      of USC KIIT, you'll gain access to exclusive resources, events, and
+      We&apos;re thrilled to invite you to join our vibrant community. As a member
+      of USC KIIT, you&apos;ll gain access to exclusive resources, events, and
       opportunities to grow and connect.
     </p>
     <p>

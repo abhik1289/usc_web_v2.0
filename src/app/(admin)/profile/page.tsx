@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import useSWR from "swr";
 import axios, { AxiosResponse } from "axios";
 import SkeletonLoading from "@/components/(admin)/profile/skeleton-loading";
-import { LogoutResponse, logOutUser } from "@/actions/user/logoutUser";
+// import { LogoutResponse, logOutUser } from "@/actions/user/logoutUser";
 import { useRouter } from "next/navigation";
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -18,13 +18,13 @@ function ProfilePage() {
   const handleLogout = async () => {
     try {
       setLoading(true);
-      const res: LogoutResponse = await logOutUser(); // Assuming logOutUser is defined elsewhere
+      // const res: LogoutResponse = await logOutUser(); // Assuming logOutUser is defined elsewhere
 
-      if (res.success) {
-        router.push("/sign-in");
-      } else {
-        console.error("Logout failed" + res.error);
-      }
+      // if (res.success) {
+      //   router.push("/sign-in");
+      // } else {
+      //   console.error("Logout failed" + res.error);
+      // }
       setLoading(false);
     } catch (error) {
       console.error("Error during logout:", error);

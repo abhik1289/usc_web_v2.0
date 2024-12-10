@@ -2,10 +2,22 @@
 
 import React, { useState } from "react";
 import LeadsDialog from "@/components/(admin)/leads/LeadsDialog";
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Image from "next/image";
 interface Lead {
   id: number;
   name: string;
@@ -65,11 +77,17 @@ export default function LeadsPage() {
         <Table>
           <TableHeader>
             <TableRow className=" ">
-              {["ID", "Name", "Domain Type", "Domain Name", "Socials", "Photo", "Actions"].map(
-                (header) => (
-                  <TableCell key={header}>{header}</TableCell>
-                )
-              )}
+              {[
+                "ID",
+                "Name",
+                "Domain Type",
+                "Domain Name",
+                "Socials",
+                "Photo",
+                "Actions",
+              ].map((header) => (
+                <TableCell key={header}>{header}</TableCell>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody className="text-black">
@@ -92,7 +110,9 @@ export default function LeadsPage() {
                 <TableCell>{lead.socials}</TableCell>
                 <TableCell>
                   {lead.photo && (
-                    <img
+                    <Image
+                      width={100}
+                      height={100}
                       src={URL.createObjectURL(lead.photo)}
                       alt={lead.name}
                       className="h-16 w-16 object-cover rounded"
@@ -101,8 +121,8 @@ export default function LeadsPage() {
                 </TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
-                    <Button 
-                    className="text-black"
+                    <Button
+                      className="text-black"
                       variant="link"
                       onClick={() => {
                         setEditingLead(lead);

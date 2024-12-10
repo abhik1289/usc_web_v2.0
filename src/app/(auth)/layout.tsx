@@ -1,6 +1,6 @@
 "use client";
 
-import type { Metadata } from "next";
+
 import "@/app/globals.css";
 import { NextThemeProviders } from "../context/providers";
 // import { Toaster } from "react-hot-toast";

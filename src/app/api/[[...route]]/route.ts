@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { handle } from "hono/vercel";
 import { PrismaClient } from "@prisma/client";
 import { user } from "./user";
-import { jwt } from "hono/jwt";
+
 
 export const db = new PrismaClient();
 // export const runtime = 'edge'

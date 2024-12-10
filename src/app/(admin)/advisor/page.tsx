@@ -4,18 +4,28 @@ import React, { useState } from "react";
 import AdvisorDialog from "@/components/(admin)/advisor/AdvisorDialog";
 import { AdvisorMember } from "@/components/(admin)/advisor/type";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-
+import Image from "next/image";
 export default function AdvisorPage() {
   const [members, setMembers] = useState<AdvisorMember[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingMember, setEditingMember] = useState<AdvisorMember | null>(null);
+  const [editingMember, setEditingMember] = useState<AdvisorMember | null>(
+    null
+  );
 
   const handleSubmit = (memberData: AdvisorMember) => {
     if (editingMember) {
       setMembers((prevMembers) =>
-        prevMembers.map((member) => (member.id === memberData.id ? memberData : member))
+        prevMembers.map((member) =>
+          member.id === memberData.id ? memberData : member
+        )
       );
     } else {
       setMembers((prevMembers) => [...prevMembers, memberData]);
@@ -23,7 +33,9 @@ export default function AdvisorPage() {
   };
 
   const handleDelete = (id: number) => {
-    setMembers((prevMembers) => prevMembers.filter((member) => member.id !== id));
+    setMembers((prevMembers) =>
+      prevMembers.filter((member) => member.id !== id)
+    );
   };
 
   const advisors = members.filter((member) => member.type === "advisor");
@@ -45,7 +57,9 @@ export default function AdvisorPage() {
           {advisors.map((advisor) => (
             <Card key={advisor.id} className="relative">
               {advisor.photo && (
-                <img
+                <Image
+                  width={100}
+                  height={100}
                   src={URL.createObjectURL(advisor.photo)}
                   alt={advisor.name}
                   className="w-24 h-24 rounded-full mx-auto mt-4 object-cover"
@@ -88,7 +102,9 @@ export default function AdvisorPage() {
           {mentors.map((mentor) => (
             <Card key={mentor.id} className="relative">
               {mentor.photo && (
-                <img
+                <Image
+                  width={100}
+                  height={100}
                   src={URL.createObjectURL(mentor.photo)}
                   alt={mentor.name}
                   className="w-24 h-24 rounded-full mx-auto mt-4 object-cover"

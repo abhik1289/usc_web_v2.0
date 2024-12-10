@@ -5,9 +5,15 @@ import ChampionDialog from "@/components/(admin)/champion/ChampionDialog";
 import { Champion } from "@/components/(admin)/champion/type";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Separator } from "@/components/ui/separator";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
+import Image from "next/image";
 export default function ChampionPage() {
   const [champions, setChampions] = useState<Champion[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -32,21 +38,21 @@ export default function ChampionPage() {
     );
   };
 
-  const openDialog = (champion: Champion | null = null) => {
-    setEditingChampion(champion);
-    setIsDialogOpen(true);
-  };
+  // const openDialog = (champion: Champion | null = null) => {
+  //   setEditingChampion(champion);
+  //   setIsDialogOpen(true);
+  // };
 
   const closeDialog = () => {
     setEditingChampion(null);
     setIsDialogOpen(false);
   };
 
-  const filteredChampions = champions.filter(champion => {
-    if (selectedType === "all") return true;
-    // Add your filtering logic here based on champion types
-    return true;
-  });
+  // const filteredChampions = champions.filter(champion => {
+  //   if (selectedType === "all") return true;
+  //   // Add your filtering logic here based on champion types
+  //   return true;
+  // });
 
   return (
     <div className="p-6 space-y-6">
@@ -67,7 +73,9 @@ export default function ChampionPage() {
           <Card key={champion.id} className="hover:shadow-lg transition-shadow">
             {champion.image && (
               <AspectRatio ratio={16 / 9} className="overflow-hidden">
-                <img
+                <Image
+                  width={100}
+                  height={100}
                   src={URL.createObjectURL(champion.image)}
                   alt={champion.title}
                   className="w-full h-full object-cover"
@@ -78,7 +86,9 @@ export default function ChampionPage() {
               <CardTitle>{champion.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 line-clamp-3">{champion.description}</p>
+              <p className="text-gray-600 line-clamp-3">
+                {champion.description}
+              </p>
             </CardContent>
             <Separator />
             <CardFooter className="flex justify-end space-x-3">
@@ -106,7 +116,9 @@ export default function ChampionPage() {
 
       {champions.length === 0 && (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">No champions added yet. Add your first champion!</p>
+          <p className="text-gray-500">
+            No champions added yet. Add your first champion!
+          </p>
         </div>
       )}
 

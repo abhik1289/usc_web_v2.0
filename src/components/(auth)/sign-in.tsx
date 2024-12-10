@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,40 +18,69 @@ import {
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { SignInUser } from "@/actions/user/signInUser";
+import { useSignInAccount } from "@/hooks/api/user/useSignInUser";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
+
+// Define schema using Zod
+const signInSchema = z.object({
+  email: z
+    .string()
+    .email("Invalid email address")
+    .nonempty("Email is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type SignInFormValues = z.infer<typeof signInSchema>;
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const { toast } = useToast();
 
-  const handleSubmit = async (e: any) => {
+  // React Hook Form integration with Zod
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignInFormValues>({
+    resolver: zodResolver(signInSchema),
+  });
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+  // Form submission handler
+  const onSubmit: SubmitHandler<SignInFormValues> = async (values) => {
     try {
-      e.preventDefault();
-      setLoading(true);
-      const response: any = await SignInUser(email, password);
+      // Send the sign-in request with the form values
+      const response = await axios.post("/api/user/sign-in", values);
 
-      if (response.status == 200) {
-        toast.success("Login success");
-        setLoading(false);
+      // Handle the response on success
+      if (response.data.success) {
+        // Successful sign-in logic (e.g., store the token, redirect the user)
+        toast({
+          description: "Sign-in successful",
+        });
 
+        // Redirect the user to a protected page or dashboard
+        // Modify as needed
         setTimeout(() => {
           router.push("/dashboard");
         }, 2000);
       } else {
-        setLoading(false);
-
-        toast.error("Login failed");
+        // Handle case where server response indicates failure (e.g., invalid credentials)
+        // toast.error(response.data.error || "Invalid email or password");
+        toast({
+          description: response.data.error && response.data.error,
+        });
       }
-    } catch (error) {
-      setLoading(false);
-
-      console.log("Error", error);
+    } catch (error: any) {
+      // Handle errors that occur during the API call (network errors, etc.)
+      console.error("Error during sign-in:", error);
+      toast({
+        description:
+          error?.response?.data?.error || "An unexpected error occurred",
+      });
     }
   };
   return (
@@ -62,32 +94,31 @@ export default function SignInForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
-                disabled={loading}
                 id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 type="email"
-                required
+                disabled={isSubmitting}
+                {...register("email")}
                 className="bg-gray-700 border-gray-600 text-gray-100"
               />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Input
-                  disabled={loading}
                   id="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
                   placeholder="Enter your password"
                   type={showPassword ? "text" : "password"}
-                  required
+                  disabled={isSubmitting}
+                  {...register("password")}
                   className="bg-gray-700 border-gray-600 text-gray-100 pr-10"
                 />
                 <button
@@ -102,10 +133,15 @@ export default function SignInForm() {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
           </div>
-          <Button  disabled={loading} className="w-full mt-4" type="submit">
-            {loading ? "Sign In..." : "Sign In"}
+          <Button disabled={isSubmitting} className="w-full mt-4" type="submit">
+            {isSubmitting ? "Signing In..." : "Sign In"}
           </Button>
         </form>
       </CardContent>

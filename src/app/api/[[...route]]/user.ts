@@ -30,9 +30,10 @@ export const user = new Hono<{ Variables: Variables }>()
     try {
       // Extract email and password from the validated request
       const { email, password } = await c.req.json();
+      // console.log(email, password)
       // Check if the user exists in the database
       const existingUser: User | null = await getUserByEmail(email);
-
+      console.log(existingUser);
       if (!existingUser) {
         return c.json(
           { success: false, error: "Invalid email or password." },
@@ -287,7 +288,6 @@ export const user = new Hono<{ Variables: Variables }>()
   })
   .get("/logout", async (c) => {
     try {
-     
       deleteCookie(c, "token");
       return c.json(
         {

@@ -11,95 +11,160 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
+import { ChangeRoleDialog } from "./change-role-dialog";
 
-const users = [
-  {
-    fullname: "John Doe",
-    username: "john_doe",
-    email: "john.doe@example.com",
-    role: "Admin",
-    addedBy: "super_admin_01",
-  },
-  {
-    fullname: "Jane Smith",
-    username: "jane_smith",
-    email: "jane.smith@example.com",
-    role: "Super Admin",
-    addedBy: "admin_01",
-  },
-  {
-    fullname: "Alice Wonder",
-    username: "alice_wonder",
-    email: "alice.wonder@example.com",
-    role: "Moderator",
-    addedBy: "admin_02",
-  },
-  {
-    fullname: "Bob Builder",
-    username: "bob_builder",
-    email: "bob.builder@example.com",
-    role: "Admin",
-    addedBy: "super_admin_01",
-  },
-  {
-    fullname: "Clara Oswald",
-    username: "clara_oswald",
-    email: "clara.oswald@example.com",
-    role: "Moderator",
-    addedBy: "admin_03",
-  },
-];
+interface User {
+  id: string;
+  firstName: string;
+  email: string;
+  role: string;
+  lastName: string;
+}
 
 export function UserTable() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<User[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const users:any = await axios.get("/api/user/get-users");
-        console.log(users)
-        if(users.data.success)
-        {setData(users.data.users);}
-        else{
-
+        const response = await axios.get("/api/user/get-users");
+        if (response.data.success) {
+          setData(response.data.users);
+        } else {
+          setError("Failed to fetch users.");
         }
       } catch (error) {
-        console.log("error", error);
+        setError("An error occurred while fetching users.");
+      } finally {
+        setLoading(false);
       }
     };
     getUsers();
   }, []);
-console.log(data)
+
+  const deleteUser = async (email: string) => {
+    try {
+      const res = await axios.post("/api/user/delete-user", {
+        email,
+      });
+      if (res.data.success) {
+        toast({
+          description: "Successfully deleted",
+        });
+      } else {
+        toast({
+          description: "Problem Occured",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        description: error.response.data.error || "Problem Occurred",
+        variant: "destructive",
+      });
+    }
+  };
+
+  function changeRole(email: string) {
+    setOpen(true)
+    // try {
+    //   const res = await axios.post("/api/user/delete-user", {
+    //     email,
+    //   });
+    //   if (res.data.success) {
+    //     toast({
+    //       description: "Successfully deleted",
+    //     });
+    //   } else {
+    //     toast({
+    //       description: "Problem Occured",
+    //       variant: "destructive",
+    //     });
+    //   }
+    // } catch (error: any) {
+    //   toast({
+    //     description: error.response.data.error || "Problem Occurred",
+    //     variant: "destructive",
+    //   });
+    // }
+  }
+
   return (
-    <Table className="border rounded-md mt-5">
-      <TableCaption>A list of system users and their roles.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Fullname</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Role</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((user:any,i) => (
-          <TableRow key={i}>
-            <TableCell className="font-medium">{user.firstName}</TableCell>
-            <TableCell>{user.email}</TableCell>
-            <TableCell>{user.role}</TableCell>
-            <TableCell className="text-right space-x-2">
-              <button className="text-blue-500 hover:underline">Edit</button>
-              <button className="text-red-500 hover:underline">Delete</button>
+    <>
+      <Table className="border rounded-md mt-5">
+        <TableCaption>A list of system users and their roles.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Fullname</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Role</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        {loading ? (
+          <TableBody>
+            <TableRow>
+              <TableCell colSpan={4} className="text-center">
+                Loading...
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        ) : error ? (
+          <TableBody>
+            <TableRow>
+              <TableCell colSpan={4} className="text-center text-red-500">
+                {error}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        ) : data.length > 0 ? (
+          <TableBody>
+            {data.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell className="font-medium">
+                  {user.firstName + " " + user.lastName}
+                </TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.role}</TableCell>
+                <TableCell className="text-right space-x-2">
+                  <button
+                    onClick={() => changeRole(user.email)}
+                    className="text-blue-500 hover:underline"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => deleteUser(user.email)}
+                    className="text-red-500 hover:underline"
+                  >
+                    Delete
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        ) : (
+          <TableBody>
+            <TableRow>
+              <TableCell colSpan={4} className="text-center">
+                No users found
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        )}
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={4} className="text-right">
+              Total Users: {data.length}
             </TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={6} className="text-right">
-            Total Users: {data.length}
-          </TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
+        </TableFooter>
+      </Table>
+      <ChangeRoleDialog open={open} setOpen={setOpen} />
+    </>
   );
 }

@@ -151,7 +151,6 @@ export const user = new Hono<{ Variables: Variables }>()
   .post("/add-user", zValidator("json", addUser), async (c) => {
     try {
       const { firstName, email, role } = await c.req.json();
-      console.log(firstName, email, role);
       const existingUser: User | null = await getUserByEmail(email);
 
       if (existingUser) {
@@ -329,7 +328,7 @@ export const user = new Hono<{ Variables: Variables }>()
         } else {
           return c.json(
             {
-              success:true,
+              success: true,
               users,
             },
             200
@@ -337,6 +336,39 @@ export const user = new Hono<{ Variables: Variables }>()
         }
       }
     } catch (error) {
+      return c.json(
+        { error: "An unexpected error occurred. Please try again." },
+        500
+      );
+    }
+  })
+  .post("/delete-user", async (c) => {
+    try {
+      const token = getCookie(c, "token");
+      if (!token) {
+        return c.json(
+          {
+            error: "token not found",
+            success: false,
+          },
+          401
+        );
+      } else {
+        const { email } = await c.req.json();
+        const user: SignInTokenPayload = decodeSignInToken(token);
+        const role = user.payload.role!;
+        if (role != "SUPERADMIN") {
+          return c.json({ error: "You must be a super admin" }, 401);
+        } else {
+          await db.user.delete({
+            where: {
+              email: email,
+            },
+          });
+          return c.json({ success: true, message: "Deleted account" });
+        }
+      }
+    } catch (e) {
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
         500

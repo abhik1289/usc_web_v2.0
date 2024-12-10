@@ -54,11 +54,13 @@ export const addUser = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
   role: Property,
 });
-
+export const changeRole = z.object({
+  role: Property,
+});
 export const changePWD = z.object({
   oldPassword: z.string(),
   newPassword: z
-  .string()
-  .min(4, { message: "Password must be at least 4 characters." })
-  .max(10, { message: "Password must be at most 10 characters." }),
+    .string()
+    .min(4, { message: "Password must be at least 4 characters." })
+    .max(10, { message: "Password must be at most 10 characters." }),
 });

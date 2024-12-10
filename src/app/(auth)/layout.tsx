@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "@/app/globals.css";
 import { NextThemeProviders } from "../context/providers";
 import { Toaster } from "react-hot-toast";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // import { ThemeProvider } from "next-themes";
 
 // const geistSans = localFont({
@@ -26,10 +27,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const queryClient = new QueryClient();
   return (
     <html lang="en">
-      <body className={`antialiased flex justify-center items-center w-screen h-screen`}>
-        <NextThemeProviders>{children}<Toaster/></NextThemeProviders>
+      <body
+        className={`antialiased flex justify-center items-center w-screen h-screen`}
+      >
+        <QueryClientProvider client={queryClient}>
+          <NextThemeProviders>
+            {children}
+            <Toaster />
+          </NextThemeProviders>
+        </QueryClientProvider>
       </body>
     </html>
   );

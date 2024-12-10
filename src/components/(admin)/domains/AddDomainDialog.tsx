@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -19,11 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { z } from "zod";
+import { domainSchema } from "./schemas";
+import { Domain } from "./type";
 
-interface Domain {
-  id: number;
-  type: string;
-  name: string;
+interface FormErrors {
+  type?: string;
+  name?: string;
 }
 
 interface AddDomainDialogProps {
@@ -34,12 +35,30 @@ interface AddDomainDialogProps {
 export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialogProps) {
   const [type, setType] = useState("tech");
   const [name, setName] = useState("");
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  const validateForm = () => {
+    try {
+      domainSchema.parse({ type, name });
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formattedErrors: FormErrors = {};
+        error.errors.forEach((err) => {
+          if (err.path) {
+            formattedErrors[err.path[0] as keyof FormErrors] = err.message;
+          }
+        });
+        setErrors(formattedErrors);
+      }
+      return false;
+    }
+  };
 
   const handleSubmit = () => {
-    if (!name.trim()) {
-      alert("Please enter a valid domain name.");
-      return;
-    }
+    if (!validateForm()) return;
+
     const newDomain = {
       id: Date.now(),
       type,
@@ -56,7 +75,6 @@ export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialo
           <DialogTitle>Add Domain</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          {/* Domain Type Selection */}
           <div className="space-y-2">
             <Label htmlFor="type">Domain Type</Label>
             <Select value={type} onValueChange={(value) => setType(value)}>
@@ -68,9 +86,9 @@ export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialo
                 <SelectItem value="nonTech">Non-Tech</SelectItem>
               </SelectContent>
             </Select>
+            {errors.type && <p className="text-sm text-red-500">{errors.type}</p>}
           </div>
 
-          {/* Domain Name Input */}
           <div className="space-y-2">
             <Label htmlFor="name">Domain Name</Label>
             <Input
@@ -79,10 +97,10 @@ export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialo
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
           </div>
         </div>
 
-        {/* Action Buttons */}
         <DialogFooter className="mt-4 space-y-2">
           <Button onClick={handleSubmit} className="w-full">
             Add

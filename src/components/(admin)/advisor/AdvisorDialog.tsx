@@ -1,43 +1,84 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import { AdvisorMember, AdvisorDialogProps } from "./type";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// Advisor validation schema
+const advisorSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  title: z.string().min(2, "Title must be at least 2 characters"),
+  type: z.enum(["advisor", "mentor"], {
+    required_error: "Please select a member type",
+  }),
+  additionalInfo: z.string().optional(),
+  photo: z.instanceof(File).nullable(),
+});
+
+type AdvisorFormData = z.infer<typeof advisorSchema>;
 
 export default function AdvisorDialog({
   onClose,
   onSubmit,
   editingMember,
 }: AdvisorDialogProps) {
-  const [name, setName] = useState("");
-  const [title, setTitle] = useState("");
-  const [type, setType] = useState<"advisor" | "mentor">("advisor");
-  const [additionalInfo, setAdditionalInfo] = useState("");
-  const [photo, setPhoto] = useState<File | null>(null);
+  const form = useForm<AdvisorFormData>({
+    resolver: zodResolver(advisorSchema),
+    defaultValues: {
+      name: "",
+      title: "",
+      type: "advisor",
+      additionalInfo: "",
+      photo: null,
+    },
+  });
+
+  const memberType = form.watch("type");
 
   useEffect(() => {
     if (editingMember) {
-      setName(editingMember.name);
-      setTitle(editingMember.title);
-      setType(editingMember.type);
-      setAdditionalInfo(editingMember.additionalInfo || "");
-      setPhoto(editingMember.photo);
+      form.reset({
+        name: editingMember.name,
+        title: editingMember.title,
+        type: editingMember.type,
+        additionalInfo: editingMember.additionalInfo,
+        photo: editingMember.photo,
+      });
     }
-  }, [editingMember]);
+  }, [editingMember, form]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (data: AdvisorFormData) => {
     const memberData: AdvisorMember = {
       id: editingMember?.id || Date.now(),
-      name,
-      title,
-      type,
-      photo,
-      ...(additionalInfo && { additionalInfo }),
+      ...data,
     };
-
     onSubmit(memberData);
     onClose();
   };
@@ -48,73 +89,121 @@ export default function AdvisorDialog({
         <DialogHeader>
           <DialogTitle>{editingMember ? "Edit Member" : "Add Member"}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          {/* Photo Upload */}
-          <div>
-            <Label htmlFor="photo">Upload Photo</Label>
-            <Input
-              id="photo"
-              type="file"
-              onChange={(e) => setPhoto(e.target.files ? e.target.files[0] : null)}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="photo"
+              render={({ field: { onChange, value, ...field } }) => (
+                <FormItem>
+                  <FormLabel>Upload Photo</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        onChange(file);
+                      }}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          {/* Name */}
-          <div>
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              placeholder="Enter name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          {/* Member Type */}
-          <div>
-            <Label>Member Type</Label>
-            <Select value={type} onValueChange={(value) => setType(value as "advisor" | "mentor")}>
-              <SelectTrigger>
-                <span>{type === "advisor" ? "Advisor" : "Mentor"}</span>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="advisor">Advisor</SelectItem>
-                <SelectItem value="mentor">Mentor</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Title */}
-          <div>
-            <Label htmlFor="title">{type === "advisor" ? "School" : "Custom Title"}</Label>
-            <Input
-              id="title"
-              placeholder={type === "advisor" ? "Enter school" : "Enter custom title"}
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Member Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select member type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="advisor">Advisor</SelectItem>
+                      <SelectItem value="mentor">Mentor</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          {/* Additional Information (for mentors) */}
-          {type === "mentor" && (
-            <div>
-              <Label htmlFor="additionalInfo">Additional Information</Label>
-              <Textarea
-                id="additionalInfo"
-                placeholder="Enter additional information"
-                value={additionalInfo}
-                onChange={(e) => setAdditionalInfo(e.target.value)}
-                rows={3}
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {memberType === "advisor" ? "School" : "Custom Title"}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={
+                        memberType === "advisor"
+                          ? "Enter school"
+                          : "Enter custom title"
+                      }
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {memberType === "mentor" && (
+              <FormField
+                control={form.control}
+                name="additionalInfo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Additional Information</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Enter additional information"
+                        rows={3}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-          )}
-        </div>
-        <DialogFooter>
-          <Button onClick={handleSubmit}>{editingMember ? "Update" : "Add"}</Button>
-          <Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-        </DialogFooter>
+            )}
+
+            <DialogFooter className="gap-2">
+              <Button type="submit">
+                {editingMember ? "Update" : "Add"}
+              </Button>
+              <Button type="button" variant="secondary" onClick={onClose}>
+                Cancel
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

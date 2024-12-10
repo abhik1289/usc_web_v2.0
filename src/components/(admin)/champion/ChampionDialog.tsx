@@ -11,7 +11,28 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// Champion validation schema
+const championSchema = z.object({
+  title: z.string().min(2, "Title must be at least 2 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  image: z.instanceof(File).nullable(),
+});
+
+type ChampionFormData = z.infer<typeof championSchema>;
 
 export default function ChampionDialog({
   onClose,
@@ -19,24 +40,29 @@ export default function ChampionDialog({
   onEditChampion,
   editingChampion,
 }: ChampionDialogProps) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState<File | null>(null);
+  const form = useForm<ChampionFormData>({
+    resolver: zodResolver(championSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      image: null,
+    },
+  });
 
   useEffect(() => {
     if (editingChampion) {
-      setTitle(editingChampion.title);
-      setDescription(editingChampion.description);
-      setImage(editingChampion.image);
+      form.reset({
+        title: editingChampion.title,
+        description: editingChampion.description,
+        image: editingChampion.image,
+      });
     }
-  }, [editingChampion]);
+  }, [editingChampion, form]);
 
-  const handleSubmit = () => {
+  const onSubmit = (data: ChampionFormData) => {
     const championData: Champion = {
       id: editingChampion?.id || Date.now(),
-      title,
-      description,
-      image,
+      ...data,
     };
 
     if (editingChampion && onEditChampion) {
@@ -47,63 +73,79 @@ export default function ChampionDialog({
     onClose();
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImage(e.target.files ? e.target.files[0] : null);
-  };
-
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <h2 className="text-xl font-semibold">
+          <DialogTitle className="text-xl font-semibold">
             {editingChampion ? "Edit Champion" : "Add Champion"}
-          </h2>
+          </DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 mt-4">
-          <div>
-            <Label htmlFor="image">Upload Image</Label>
-            <Input
-              id="image"
-              type="file"
-              onChange={handleImageChange}
-              className="mt-1"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field: { onChange, value, ...field } }) => (
+                <FormItem>
+                  <FormLabel>Upload Image</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        onChange(file);
+                      }}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div>
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              type="text"
-              placeholder="Enter title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="mt-1"
+
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter title" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              placeholder="Enter description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={4}
-              className="mt-1"
+
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter description"
+                      rows={4}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-        </div>
-        <DialogFooter className="mt-6">
-          <Button onClick={handleSubmit} className="w-full">
-            {editingChampion ? "Update" : "Add"}
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={onClose}
-            className="w-full mt-2"
-          >
-            Cancel
-          </Button>
-        </DialogFooter>
+
+            <DialogFooter className="gap-2">
+              <Button type="submit">
+                {editingChampion ? "Update" : "Add"}
+              </Button>
+              <Button type="button" variant="secondary" onClick={onClose}>
+                Cancel
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

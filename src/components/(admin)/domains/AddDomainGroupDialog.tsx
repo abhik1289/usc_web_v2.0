@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { z } from "zod";
+import { domainGroupSchema } from "./schemas";
+import { DomainGroup } from "./type";
 
-interface DomainGroup {
-  id: number;
-  name: string;
+interface FormErrors {
+  name?: string;
 }
 
 interface AddDomainGroupDialogProps {
@@ -25,6 +27,7 @@ export default function AddDomainGroupDialog({
   onEditDomainGroup,
 }: AddDomainGroupDialogProps) {
   const [name, setName] = useState("");
+  const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
     if (editingGroup) {
@@ -32,7 +35,28 @@ export default function AddDomainGroupDialog({
     }
   }, [editingGroup]);
 
+  const validateForm = () => {
+    try {
+      domainGroupSchema.parse({ name });
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formattedErrors: FormErrors = {};
+        error.errors.forEach((err) => {
+          if (err.path) {
+            formattedErrors[err.path[0] as keyof FormErrors] = err.message;
+          }
+        });
+        setErrors(formattedErrors);
+      }
+      return false;
+    }
+  };
+
   const handleSubmit = () => {
+    if (!validateForm()) return;
+
     if (editingGroup && onEditDomainGroup) {
       onEditDomainGroup({ id: editingGroup.id, name });
     } else {
@@ -58,6 +82,7 @@ export default function AddDomainGroupDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
           </div>
           <Button onClick={handleSubmit} className="w-full">
             {editingGroup ? "Update" : "Add"}

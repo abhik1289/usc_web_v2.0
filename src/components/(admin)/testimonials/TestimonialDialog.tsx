@@ -13,6 +13,23 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Testimonial, TestimonialDialogProps } from "./type";
+import { z } from "zod";
+
+// Add validation schema
+const testimonialSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  position: z.string().min(2, "Position must be at least 2 characters"),
+  opinion: z.string().min(10, "Opinion must be at least 10 characters"),
+  image: z.instanceof(File).nullable(),
+});
+
+// Add error state interface
+interface FormErrors {
+  name?: string;
+  position?: string;
+  opinion?: string;
+  image?: string;
+}
 
 export default function TestimonialDialog({
   onClose,
@@ -24,6 +41,7 @@ export default function TestimonialDialog({
   const [position, setPosition] = useState<string>("");
   const [opinion, setOpinion] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
+  const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
     if (editingTestimonial) {
@@ -34,7 +52,33 @@ export default function TestimonialDialog({
     }
   }, [editingTestimonial]);
 
+  const validateForm = () => {
+    try {
+      testimonialSchema.parse({
+        name,
+        position,
+        opinion,
+        image,
+      });
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formattedErrors: FormErrors = {};
+        error.errors.forEach((err) => {
+          if (err.path) {
+            formattedErrors[err.path[0] as keyof FormErrors] = err.message;
+          }
+        });
+        setErrors(formattedErrors);
+      }
+      return false;
+    }
+  };
+
   const handleSubmit = () => {
+    if (!validateForm()) return;
+
     const testimonialData: Testimonial = {
       id: editingTestimonial?.id || Date.now(),
       name,
@@ -67,6 +111,7 @@ export default function TestimonialDialog({
               id="image"
               onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
             />
+            {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
           </div>
           <div>
             <Label htmlFor="name">Name</Label>
@@ -76,6 +121,7 @@ export default function TestimonialDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
           </div>
           <div>
             <Label htmlFor="position">Position</Label>
@@ -85,6 +131,7 @@ export default function TestimonialDialog({
               value={position}
               onChange={(e) => setPosition(e.target.value)}
             />
+            {errors.position && <p className="text-sm text-red-500">{errors.position}</p>}
           </div>
           <div>
             <Label htmlFor="opinion">Opinion</Label>
@@ -95,6 +142,7 @@ export default function TestimonialDialog({
               onChange={(e) => setOpinion(e.target.value)}
               rows={4}
             />
+            {errors.opinion && <p className="text-sm text-red-500">{errors.opinion}</p>}
           </div>
         </div>
         <DialogFooter>

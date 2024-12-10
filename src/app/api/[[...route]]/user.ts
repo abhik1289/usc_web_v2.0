@@ -151,6 +151,7 @@ export const user = new Hono<{ Variables: Variables }>()
   .post("/add-user", zValidator("json", addUser), async (c) => {
     try {
       const { firstName, email, role } = await c.req.json();
+      console.log(firstName, email, role);
       const existingUser: User | null = await getUserByEmail(email);
 
       if (existingUser) {
@@ -296,6 +297,45 @@ export const user = new Hono<{ Variables: Variables }>()
         },
         201
       );
+    } catch (error) {
+      return c.json(
+        { error: "An unexpected error occurred. Please try again." },
+        500
+      );
+    }
+  })
+  .get("/get-users", async (c) => {
+    try {
+      const token = getCookie(c, "token");
+      if (!token) {
+        return c.json(
+          {
+            error: "token not found",
+            success: false,
+          },
+          401
+        );
+      } else {
+        const users: User[] | null = await db.user.findMany();
+
+        if (users && users.length === 0) {
+          return c.json(
+            {
+              success: false,
+              error: "No users found",
+            },
+            404
+          );
+        } else {
+          return c.json(
+            {
+              success:true,
+              users,
+            },
+            200
+          );
+        }
+      }
     } catch (error) {
       return c.json(
         { error: "An unexpected error occurred. Please try again." },

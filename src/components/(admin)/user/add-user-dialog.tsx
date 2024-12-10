@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +33,8 @@ import {
 import { addUser, ROLES } from "@/schemas/auth/user.schema";
 import { AddUser } from "@/actions/user/addUser";
 import toast from "react-hot-toast";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
 
 interface AddUserDialogProps {
   open: boolean;
@@ -40,6 +42,8 @@ interface AddUserDialogProps {
 }
 
 const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, setOpen }) => {
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
   // Define form schema using Zod
   // const formSchema = z.object({
   //   username: z
@@ -59,15 +63,45 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, setOpen }) => {
 
   // Handle form submission
   const onSubmit = async (data: z.infer<typeof addUser>) => {
+    setLoading(true);
     try {
-      const res: any = await AddUser(data.firstName, data.email, data.role);
-      if (res.status == 200 && res.data.success) {
-        toast.success("Invitation Send !");
+      // Extracting the necessary data
+      const { email, role, firstName } = data;
+
+      // Log for debugging
+      console.log("Submitting data:", email, role, firstName);
+
+      // Send the request to the server
+      const res = await axios.post("/api/user/add-user", {
+        email,
+        role,
+        firstName,
+      });
+      console.log("----------------->", res);
+      // Check if the request was successful
+      if (res.data.success) {
+        toast({
+          description: "Invitation sent successfully",
+          duration: 3000, // Optional: Toast duration for better user experience
+        });
+        setLoading(false);
       } else {
-        toast.success(res.error);
+        toast({
+          description: res.data.error || "An error occurred", // Provide a more detailed error message if available
+          variant: "destructive", // Optional: Can use a destructive variant for errors
+        });
       }
-    } catch (e) {
-      console.log("Error Occurred", e);
+      setLoading(false);
+    } catch (e: any) {
+      console.log(e);
+      // Handle errors during the request
+      toast({
+        description:
+          e.response.data.error ||
+          "An unexpected error occurred. Please try again.",
+        variant: "destructive", // Optional: Can use a destructive variant for errors
+      });
+      setLoading(false);
     }
   };
 
@@ -91,7 +125,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, setOpen }) => {
                 <FormItem>
                   <FormLabel>Fisrt Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Json" {...field} />
+                    <Input disabled={loading} placeholder="Json" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -105,7 +139,11 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, setOpen }) => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="ab@gmail.com" {...field} />
+                    <Input
+                      disabled={loading}
+                      placeholder="ab@gmail.com"
+                      {...field}
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -119,7 +157,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, setOpen }) => {
                 <FormItem>
                   <FormLabel>Role</FormLabel>
                   <FormControl>
-                    <Select>
+                    <Select disabled={loading}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="ADMIN" />
                       </SelectTrigger>
@@ -139,7 +177,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, setOpen }) => {
             />
             {/* Submit Button */}
             <DialogFooter>
-              <Button className="w-full" type="submit">
+              <Button disabled={loading} className="w-full" type="submit">
                 Invite User
               </Button>
             </DialogFooter>

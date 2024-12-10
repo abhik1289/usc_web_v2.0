@@ -29,7 +29,7 @@ const data = {
         },
         {
           title: "Leads",
-          url: "#",
+          url: "/leads",
         },
         {
           title: "Projects",
@@ -37,11 +37,11 @@ const data = {
         },
         {
           title: "Events",
-          url: "#",
+          url: "/events",
         },
         {
           title: "Domains",
-          url: "#",
+          url: "/domains",
         },
         {
           title: "Gallery",
@@ -49,15 +49,15 @@ const data = {
         },
         {
           title: "Champion ",
-          url: "#",
+          url: "/champion",
         },
         {
           title: "Mentor and Advisor",
-          url: "#",
+          url: "/advisor",
         },
         {
           title: "Testimonials",
-          url: "#",
+          url: "/testimonials",
         },
       ],
     },

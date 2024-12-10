@@ -61,10 +61,10 @@ export default function LeadsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md">
+      <div className=" rounded-lg shadow-md">
         <Table>
           <TableHeader>
-            <TableRow className="text-black ">
+            <TableRow className=" ">
               {["ID", "Name", "Domain Type", "Domain Name", "Socials", "Photo", "Actions"].map(
                 (header) => (
                   <TableCell key={header}>{header}</TableCell>

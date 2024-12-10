@@ -32,38 +32,45 @@ interface AddDomainDialogProps {
   onAddDomain: (domain: Domain) => void;
 }
 
-export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialogProps) {
+export default function AddDomainDialog({
+  onClose,
+  onAddDomain,
+}: AddDomainDialogProps) {
   const [type, setType] = useState("tech");
   const [name, setName] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const validateForm = () => {
+  const validateForm = (): boolean => {
     try {
       domainSchema.parse({ type, name });
       setErrors({});
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const formattedErrors: FormErrors = {};
-        error.errors.forEach((err) => {
-          if (err.path) {
-            formattedErrors[err.path[0] as keyof FormErrors] = err.message;
-          }
-        });
+        const formattedErrors: FormErrors = error.errors.reduce(
+          (acc, err) => {
+            if (err.path.length) {
+              acc[err.path[0] as keyof FormErrors] = err.message;
+            }
+            return acc;
+          },
+          {} as FormErrors
+        );
         setErrors(formattedErrors);
       }
       return false;
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     if (!validateForm()) return;
 
-    const newDomain = {
+    const newDomain: Domain = {
       id: Date.now(),
       type,
       name,
     };
+
     onAddDomain(newDomain);
     onClose();
   };
@@ -75,6 +82,7 @@ export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialo
           <DialogTitle>Add Domain</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+          {/* Domain Type */}
           <div className="space-y-2">
             <Label htmlFor="type">Domain Type</Label>
             <Select value={type} onValueChange={(value) => setType(value)}>
@@ -89,6 +97,7 @@ export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialo
             {errors.type && <p className="text-sm text-red-500">{errors.type}</p>}
           </div>
 
+          {/* Domain Name */}
           <div className="space-y-2">
             <Label htmlFor="name">Domain Name</Label>
             <Input
@@ -101,7 +110,7 @@ export default function AddDomainDialog({ onClose, onAddDomain }: AddDomainDialo
           </div>
         </div>
 
-        <DialogFooter className="mt-4 space-y-2">
+        <DialogFooter className="mt-4">
           <Button onClick={handleSubmit} className="w-full">
             Add
           </Button>

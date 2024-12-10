@@ -18,11 +18,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token");
-  if(!token){
-    redirect("/sign-in");
-  }
+  // const cookieStore = await cookies();
+  // const token = cookieStore.get("token");
+  // if(!token){
+  //   redirect("/sign-in");
+  // }
   return (
     <html lang="en">
       <body className={`antialiased`}>

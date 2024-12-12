@@ -1,14 +1,13 @@
-import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MdModeEdit } from "react-icons/md";
-interface ProfileHeaderInterface {
+
+interface ProfileData {
   first_name: string;
   last_name: string;
   email: string;
+  profile_photo?: string;
+  createdAt: string;
   role: string;
-  profile_photo: string;
-  createdAt: any;
- 
 }
 
 export default function ProfileHeader({
@@ -18,7 +17,7 @@ export default function ProfileHeader({
   profile_photo,
   createdAt,
   role
-}: ProfileHeaderInterface) {
+}: ProfileData) {
   // This data would typically come from your database or API
   const user = {
     name: `${first_name} ${last_name}`,

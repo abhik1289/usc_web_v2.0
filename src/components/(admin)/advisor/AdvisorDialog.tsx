@@ -94,14 +94,14 @@ export default function AdvisorDialog({
             <FormField
               control={form.control}
               name="photo"
-              render={({ field: { onChange, value, ...field } }) => (
+              render={({ field: { onChange, _value, ...field } }) => (
                 <FormItem>
                   <FormLabel>Upload Photo</FormLabel>
                   <FormControl>
                     <Input
                       type="file"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0] || null;
+                      onChange={(_) => {
+                        const file = _.target.files?.[0] || null;
                         onChange(file);
                       }}
                       {...field}

@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 // import { useSignInAccount } from "@/hooks/auth/add-user";
 import axios from "axios";
@@ -32,6 +32,11 @@ const signInSchema = z.object({
 });
 
 type SignInFormValues = z.infer<typeof signInSchema>;
+
+interface SignInError {
+  message: string;
+  code?: string;
+}
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -74,12 +79,12 @@ export default function SignInForm() {
           description: response.data.error && response.data.error,
         });
       }
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
+      const err = error as SignInError;
       // Handle errors that occur during the API call (network errors, etc.)
-      console.error("Error during sign-in:", error);
+      console.error("Error during sign-in:", err);
       toast({
-        description:
-          error?.response?.data?.error || "An unexpected error occurred",
+        description: err.message || "An unexpected error occurred",
       });
     }
   };

@@ -86,14 +86,14 @@ export default function ChampionDialog({
             <FormField
               control={form.control}
               name="image"
-              render={({ field: { onChange, value, ...field } }) => (
+              render={({ field: { onChange, ...field } }) => (
                 <FormItem>
                   <FormLabel>Upload Image</FormLabel>
                   <FormControl>
                     <Input
                       type="file"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0] || null;
+                      onChange={(_) => {
+                        const file = _.target.files?.[0] || null;
                         onChange(file);
                       }}
                       {...field}

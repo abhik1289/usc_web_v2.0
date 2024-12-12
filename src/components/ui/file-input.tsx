@@ -2,7 +2,9 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 export interface FileInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  customProp?: string;
+}
 
 const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
   ({ className, type = "file", ...props }, ref) => {

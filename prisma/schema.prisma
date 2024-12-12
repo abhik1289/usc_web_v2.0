@@ -16,20 +16,19 @@ datasource db {
 
 
 model User {
-  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
-  firstName           String?  @map("first_name") // Optional field for first name
-  lastName            String?  @map("last_name")  // Optional field for last name
-  email               String   @unique            // Unique email
-  profilePhoto        String?  @map("profile_photo") // Optional profile photo URL
-  role                Role                       // Enum for role
-  isActive            Boolean  @default(false)   // Account activation status
-  password            String?                    // Optional hashed password
-  resetToken          String?                    // Optional reset token
-  resetTokenExpires   DateTime?                  // Expiration for reset token
-  activeToken         String?                    // Optional activation token
-  activeTokenExpires  DateTime?                  // Expiration for activation token
-  createdAt           DateTime @default(now()) 
-  updatedAt           DateTime @updatedAt 
+  id                String    @id @default(cuid())
+  email             String    @unique
+  first_name        String?   @map("firstName")
+  last_name         String?   @map("lastName")
+  password          String?
+  role              String    @default("USER")
+  isActive          Boolean   @default(false)
+  activeToken       String?
+  activeTokenExpires DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("users")
 }
 
 enum Role {

@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -31,10 +30,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { addUser, ROLES } from "@/schemas/auth/user.schema";
-import { AddUser } from "@/actions/user/addUser";
-import toast from "react-hot-toast";
-import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
 
 interface AddUserDialogProps {
   open: boolean;
@@ -92,14 +89,12 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, setOpen }) => {
         });
       }
       setLoading(false);
-    } catch (e: any) {
-      console.log(e);
-      // Handle errors during the request
+    } catch (error: Error | unknown) {
+      const err = error as Error;
+      console.log(err);
       toast({
-        description:
-          e.response.data.error ||
-          "An unexpected error occurred. Please try again.",
-        variant: "destructive", // Optional: Can use a destructive variant for errors
+        description: err.message || "An unexpected error occurred",
+        variant: "destructive",
       });
       setLoading(false);
     }
@@ -123,11 +118,10 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, setOpen }) => {
               name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Fisrt Name</FormLabel>
+                  <FormLabel>First Name</FormLabel>
                   <FormControl>
                     <Input disabled={loading} placeholder="Json" {...field} />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
@@ -145,7 +139,6 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, setOpen }) => {
                       {...field}
                     />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
@@ -157,7 +150,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, setOpen }) => {
                 <FormItem>
                   <FormLabel>Role</FormLabel>
                   <FormControl>
-                    <Select disabled={loading}>
+                    <Select disabled={loading} {...field}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="ADMIN" />
                       </SelectTrigger>
@@ -170,7 +163,6 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, setOpen }) => {
                       </SelectContent>
                     </Select>
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}

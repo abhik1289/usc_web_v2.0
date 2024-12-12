@@ -14,19 +14,18 @@ import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { ChangeRoleDialog } from "./change-role-dialog";
 
-interface User {
+interface UserData {
   id: string;
-  firstName: string;
+  name: string;
   email: string;
   role: string;
-  lastName: string;
+  // ... add other required properties
 }
 
 export function UserTable() {
-  const [data, setData] = useState<User[]>([]);
+  const [data, setData] = useState<UserData[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   useEffect(() => {
     const getUsers = async () => {
@@ -35,16 +34,22 @@ export function UserTable() {
         if (response.data.success) {
           setData(response.data.users);
         } else {
-          setError("Failed to fetch users.");
+          toast({
+            description: "Failed to fetch users.",
+            variant: "destructive",
+          });
         }
-      } catch (error) {
-        setError("An error occurred while fetching users.");
+      } catch {
+        toast({
+          description: "An error occurred while fetching users.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
     };
     getUsers();
-  }, []);
+  }, [toast]);
 
   const deleteUser = async (email: string) => {
     try {
@@ -61,36 +66,17 @@ export function UserTable() {
           variant: "destructive",
         });
       }
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
+      const err = error as Error;
       toast({
-        description: error.response.data.error || "Problem Occurred",
+        description: err.message || "Problem Occurred",
         variant: "destructive",
       });
     }
   };
 
-  function changeRole(email: string) {
-    setOpen(true)
-    // try {
-    //   const res = await axios.post("/api/user/delete-user", {
-    //     email,
-    //   });
-    //   if (res.data.success) {
-    //     toast({
-    //       description: "Successfully deleted",
-    //     });
-    //   } else {
-    //     toast({
-    //       description: "Problem Occured",
-    //       variant: "destructive",
-    //     });
-    //   }
-    // } catch (error: any) {
-    //   toast({
-    //     description: error.response.data.error || "Problem Occurred",
-    //     variant: "destructive",
-    //   });
-    // }
+  function changeRole(_email: string) {
+    setOpen(true);
   }
 
   return (
@@ -113,20 +99,12 @@ export function UserTable() {
               </TableCell>
             </TableRow>
           </TableBody>
-        ) : error ? (
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={4} className="text-center text-red-500">
-                {error}
-              </TableCell>
-            </TableRow>
-          </TableBody>
         ) : data.length > 0 ? (
           <TableBody>
             {data.map((user) => (
               <TableRow key={user.id}>
                 <TableCell className="font-medium">
-                  {user.firstName + " " + user.lastName}
+                  {user.name}
                 </TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.role}</TableCell>

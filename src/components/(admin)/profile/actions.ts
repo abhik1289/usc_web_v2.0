@@ -21,12 +21,11 @@ export async function changePassword(oldPassword: string, newPassword: string) {
       success: false,
       error: "Unexpected response from the server.",
     };
-  } catch (error: any) {
-    console.error("Error updating password:", error);
-
+  } catch (error: Error | unknown) {
+    const err = error as Error;
     return {
       success: false,
-      error: error.response?.data?.error || "An unknown error occurred.",
+      error: err.message || "An unknown error occurred.",
     };
   }
 }

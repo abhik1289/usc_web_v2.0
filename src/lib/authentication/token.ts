@@ -59,7 +59,7 @@ export const decodeSignInToken = (token: string): SignInTokenPayload => {
 
   try {
     return jwt.verify(token, process.env.SIGNIN_TOKEN_KEY) as SignInTokenPayload;
-  } catch (error) {
-    throw new Error("Invalid or expired token");
+  } catch {
+    return null;
   }
 };

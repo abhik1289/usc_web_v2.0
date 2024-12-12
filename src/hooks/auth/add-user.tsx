@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 // Define a type for the input data (replace with the actual expected structure)
 interface UserCredentials {

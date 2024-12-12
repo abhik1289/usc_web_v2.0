@@ -1,11 +1,6 @@
 import { Hono } from "hono";
 import { handle } from "hono/vercel";
-import { PrismaClient } from "@prisma/client";
 import { user } from "./user";
-
-
-export const db = new PrismaClient();
-// export const runtime = 'edge'
 
 const app = new Hono().basePath("/api");
 
@@ -21,10 +16,10 @@ const app = new Hono().basePath("/api");
 //   }
 // });
 
-const route = app.route("/user", user);
+const _routePath = app.route("/user", user);
 
 export const GET = handle(app);
 export const POST = handle(app);
 
 
-export type AppType = typeof route;
+export type AppType = typeof _routePath;

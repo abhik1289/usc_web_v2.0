@@ -5,16 +5,16 @@ import PasswordChange from "@/components/(admin)/profile/password-change";
 import ProfileHeader from "@/components/(admin)/profile/profile-header";
 import { Button } from "@/components/ui/button";
 import useSWR from "swr";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import SkeletonLoading from "@/components/(admin)/profile/skeleton-loading";
 // import { LogoutResponse, logOutUser } from "@/actions/user/logoutUser";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const { data, error, isLoading } = useSWR("/api/user/get-user", fetcher);
-  const router = useRouter();
+  // const router = useRouter();
   const handleLogout = async () => {
     try {
       setLoading(true);

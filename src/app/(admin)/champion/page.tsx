@@ -18,7 +18,6 @@ export default function ChampionPage() {
   const [champions, setChampions] = useState<Champion[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingChampion, setEditingChampion] = useState<Champion | null>(null);
-  const [selectedType, setSelectedType] = useState("all");
 
   const handleAddChampion = (newChampion: Champion) => {
     setChampions((prevChampions) => [...prevChampions, newChampion]);

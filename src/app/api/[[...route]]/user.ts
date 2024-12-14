@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db/db";
-import { getUserByEmail, UserWithPassword } from "@/lib/helper/userHelper";
+import { User } from "@prisma/client";
 // import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import {
@@ -18,21 +18,12 @@ import {
   generateSignInToken,
   SignInTokenPayload,
 } from "@/lib/authentication/token";
+import { getUserByEmail } from "@/lib/helper/userHelper";
 import axios from "axios";
 // import { jwt } from "hono/jwt";
 import type { JwtVariables } from "hono/jwt";
 // import { JWTPayload } from "hono/utils/jwt/types";
 type Variables = JwtVariables;
-
-// Add a type guard to check if user has required fields
-function isFullUser(user: unknown): user is UserWithPassword {
-  return Boolean(user) && 
-    typeof user === 'object' && 
-    user !== null &&
-    typeof (user as UserWithPassword).password === 'string' && 
-    typeof (user as UserWithPassword).role === 'string' && 
-    typeof (user as UserWithPassword).first_name === 'string';
-}
 
 export const user = new Hono<{ Variables: Variables }>()
   .post("/sign-in", zValidator("json", signInUser), async (c) => {
@@ -41,9 +32,9 @@ export const user = new Hono<{ Variables: Variables }>()
       const { email, password } = await c.req.json();
       // console.log(email, password)
       // Check if the user exists in the database
-      const existingUser: UserWithPassword | null = await getUserByEmail(email);
+      const existingUser: User | null = await getUserByEmail(email);
       console.log(existingUser);
-      if (!existingUser || !isFullUser(existingUser)) {
+      if (!existingUser) {
         return c.json(
           { success: false, error: "Invalid email or password." },
           401
@@ -59,7 +50,7 @@ export const user = new Hono<{ Variables: Variables }>()
       }
       const isPasswordValid = await bcrypt.compare(
         password,
-        existingUser.password
+        existingUser.password!
       );
       if (!isPasswordValid) {
         return c.json(
@@ -72,6 +63,7 @@ export const user = new Hono<{ Variables: Variables }>()
       const payload = {
         email: email,
         role: existingUser.role,
+        id: existingUser.id,
       };
       const token = generateSignInToken(payload, "1d");
 
@@ -90,8 +82,9 @@ export const user = new Hono<{ Variables: Variables }>()
         message: "Sign-in successful.",
         user: {
           email: existingUser.email,
-          name: existingUser.first_name,
+          name: existingUser.firstName,
           role: existingUser.role,
+          token,
         },
       });
     } catch (error) {
@@ -131,15 +124,15 @@ export const user = new Hono<{ Variables: Variables }>()
       const email = user.payload.email!;
 
       // Retrieve the existing user from the database
-      const existingUser: UserWithPassword | null = await getUserByEmail(email);
-      if (!existingUser || !isFullUser(existingUser)) {
+      const existingUser: User | null = await getUserByEmail(email);
+      if (!existingUser) {
         return c.json({ success: false, error: "User not found" }, 404);
       }
 
       // Validate the old password
       const isPasswordValid = await bcrypt.compare(
         oldPassword,
-        existingUser.password
+        existingUser.password!
       );
       if (!isPasswordValid) {
         return c.json({ success: false, error: "Incorrect old password" }, 401);
@@ -149,14 +142,7 @@ export const user = new Hono<{ Variables: Variables }>()
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       await db.user.update({
         where: { email },
-        data: {
-          last_name: existingUser.last_name,
-          first_name: existingUser.first_name,
-          password: hashedPassword,
-          isActive: true,
-          activeToken: null,
-          activeTokenExpires: null,
-        },
+        data: { password: hashedPassword },
       });
 
       return c.json(
@@ -173,8 +159,13 @@ export const user = new Hono<{ Variables: Variables }>()
   })
   .post("/add-user", zValidator("json", addUser), async (c) => {
     try {
+      const SignInToken = getCookie(c, "token");
+      if (!SignInToken) {
+        return c.json({ success: false, error: "Token not found" }, 401);
+      }
+      // const de
       const { firstName, email, role } = await c.req.json();
-      const existingUser: UserWithPassword | null = await getUserByEmail(email);
+      const existingUser: User | null = await getUserByEmail(email);
 
       if (existingUser) {
         return c.json(
@@ -188,7 +179,7 @@ export const user = new Hono<{ Variables: Variables }>()
       const tokenExpiration = Date.now() + 60 * 60 * 1000;
       await db.user.create({
         data: {
-          first_name: firstName,
+          firstName: firstName,
           email: email,
           role: role,
           activeToken: token,
@@ -225,8 +216,8 @@ export const user = new Hono<{ Variables: Variables }>()
       console.log("This is a test");
       const { last_name, first_name, password, token } = await c.req.json();
       console.log(last_name, first_name, password, token);
-      const data = decodeActiveToken(token);
-      const email = data.email;
+      const data: any = decodeActiveToken(token);
+      const email = data.email!;
       const existingUser = await getUserByEmail(email);
 
       if (!existingUser) {
@@ -260,8 +251,8 @@ export const user = new Hono<{ Variables: Variables }>()
           email: email,
         },
         data: {
-          last_name: last_name,
-          first_name: first_name,
+          lastName: last_name,
+          firstName: first_name,
           password: hashedPassword,
           isActive: true,
           activeToken: null,
@@ -283,6 +274,7 @@ export const user = new Hono<{ Variables: Variables }>()
   .get("/get-user", async (c) => {
     try {
       const token = getCookie(c, "token");
+      console.log(token);
       if (!token) {
         return c.json(
           {
@@ -295,6 +287,7 @@ export const user = new Hono<{ Variables: Variables }>()
         const user: SignInTokenPayload = decodeSignInToken(token);
         const email = user.payload.email!;
         const infos = await getUserByEmail(email);
+        console.log("------------------>", infos);
         return c.json(
           {
             infos,
@@ -303,7 +296,7 @@ export const user = new Hono<{ Variables: Variables }>()
         );
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
         500
@@ -321,7 +314,7 @@ export const user = new Hono<{ Variables: Variables }>()
         201
       );
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
         500
@@ -331,6 +324,7 @@ export const user = new Hono<{ Variables: Variables }>()
   .get("/get-users", async (c) => {
     try {
       const token = getCookie(c, "token");
+      console.log(token);
       if (!token) {
         return c.json(
           {
@@ -340,8 +334,8 @@ export const user = new Hono<{ Variables: Variables }>()
           401
         );
       } else {
-        const users: UserWithPassword[] | null = await db.user.findMany();
-
+        const users: User[] | null = await db.user.findMany();
+        console.log(users);
         if (users && users.length === 0) {
           return c.json(
             {
@@ -361,7 +355,7 @@ export const user = new Hono<{ Variables: Variables }>()
         }
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
 
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
@@ -395,7 +389,7 @@ export const user = new Hono<{ Variables: Variables }>()
           return c.json({ success: true, message: "Deleted account" });
         }
       }
-    } catch {
+    } catch (e) {
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
         500

@@ -1,6 +1,6 @@
 "use client";
 
-import { AccountSetup } from '@/components/(main)/account-setup'
+import  AccountSetup  from '@/components/(main)/account-setup'
 import React from 'react'
 
 function page() {

@@ -1,176 +1,216 @@
 "use client";
 
-import axios from "axios";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import toast from "react-hot-toast";
+import { setUpUserFront as formSchema } from "@/schemas/auth/user.schema";
+import { updateUserCredentials } from "@/hooks/auth/add-user";
+// import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+function AccountSetup() {
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-// Define validation schema
-const setupSchema = z.object({
-  first_name: z.string().min(2, "First name must be at least 2 characters"),
-  last_name: z.string().min(2, "Last name must be at least 2 characters"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  cPassword: z.string()
-}).refine((data) => data.password === data.cPassword, {
-  message: "Passwords don't match",
-  path: ["cPassword"],
-});
-
-type SetupFormData = z.infer<typeof setupSchema>;
-
-// Define a type for the input data
-interface UserCredentials {
-  first_name: string;
-  last_name: string;
-  isActive: boolean;
-  password: string;
-  cPassword: string;
-  token: string;
-}
-
-export const updateUserCredentials = async (infos: UserCredentials) => {
-  try {
-    // Send the POST request
-    const { data } = await axios.post("/api/user/set-up-profile", infos);
-    return { success: true, data };
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      // Axios-specific error handling
-      const message = error.response?.data?.message || "An error occurred";
-      return { error: true, message, status: error.response?.status };
-    }
-    // Generic error handling
-    return { error: true, message: "An unexpected error occurred" };
-  }
-};
-
-const AccountSetup = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const searchParams = useSearchParams();
-  const { toast } = useToast();
-  const token = searchParams.get('token');
-
-  const form = useForm<SetupFormData>({
-    resolver: zodResolver(setupSchema),
-    defaultValues: {
-      first_name: "",
-      last_name: "",
-      password: "",
-      cPassword: ""
-    }
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { firstName: "", lastName: "", password: "", cPassword: "" },
   });
 
-  const onSubmit = async (data: SetupFormData) => {
-    if (!token) {
-      toast({
-        description: "Setup token is missing",
-        variant: "destructive"
-      });
-      return;
-    }
+  // Extract token from URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get("token");
+    if (tokenFromUrl) setToken(tokenFromUrl);
+  }, []);
 
-    setIsLoading(true);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
+    // const data = {
+    //   first_name: values.firstName,
+    //   last_name: values.lastName,
+    //   isActive: true,
+    //   password: values.password,
+    //   cPassword: values.cPassword,
+    //   token: token!,
+    // };
     try {
-      const credentials: UserCredentials = {
-        ...data,
+      const response = await updateUserCredentials({
+        first_name: values.firstName,
+        last_name: values.lastName,
         isActive: true,
-        token
-      };
-
-      const result = await updateUserCredentials(credentials);
-      
-      if (result.success) {
-        toast({
-          description: "Account setup successful"
-        });
-        // Redirect to login or dashboard
-      } else {
-        toast({
-          description: result.message || "Setup failed",
-          variant: "destructive"
-        });
-      }
-    } catch {
-      toast({
-        description: "An unexpected error occurred",
-        variant: "destructive"
+        password: values.password,
+        cPassword: values.cPassword,
+        token: token!,
       });
-    } finally {
-      setIsLoading(false);
+
+      if (response.success) {
+        toast.success("User updated successfully");
+        setLoading(false);
+
+        setTimeout(() => {
+          router.push("/sign-in");
+        }, 2000);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md w-full mx-auto p-6">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold">Complete Your Account Setup</h1>
-        <p className="text-gray-600">Please fill in your details to complete the setup</p>
+    <div className="w-full max-w-[500px] bg-muted/50 p-6 rounded-lg shadow-md">
+      <div className="space-y-4">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-primary">
+            Set Up Your Account
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Fill in your information carefully
+          </p>
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="border border-white"
+                        placeholder="John"
+                        {...field}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="border border-white"
+                        placeholder="Doe"
+                        {...field}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        className="border border-white"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="*****"
+                        {...field}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                      disabled={loading}
+                    >
+                      {showPassword ? (
+                        <EyeOffIcon className="h-4 w-4" />
+                      ) : (
+                        <EyeIcon className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="cPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        className="border border-white"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="*****"
+                        {...field}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      disabled={loading}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOffIcon className="h-4 w-4" />
+                      ) : (
+                        <EyeIcon className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Updating Account..." : "Updating Account"}
+            </Button>
+          </form>
+        </Form>
       </div>
-
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">First Name</label>
-          <input
-            {...form.register("first_name")}
-            className="w-full p-2 border rounded"
-            disabled={isLoading}
-          />
-          {form.formState.errors.first_name && (
-            <p className="text-red-500 text-sm">{form.formState.errors.first_name.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Last Name</label>
-          <input
-            {...form.register("last_name")}
-            className="w-full p-2 border rounded"
-            disabled={isLoading}
-          />
-          {form.formState.errors.last_name && (
-            <p className="text-red-500 text-sm">{form.formState.errors.last_name.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Password</label>
-          <input
-            type="password"
-            {...form.register("password")}
-            className="w-full p-2 border rounded"
-            disabled={isLoading}
-          />
-          {form.formState.errors.password && (
-            <p className="text-red-500 text-sm">{form.formState.errors.password.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Confirm Password</label>
-          <input
-            type="password"
-            {...form.register("cPassword")}
-            className="w-full p-2 border rounded"
-            disabled={isLoading}
-          />
-          {form.formState.errors.cPassword && (
-            <p className="text-red-500 text-sm">{form.formState.errors.cPassword.message}</p>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {isLoading ? "Setting up..." : "Complete Setup"}
-        </button>
-      </form>
     </div>
   );
-};
+}
 
-export { AccountSetup };
+export default AccountSetup;

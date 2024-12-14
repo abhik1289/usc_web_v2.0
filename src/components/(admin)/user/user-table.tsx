@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -16,10 +17,10 @@ import { ChangeRoleDialog } from "./change-role-dialog";
 
 interface UserData {
   id: string;
-  name: string;
+  firstName: string;
   email: string;
   role: string;
-  // ... add other required properties
+  isActive: boolean;
 }
 
 export function UserTable() {
@@ -27,8 +28,9 @@ export function UserTable() {
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const { toast } = useToast();
+
   useEffect(() => {
-    const getUsers = async () => {
+    const fetchUsers = async () => {
       try {
         const response = await axios.get("/api/user/get-users");
         if (response.data.success) {
@@ -48,36 +50,34 @@ export function UserTable() {
         setLoading(false);
       }
     };
-    getUsers();
+    fetchUsers();
   }, [toast]);
 
   const deleteUser = async (email: string) => {
     try {
-      const res = await axios.post("/api/user/delete-user", {
-        email,
-      });
-      if (res.data.success) {
+      const response = await axios.post("/api/user/delete-user", { email });
+      if (response.data.success) {
         toast({
-          description: "Successfully deleted",
+          description: "User deleted successfully.",
         });
+        setData((prevData) => prevData.filter((user) => user.email !== email));
       } else {
         toast({
-          description: "Problem Occured",
+          description: "An issue occurred while deleting the user.",
           variant: "destructive",
         });
       }
-    } catch (error: Error | unknown) {
-      const err = error as Error;
+    } catch (error) {
       toast({
-        description: err.message || "Problem Occurred",
+        description: (error as Error).message || "An error occurred.",
         variant: "destructive",
       });
     }
   };
 
-  function changeRole(_email: string) {
+  const handleChangeRole = (email: string) => {
     setOpen(true);
-  }
+  };
 
   return (
     <>
@@ -85,8 +85,9 @@ export function UserTable() {
         <TableCaption>A list of system users and their roles.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Fullname</TableHead>
+            <TableHead>Full Name</TableHead>
             <TableHead>Email</TableHead>
+            <TableHead>Active</TableHead>
             <TableHead>Role</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -94,7 +95,7 @@ export function UserTable() {
         {loading ? (
           <TableBody>
             <TableRow>
-              <TableCell colSpan={4} className="text-center">
+              <TableCell colSpan={5} className="text-center">
                 Loading...
               </TableCell>
             </TableRow>
@@ -103,14 +104,13 @@ export function UserTable() {
           <TableBody>
             {data.map((user) => (
               <TableRow key={user.id}>
-                <TableCell className="font-medium">
-                  {user.name}
-                </TableCell>
+                <TableCell className="font-medium">{user.firstName}</TableCell>
                 <TableCell>{user.email}</TableCell>
+                <TableCell>{user.isActive ? "Active" : "Inactive"}</TableCell>
                 <TableCell>{user.role}</TableCell>
                 <TableCell className="text-right space-x-2">
                   <button
-                    onClick={() => changeRole(user.email)}
+                    onClick={() => handleChangeRole(user.email)}
                     className="text-blue-500 hover:underline"
                   >
                     Edit
@@ -128,15 +128,15 @@ export function UserTable() {
         ) : (
           <TableBody>
             <TableRow>
-              <TableCell colSpan={4} className="text-center">
-                No users found
+              <TableCell colSpan={5} className="text-center">
+                No users found.
               </TableCell>
             </TableRow>
           </TableBody>
         )}
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={4} className="text-right">
+            <TableCell colSpan={5} className="text-right">
               Total Users: {data.length}
             </TableCell>
           </TableRow>

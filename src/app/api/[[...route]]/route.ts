@@ -1,7 +1,9 @@
 import { Hono } from "hono";
 import { handle } from "hono/vercel";
 import { user } from "./user";
-
+import { event } from "./event";
+import testimonials from "./testimonials";
+import champions from "./champions";
 const app = new Hono().basePath("/api");
 
 // app.use("/user/*", async (c: any, next) => {
@@ -16,10 +18,13 @@ const app = new Hono().basePath("/api");
 //   }
 // });
 
-const _routePath = app.route("/user", user);
+const _routePath = app
+  .route("/user", user)
+  .route("/event", event)
+  .route("/testimonials", testimonials)
+  .route("/champions", champions);
 
 export const GET = handle(app);
 export const POST = handle(app);
-
 
 export type AppType = typeof _routePath;

@@ -9,30 +9,98 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider     = "mongodb"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
-
 model User {
-  id                String    @id @default(cuid())
-  email             String    @unique
-  first_name        String?   @map("firstName")
-  last_name         String?   @map("lastName")
-  password          String?
-  role              String    @default("USER")
-  isActive          Boolean   @default(false)
-  activeToken       String?
+  id                 String         @id @default(auto()) @map("_id") @db.ObjectId
+  email              String         @unique
+  firstName          String?        @map("firstName")
+  lastName           String?        @map("lastName")
+  password           String?
+  role               String         @default("USER")
+  isActive           Boolean        @default(false)
+  activeToken        String?
   activeTokenExpires DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  Testimonials       Testimonials[]
+  Champions          Champions[]
 
   @@map("users")
 }
 
 enum Role {
-  ADMIN       // Corresponds to admin
-  SUPERADMIN  // Corresponds to superadmin
-  MODERATOR   // Corresponds to moderator
+  ADMIN // Corresponds to admin
+  SUPERADMIN // Corresponds to superadmin
+  MODERATOR // Corresponds to moderator
+}
+
+model Event {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  banner_url  String
+  location    String
+  eventType   E_Type
+  startDate   DateTime
+  endDate     DateTime?
+  startTime1  String
+  endTime1    String
+  startTime2  String?
+  endTime2    String?
+  displayType D_TYPE
+  socialMedia String[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum D_TYPE {
+  PUBLIC
+  PRIVATE
+}
+
+enum E_Type {
+  SINGLE
+  MULTIPLE
+}
+
+model Champions {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  profilePhoto String
+  fullName     String
+  role         String
+  coverPhoto   String
+  description  String
+  index        Int
+  createdBy    User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String   @db.ObjectId
+}
+
+// model Mentors {
+//   id             String @id @default(auto()) @map("_id") @db.ObjectId
+//   fullNAme       String
+//   school         String
+//   position       String
+//   profilePhoto   String
+//   customPosition String
+//   index          Int
+//   designation    String
+// }
+
+model Testimonials {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullName  String
+  photoUrl  String
+  position  String
+  createdBy User     @relation(fields: [userId], references: [id])
+  text      String
+  index     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String   @db.ObjectId
 }

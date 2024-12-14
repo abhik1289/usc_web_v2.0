@@ -69,6 +69,8 @@ function AccountSetup() {
       } else {
         toast.error(response.message);
       }
+      setLoading(false);
+
     } catch (err) {
       console.log(err);
       setLoading(false);

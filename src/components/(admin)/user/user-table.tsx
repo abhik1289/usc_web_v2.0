@@ -67,9 +67,10 @@ export function UserTable() {
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error:any) {
+      // console.log(error)
       toast({
-        description: (error as Error).message || "An error occurred.",
+        description: error.response.data.error || "An error occurred.",
         variant: "destructive",
       });
     }

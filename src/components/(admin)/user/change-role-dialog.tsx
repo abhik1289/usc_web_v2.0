@@ -33,26 +33,31 @@ interface ChangeRoleDialogInterface {
   setOpen: (value: boolean) => void;
 }
 
-
-
-
 export function ChangeRoleDialog({ open, setOpen }: ChangeRoleDialogInterface) {
   const [loading, setLoading] = useState(false);
-const form = useForm<z.infer<typeof changeRole>>({
-  resolver: zodResolver(changeRole),
-  defaultValues: {
-    role: "MODERATOR", 
-  },
-});
-const onSubmit = async (data: z.infer<typeof changeRole>) => {
-  setLoading(true);
-  try {
-    console.log(data);
-  } catch (error) {
-    console.error("Error occurred:", error);
-    setLoading(false);
-  }
-};
+  const form = useForm<z.infer<typeof changeRole>>({
+    resolver: zodResolver(changeRole),
+    defaultValues: {
+      role: "MODERATOR", 
+    },
+  });
+
+  const onSubmit = async (data: z.infer<typeof changeRole>) => {
+    setLoading(true);
+    try {
+      // Simulate API call or logic to change the role
+      console.log(data);
+      // On success, reset the form and close the dialog
+      form.reset();
+      setOpen(false);
+    } catch (error) {
+      console.error("Error occurred:", error);
+      // Handle the error appropriately (toast, alert, etc.)
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
@@ -65,7 +70,7 @@ const onSubmit = async (data: z.infer<typeof changeRole>) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Role Selection Field */}
-             <FormField
+            <FormField
               control={form.control}
               name="role"
               render={({ field }) => (
@@ -88,7 +93,7 @@ const onSubmit = async (data: z.infer<typeof changeRole>) => {
                   <FormMessage />
                 </FormItem>
               )}
-            /> 
+            />
             {/* Footer with Submit Button */}
             <DialogFooter>
               <Button disabled={loading} className="w-full" type="submit">
@@ -101,6 +106,3 @@ const onSubmit = async (data: z.infer<typeof changeRole>) => {
     </Dialog>
   );
 }
-
-
-

@@ -16,9 +16,10 @@ export const updateUserCredentials = async (infos: UserCredentials) => {
     const { data } = await axios.post("/api/user/set-up-profile", infos);
     return { success: true, data };
   } catch (error) {
+    console.log(error)
     if (axios.isAxiosError(error)) {
       // Axios-specific error handling
-      const message = error.response?.data?.message || "An error occurred";
+      const message = error.response?.data?.error || "An error occurred";
       return { error: true, message, status: error.response?.status };
     }
     // Generic error handling

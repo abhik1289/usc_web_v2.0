@@ -163,7 +163,13 @@ export const user = new Hono<{ Variables: Variables }>()
       if (!SignInToken) {
         return c.json({ success: false, error: "Token not found" }, 401);
       }
-      // const de
+      const decodeToken = decodeSignInToken(SignInToken);
+      if (decodeToken.payload.role != "SUPERADMIN") {
+        return c.json(
+          { success: false, error: "Super admin only add a new user" },
+          409
+        );
+      }else{
       const { firstName, email, role } = await c.req.json();
       const existingUser: User | null = await getUserByEmail(email);
 
@@ -202,6 +208,7 @@ export const user = new Hono<{ Variables: Variables }>()
           { status: 401 }
         );
       }
+    }
       return c.json({ success: true, message: "User Invitation send" }, 200);
     } catch (error) {
       console.error("Sign-in error:", error);

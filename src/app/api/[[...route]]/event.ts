@@ -156,7 +156,7 @@ const event = new Hono()
       );
     }
   })
-  .post("/delete-event/:id", async (c) => {
+  .get("/delete-event/:id", async (c) => {
     try {
       const id = c.req.param("id");
       const token = getCookie(c, "token");
@@ -175,6 +175,61 @@ const event = new Hono()
           },
           201
         );
+      }
+    } catch (error) {
+      console.error("Sign-in error:", error);
+      return c.json(
+        {
+          success: false,
+          error: "An unexpected error occurred. Please try again.",
+        },
+        500
+      );
+    }
+  })
+  .get("/change-view/:id", async (c) => {
+    try {
+      const id = c.req.param("id");
+      const token = getCookie(c, "token");
+      // console.log("HELLO");
+      if (!token) {
+        return c.json({ success: false, error: "Token not found" }, 401);
+      } else {
+        const event = await db.event.findFirst({ where: { id: id } });
+        if (event?.displayType == "PRIVATE") {
+          //to make it public
+          await db.event.update({
+            where: {
+              id: id,
+            },
+            data: {
+              displayType: "PUBLIC",
+            },
+          });
+          return c.json(
+            {
+              success: true,
+              message: "Now it is public",
+            },
+            200
+          );
+        } else {
+          await db.event.update({
+            where: {
+              id: id,
+            },
+            data: {
+              displayType: "PRIVATE",
+            },
+          });
+          return c.json(
+            {
+              success: true,
+              message: "Now it is Private !",
+            },
+            200
+          );
+        }
       }
     } catch (error) {
       console.error("Sign-in error:", error);

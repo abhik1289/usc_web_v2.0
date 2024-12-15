@@ -4,11 +4,12 @@ import "@/app/globals.css";
 import { NextThemeProviders } from "../context/providers";
 // import DashBoard from "./dashboard/page";
 import DashBoardLayout from "../context/dashBoardLayout";
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
 import { redirect } from "next/navigation";
 // import { useRouter } from "next/navigation";
-import NextTopLoader from "nextjs-toploader";
-// import { QueryClient } from "@tanstack/react-query";
+
+import RootNextTopLoader from "../context/NextJsTopLoader";
+import ReactQueryProvider from "../context/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,7 +23,7 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token");
-  if(!token){
+  if (!token) {
     redirect("/sign-in");
   }
 
@@ -32,11 +33,8 @@ export default async function RootLayout({
       <body className={`antialiased`}>
         <NextThemeProviders>
           <DashBoardLayout>
-            <NextTopLoader
-              template='<div class="bar" role="bar"><div class="peg"></div></div>'
-              showSpinner={false}
-            />
-            {children}
+            <RootNextTopLoader />
+            <ReactQueryProvider>{children}</ReactQueryProvider>
           </DashBoardLayout>
         </NextThemeProviders>
         <Toaster />

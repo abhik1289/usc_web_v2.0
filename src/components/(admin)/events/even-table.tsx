@@ -12,6 +12,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
+import { event } from "@/app/api/[[...route]]/event";
 
 const getRequestHandler = async (url: string) => {
   const response = await axios.get(url);
@@ -35,7 +36,8 @@ interface Event {
       endDate?: any;
     }
   ];
-  onDelete: (id: any) => void;
+  onDelete: (id: string) => void;
+  onVisibility: (id: string) => void;
 }
 
 const ErrorHandle = () => (
@@ -62,7 +64,7 @@ const ZeroDataTable = () => (
   </TableRow>
 );
 
-const TableView = ({ data, onDelete }: Event) => {
+const TableView = ({ data, onDelete, onVisibility }: Event) => {
   return (
     <>
       {data.map((event, i) => (
@@ -86,9 +88,15 @@ const TableView = ({ data, onDelete }: Event) => {
           <TableCell>{event.location}</TableCell>
           <TableCell>
             {!event.displayType ? (
-              <FaRegEye className="cursor-pointer" />
+              <FaRegEye
+                onClick={() => onVisibility(event.id)}
+                className="cursor-pointer"
+              />
             ) : (
-              <FaRegEyeSlash className="cursor-pointer" />
+              <FaRegEyeSlash
+                onClick={() => onVisibility(event.id)}
+                className="cursor-pointer"
+              />
             )}
           </TableCell>
           <TableCell>
@@ -150,10 +158,48 @@ const EventTable = () => {
     },
   });
 
+  const visibilityMutation = useMutation({
+    mutationFn: (id: string) => axios.get(`/api/event/change-view/${id}`),
+    onMutate: async (id: string) => {
+      await queryClient.cancelQueries(["events"]);
+      const previousEvents = queryClient.getQueryData<Event>(["events"]);
+      if (previousEvents) {
+        queryClient.setQueryData<any>(["events"], {
+          data: previousEvents.data.filter((event: any) =>
+            event.id === id
+              ? {
+                  ...event,
+                  displayType:
+                    event.displayType == "PRIVATE" ? "PUBLIC" : "PRIVATE",
+                }
+              : event
+          ),
+        });
+      }
+      return { previousEvents }; // Return context for rollback
+    },
+    onError: (err, id, context) => {
+      // Rollback to previous state in case of error
+      if (context?.previousEvents) {
+        queryClient.setQueryData<Event>(["events"], context.previousEvents);
+      }
+    },
+    onSuccess: () => {
+      toast({
+        description: "Change Visibility",
+        // variant: "destructive",
+      });
+      refetch(); // Refetch to ensure data is fresh after deletion
+    },
+  });
+
   const handleDeleteEvent = (id: string) => {
     deleteMutation.mutate(id);
   };
 
+  const handleVisibility = (id: string) => {
+    visibilityMutation.mutate(id);
+  };
   return (
     <Card>
       <Table>
@@ -175,7 +221,11 @@ const EventTable = () => {
           ) : data && data.length === 0 ? (
             <ZeroDataTable />
           ) : (
-            <TableView data={data} onDelete={handleDeleteEvent} />
+            <TableView
+              data={data}
+              onVisibility={handleVisibility}
+              onDelete={handleDeleteEvent}
+            />
           )}
         </TableBody>
       </Table>

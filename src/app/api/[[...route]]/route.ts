@@ -4,6 +4,7 @@ import { user } from "./user";
 import { event } from "./event";
 import testimonials from "./testimonials";
 import champions from "./champions";
+import domain from "./domain";
 const app = new Hono().basePath("/api");
 
 // app.use("/user/*", async (c: any, next) => {
@@ -22,7 +23,8 @@ const _routePath = app
   .route("/user", user)
   .route("/event", event)
   .route("/testimonials", testimonials)
-  .route("/champions", champions);
+  .route("/champions", champions)
+  .route("/domain", domain);
 
 export const GET = handle(app);
 export const POST = handle(app);

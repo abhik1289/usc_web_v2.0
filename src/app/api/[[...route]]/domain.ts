@@ -4,6 +4,7 @@ import { championSchema } from "@/schemas/champions/champions.schema";
 import {
   addDomainGroupSchema,
   addRoleSchema,
+  DomainDetailsSchema,
 } from "@/schemas/domain/domain.schema";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
@@ -93,7 +94,12 @@ const domain = new Hono()
       if (!token) {
         return c.json({ success: false, error: "Token not found" }, 401);
       } else {
-        const domainGroups = await db.domainGroup.findMany();
+        const domainGroups = await db.domainGroup.findMany({
+          include: {
+            groups: true, // Include related details
+            createdBy: true, // Include creator information
+          },
+        });
         return c.json({ success: true, domainGroups: domainGroups });
       }
     } catch (error) {
@@ -244,5 +250,49 @@ const domain = new Hono()
         500
       );
     }
-  });
+  })
+  .post(
+    "/add-domainDetails",
+    zValidator("json", DomainDetailsSchema),
+    async (c) => {
+      try {
+        const token = getCookie(c, "token");
+        if (!token) {
+          return c.json({ success: false, error: "Token not found" }, 401);
+        } else {
+          const { title, description, bannerUrl, url, groupOf } =
+            c.req.valid("json");
+          const userToken = decodeSignInToken(token);
+          const { id } = userToken.payload;
+          const domainDetails = await db.domainDetails.create({
+            data: {
+              title,
+              description,
+              bannerUrl,
+              url: url ? url : null,
+              userId: id,
+            },
+          });
+          await db.domainGroup.update({
+            where: { id: groupOf },
+            data: {
+              domainDetailsId: {
+                push: domainDetails.id,
+              },
+            },
+          });
+          return c.json({ success: true, message: "Successfully Added" }, 201);
+        }
+      } catch (error) {
+        console.error("Sign-in error:", error);
+        return c.json(
+          {
+            success: false,
+            error: "An unexpected error occurred. Please try again.",
+          },
+          500
+        );
+      }
+    }
+  );
 export default domain;

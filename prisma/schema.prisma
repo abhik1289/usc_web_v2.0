@@ -15,22 +15,23 @@ datasource db {
 }
 
 model User {
-  id                 String         @id @default(auto()) @map("_id") @db.ObjectId
-  email              String         @unique
-  firstName          String?        @map("firstName")
-  lastName           String?        @map("lastName")
+  id                 String          @id @default(auto()) @map("_id") @db.ObjectId
+  email              String          @unique
+  firstName          String?         @map("firstName")
+  lastName           String?         @map("lastName")
   password           String?
-  role               String         @default("USER")
-  isActive           Boolean        @default(false)
+  role               String          @default("USER")
+  isActive           Boolean         @default(false)
   activeToken        String?
   activeTokenExpires DateTime?
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
   Testimonials       Testimonials[]
   Champions          Champions[]
   Main               Main[]
   DomainGroup        DomainGroup[]
   Roles              Roles[]
+  DomainDetails      DomainDetails[]
 
   @@map("users")
 }
@@ -143,6 +144,10 @@ model DomainDetails {
   title       String
   description String
   bannerUrl   String
-  url         String
+  url         String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  createdBy   User          @relation(fields: [userId], references: [id])
+  userId      String        @db.ObjectId
   DomainGroup DomainGroup[]
 }

@@ -12,7 +12,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
-import { event } from "@/app/api/[[...route]]/event";
+// import { event } from "@/app/api/[[...route]]/event";
 
 const getRequestHandler = async (url: string) => {
   const response = await axios.get(url);

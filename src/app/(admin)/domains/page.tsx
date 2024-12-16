@@ -11,22 +11,7 @@ import {
   EditingItem,
 } from "@/components/(admin)/domains/type";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableCell,
-} from "@/components/ui/table";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import RoleTable from "@/components/(admin)/domains/role-table";
@@ -70,10 +55,7 @@ export default function DomainsPage() {
   //   setDomains((prev) => prev.map((domain) => (domain.id === updatedDomain.id ? updatedDomain : domain)));
   // };
 
-  const filteredDomains = domains.filter((domain) =>
-    selectedDomainType === "all" ? true : domain.type === selectedDomainType
-  );
-  const handleEditDomainGroup = () => {};
+  
 
   return (
     <div className="space-y-6 p-6">
@@ -97,72 +79,7 @@ export default function DomainsPage() {
       {/* Domain Groups Section */}
       <DomainGroupTable />
       {/* Domains Section */}
-      <Card>
-        <CardHeader className="flex justify-between items-center">
-          <h2 className="text-xl font-bold">Domains</h2>
-          <Select
-            onValueChange={setSelectedDomainType}
-            value={selectedDomainType}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Filter by Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="tech">Tech</SelectItem>
-              <SelectItem value="nonTech">Non-Tech</SelectItem>
-            </SelectContent>
-          </Select>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredDomains.map((domain) => (
-                <TableRow key={domain.id}>
-                  <TableCell>{domain.id}</TableCell>
-                  <TableCell>
-                    <span
-                      className={`px-2 py-1 rounded-full text-sm ${
-                        domain.type === "tech"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-green-100 text-green-800"
-                      }`}
-                    >
-                      {domain.type}
-                    </span>
-                  </TableCell>
-                  <TableCell>{domain.name}</TableCell>
-                  <TableCell>
-                    <div className="flex space-x-3">
-                      <Button
-                        variant="link"
-                        onClick={() => handleEditDomain(domain)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="link"
-                        className="text-red-500"
-                        // onClick={() => handleDeleteDomain(domain.id)}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      
 
       {/* Dialogs */}
       {isRoleDialogOpen && (

@@ -1,14 +1,30 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { z } from "zod";
-import { roleSchema } from "./schemas";
-import { Role } from "./type";
+import React, { useState } from "react";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+import { Role } from "./type";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { z } from "zod";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
 interface FormErrors {
   title?: string;
 }
@@ -20,75 +36,80 @@ interface AddRoleDialogProps {
   onEditRole?: (role: Role) => void;
 }
 
+const formSchema = z.object({
+  role: z.string().min(4, {
+    message: "Username must be at least 4 characters.",
+  }),
+});
+
 export default function AddRoleDialog({
   onClose,
   onAddRole,
   editingRole,
   onEditRole,
 }: AddRoleDialogProps) {
-  const [title, setTitle] = useState("");
-  const [errors, setErrors] = useState<FormErrors>({});
-
-  useEffect(() => {
-    if (editingRole) {
-      setTitle(editingRole.title);
-    }
-  }, [editingRole]);
-
-  const validateForm = () => {
+  const [loading,setLoading] = useState(false);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      role: "",
+    },
+  });
+  const { toast } = useToast();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      roleSchema.parse({ title });
-      setErrors({});
-      return true;
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const formattedErrors: FormErrors = {};
-        error.errors.forEach((err) => {
-          if (err.path) {
-            formattedErrors[err.path[0] as keyof FormErrors] = err.message;
-          }
+      setLoading(true);
+      const res = await axios.post("/api/domain/add-role", {
+        title: values.role,
+      });
+      if (res.status == 201 && res.data.success) {
+        toast({
+          description: "Role added successfully",
         });
-        setErrors(formattedErrors);
+      setLoading(false);
+
+      } else {
+        toast({
+          description: res.data.error || "An error occurred",
+          variant: "destructive",
+        });
+      setLoading(false);
+
       }
-      return false;
+    } catch (error:any) {
+      toast({
+        description: error.response.data.error || "An unexpected error occurred",
+        variant: "destructive",
+      });
+      setLoading(false);
+
     }
-  };
-
-  const handleSubmit = () => {
-    if (!validateForm()) return;
-
-    if (editingRole && onEditRole) {
-      onEditRole({ id: editingRole.id, title });
-    } else {
-      onAddRole({ id: Date.now(), title });
-    }
-    onClose();
-  };
-
+  }
   return (
     <Dialog open={true} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{editingRole ? "Edit Role" : "Add Role"}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="role-title">Role Title</Label>
-            <Input
-              id="role-title"
-              placeholder="Enter role title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="" {...field} />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
-          </div>
-          <Button onClick={handleSubmit} className="w-full">
-            {editingRole ? "Update" : "Add"}
-          </Button>
-          <Button variant="secondary" onClick={onClose} className="w-full mt-2">
-            Cancel
-          </Button>
-        </div>
+            <Button disabled={loading} type="submit">Submit</Button>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

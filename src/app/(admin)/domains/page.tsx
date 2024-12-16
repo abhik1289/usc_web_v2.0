@@ -4,7 +4,12 @@ import React, { useState } from "react";
 import AddRoleDialog from "@/components/(admin)/domains/AddRoleDialog";
 import AddDomainGroupDialog from "@/components/(admin)/domains/AddDomainGroupDialog";
 import AddDomainDialog from "@/components/(admin)/domains/AddDomainDialog";
-import { Role, DomainGroup, Domain, EditingItem } from "@/components/(admin)/domains/type";
+import {
+  Role,
+  DomainGroup,
+  Domain,
+  EditingItem,
+} from "@/components/(admin)/domains/type";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -15,7 +20,17 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import RoleTable from "@/components/(admin)/domains/role-table";
+import { DomainGroupTable } from "@/components/(admin)/domains/domainGroup-table";
 
 export default function DomainsPage() {
   const [roles, setRoles] = useState<Role[]>([]);
@@ -28,32 +43,21 @@ export default function DomainsPage() {
   const [editingItem, setEditingItem] = useState<EditingItem | null>(null);
 
   const handleAddRole = (newRole: Role) => setRoles([...roles, newRole]);
-  const handleAddDomainGroup = (newGroup: DomainGroup) => setDomainGroups([...domainGroups, newGroup]);
-  const handleAddDomain = (newDomain: Domain) => setDomains([...domains, newDomain]);
-
-  const handleDeleteRole = (id: number) => setRoles(roles.filter((role) => role.id !== id));
-  const handleDeleteDomainGroup = (id: number) =>
-    setDomainGroups(domainGroups.filter((group) => group.id !== id));
-  const handleDeleteDomain = (id: number) => setDomains(domains.filter((domain) => domain.id !== id));
-
-  const handleEditRole = (role: Role) => {
-    setEditingItem({ type: "role", ...role });
-    setIsRoleDialogOpen(true);
-  };
-
-  const handleEditDomainGroup = (group: DomainGroup) => {
-    setEditingItem({ type: "domainGroup", ...group });
-    setIsDomainGroupDialogOpen(true);
-  };
+  const handleAddDomainGroup = (newGroup: DomainGroup) =>
+    setDomainGroups([...domainGroups, newGroup]);
+  const handleAddDomain = (newDomain: Domain) =>
+    setDomains([...domains, newDomain]);
 
   const handleEditDomain = (domain: Domain) => {
     // setEditingItem({ type: "domain", ...domain });
     setIsDomainDialogOpen(true);
-    console.log(domain)
+    console.log(domain);
   };
 
   const handleUpdateRole = (updatedRole: Role) => {
-    setRoles((prev) => prev.map((role) => (role.id === updatedRole.id ? updatedRole : role)));
+    setRoles((prev) =>
+      prev.map((role) => (role.id === updatedRole.id ? updatedRole : role))
+    );
   };
 
   const handleUpdateDomainGroup = (updatedGroup: DomainGroup) => {
@@ -69,7 +73,8 @@ export default function DomainsPage() {
   const filteredDomains = domains.filter((domain) =>
     selectedDomainType === "all" ? true : domain.type === selectedDomainType
   );
-console.log(editingItem)
+  const handleEditDomainGroup = () => {};
+
   return (
     <div className="space-y-6 p-6">
       {/* Header Section */}
@@ -77,83 +82,20 @@ console.log(editingItem)
         <h1 className="text-3xl font-bold">Domain Management</h1>
         <div className="flex space-x-4">
           <Button onClick={() => setIsRoleDialogOpen(true)}>Add Role</Button>
-          <Button onClick={() => setIsDomainGroupDialogOpen(true)}>Add Domain Group</Button>
-          <Button onClick={() => setIsDomainDialogOpen(true)}>Add Domain</Button>
+          <Button onClick={() => setIsDomainGroupDialogOpen(true)}>
+            Add Domain Group
+          </Button>
+          <Button onClick={() => setIsDomainDialogOpen(true)}>
+            Add Domain
+          </Button>
         </div>
       </div>
 
       {/* Roles Section */}
-      <Card>
-        <CardHeader>
-          <h2 className="text-xl font-bold">Roles</h2>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Role Title</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {roles.map((role) => (
-                <TableRow key={role.id}>
-                  <TableCell>{role.id}</TableCell>
-                  <TableCell>{role.title}</TableCell>
-                  <TableCell>
-                    <div className="flex space-x-3">
-                      <Button variant="link" onClick={() => handleEditRole(role)}>
-                        Edit
-                      </Button>
-                      <Button variant="link" className="text-red-500" onClick={() => handleDeleteRole(role.id)}>
-                        Delete
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <RoleTable />
 
       {/* Domain Groups Section */}
-      <Card>
-        <CardHeader>
-          <h2 className="text-xl font-bold">Domain Groups</h2>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {domainGroups.map((group) => (
-                <TableRow key={group.id}>
-                  <TableCell>{group.id}</TableCell>
-                  <TableCell>{group.name}</TableCell>
-                  <TableCell>
-                    <div className="flex space-x-3">
-                      <Button variant="link" onClick={() => handleEditDomainGroup(group)}>
-                        Edit
-                      </Button>
-                      <Button variant="link" className="text-red-500" onClick={() => handleDeleteDomainGroup(group.id)}>
-                        Delete
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
+      <DomainGroupTable />
       {/* Domains Section */}
       <Card>
         <CardHeader className="flex justify-between items-center">
@@ -200,10 +142,17 @@ console.log(editingItem)
                   <TableCell>{domain.name}</TableCell>
                   <TableCell>
                     <div className="flex space-x-3">
-                      <Button variant="link" onClick={() => handleEditDomain(domain)}>
+                      <Button
+                        variant="link"
+                        onClick={() => handleEditDomain(domain)}
+                      >
                         Edit
                       </Button>
-                      <Button variant="link" className="text-red-500" onClick={() => handleDeleteDomain(domain.id)}>
+                      <Button
+                        variant="link"
+                        className="text-red-500"
+                        // onClick={() => handleDeleteDomain(domain.id)}
+                      >
                         Delete
                       </Button>
                     </div>

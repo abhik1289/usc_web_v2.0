@@ -1,6 +1,5 @@
 import { decodeSignInToken } from "@/lib/authentication/token";
 import { db } from "@/lib/db/db";
-import { championSchema } from "@/schemas/champions/champions.schema";
 import {
   addDomainGroupSchema,
   addRoleSchema,
@@ -96,14 +95,18 @@ const domain = new Hono()
       } else {
         const domainGroups = await db.domainGroup.findMany({
           include: {
-            groups: true, // Include related details
-            createdBy: true, // Include creator information
+            createdBy: {
+              select: {
+                firstName: true,
+              },
+            },
           },
         });
-        return c.json({ success: true, domainGroups: domainGroups });
+        console.log(domainGroups);
+        return c.json({ success: true, domainGroups: "domainGroups" });
       }
     } catch (error) {
-      console.error("Sign-in error:", error);
+      console.error("Error is", error);
       return c.json(
         {
           success: false,
@@ -264,24 +267,101 @@ const domain = new Hono()
             c.req.valid("json");
           const userToken = decodeSignInToken(token);
           const { id } = userToken.payload;
-          const domainDetails = await db.domainDetails.create({
+          await db.domainDetails.create({
             data: {
               title,
               description,
               bannerUrl,
               url: url ? url : null,
               userId: id,
-            },
-          });
-          await db.domainGroup.update({
-            where: { id: groupOf },
-            data: {
-              domainDetailsId: {
-                push: domainDetails.id,
-              },
+              domainGroupId: groupOf,
             },
           });
           return c.json({ success: true, message: "Successfully Added" }, 201);
+        }
+      } catch (error) {
+        console.error("Sign-in error:", error);
+        return c.json(
+          {
+            success: false,
+            error: "An unexpected error occurred. Please try again.",
+          },
+          500
+        );
+      }
+    }
+  )
+  .get("/get-domains/:id", async (c) => {
+    try {
+      const id = c.req.param("id");
+      const domainsDetails = await db.domainDetails.findMany({
+        where: {
+          domainGroupId: id,
+        },
+      });
+      return c.json({ success: true, message: domainsDetails }, 200);
+    } catch (error) {
+      console.error("Sign-in error:", error);
+      return c.json(
+        {
+          success: false,
+          error: "An unexpected error occurred. Please try again.",
+        },
+        500
+      );
+    }
+  })
+  .get("/delete-domain/:id", async (c) => {
+    try {
+      const token = getCookie(c, "token");
+      if (!token) {
+        return c.json({ success: false, error: "Token not found" }, 401);
+      } else {
+        const id = c.req.param("id");
+        await db.domainDetails.delete({
+          where: { id },
+        });
+        return c.json({ success: true, roles: "Successfully deleted" }, 200);
+      }
+    } catch (error) {
+      console.error("Sign-in error:", error);
+      return c.json(
+        {
+          success: false,
+          error: "An unexpected error occurred. Please try again.",
+        },
+        500
+      );
+    }
+  })
+  .post(
+    "/update-domainDetails/:id",
+    zValidator("json", DomainDetailsSchema),
+    async (c) => {
+      try {
+        const token = getCookie(c, "token");
+        if (!token) {
+          return c.json({ success: false, error: "Token not found" }, 401);
+        } else {
+          const { title, description, bannerUrl, url, groupOf } =
+            c.req.valid("json");
+          const userToken = decodeSignInToken(token);
+          const { id } = userToken.payload;
+          await db.domainDetails.update({
+            where: { id: c.req.param("id") },
+            data: {
+              title,
+              description,
+              bannerUrl,
+              url: url ? url : null,
+              userId: id,
+              domainGroupId: groupOf,
+            },
+          });
+          return c.json(
+            { success: true, message: "Successfully Modified" },
+            200
+          );
         }
       } catch (error) {
         console.error("Sign-in error:", error);

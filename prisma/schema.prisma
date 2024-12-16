@@ -109,16 +109,6 @@ model Testimonials {
   userId    String   @db.ObjectId
 }
 
-model DomainGroup {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
-  title           String
-  groups          DomainDetails? @relation(fields: [domainDetailsId], references: [id])
-  createdBy       User           @relation(fields: [userId], references: [id])
-  Main            Main[]
-  userId          String         @db.ObjectId
-  domainDetailsId String[]       @db.ObjectId
-}
-
 model Roles {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   title     String
@@ -139,15 +129,26 @@ model Main {
   rolesId        String[]     @default([]) @db.ObjectId
 }
 
+model DomainGroup {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  createdBy       User            @relation(fields: [userId], references: [id])
+  Main            Main[]
+  userId          String          @db.ObjectId
+  domainDetailsId String?         @db.ObjectId
+  DomainDetails   DomainDetails[]
+}
+
 model DomainDetails {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String
-  bannerUrl   String
-  url         String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  createdBy   User          @relation(fields: [userId], references: [id])
-  userId      String        @db.ObjectId
-  DomainGroup DomainGroup[]
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String
+  bannerUrl     String
+  url           String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  createdBy     User        @relation(fields: [userId], references: [id])
+  domainGroup   DomainGroup @relation(fields: [domainGroupId], references: [id])
+  userId        String      @db.ObjectId
+  domainGroupId String      @db.ObjectId
 }

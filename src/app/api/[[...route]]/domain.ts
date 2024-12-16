@@ -103,7 +103,7 @@ const domain = new Hono()
           },
         });
         console.log(domainGroups);
-        return c.json({ success: true, domainGroups: "domainGroups" });
+        return c.json({ success: true, domainGroups: domainGroups });
       }
     } catch (error) {
       console.error("Error is", error);

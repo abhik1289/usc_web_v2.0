@@ -57,9 +57,8 @@ export default function AddRoleDialog({
 }: AddRoleDialogProps) {
   const editRoleHandler = async (role: string) => {
     const res = await axios.post(
-      `/api/domain/update-role/${selectedEditRoleId}`,
-      {
-        title: role,
+      `/api/domain/update-role/${selectedEditRoleId}`,{
+        title: role
       }
     );
     return res.data;

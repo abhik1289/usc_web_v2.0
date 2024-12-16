@@ -2,17 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { domainGroupSchema } from "./schemas";
 import { DomainGroup } from "./type";
-
-interface FormErrors {
-  name?: string;
-}
-
+import { useToast } from "@/hooks/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 interface AddDomainGroupDialogProps {
   onClose: () => void;
   onAddDomainGroup: (group: DomainGroup) => void;
@@ -26,43 +30,44 @@ export default function AddDomainGroupDialog({
   editingGroup,
   onEditDomainGroup,
 }: AddDomainGroupDialogProps) {
-  const [name, setName] = useState("");
-  const [errors, setErrors] = useState<FormErrors>({});
-
-  useEffect(() => {
-    if (editingGroup) {
-      setName(editingGroup.name);
-    }
-  }, [editingGroup]);
-
-  const validateForm = () => {
-    try {
-      domainGroupSchema.parse({ name });
-      setErrors({});
-      return true;
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const formattedErrors: FormErrors = {};
-        error.errors.forEach((err) => {
-          if (err.path) {
-            formattedErrors[err.path[0] as keyof FormErrors] = err.message;
-          }
-        });
-        setErrors(formattedErrors);
-      }
-      return false;
-    }
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const getDomainGroup = async (role: string) => {
+    const res = await axios.post(`/api/domain/add-domain-group`, {
+      title: role,
+    });
+    return res.data;
   };
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: getDomainGroup,
+    onMutate: () => setLoading(true),
+    onSuccess: () => {
+      toast({
+        description: "Role added successfully!",
+      });
+      queryClient.invalidateQueries(["domainGroup"]); // Optional: Invalidate roles query to refetch data
+      setLoading(false);
+      onClose();
+    },
+    onError: (error: any) => {
+      toast({
+        description: error.response?.data?.error || "An error occurred",
+        variant: "destructive",
+      });
+      setLoading(false);
+    },
+  });
 
-  const handleSubmit = () => {
-    if (!validateForm()) return;
+  const form = useForm({
+    resolver: zodResolver(domainGroupSchema),
+    defaultValues: {
+      name: editingGroup ? editingGroup.name : "",
+    },
+  });
 
-    if (editingGroup && onEditDomainGroup) {
-      onEditDomainGroup({ id: editingGroup.id, name });
-    } else {
-      onAddDomainGroup({ id: Date.now(), name });
-    }
-    onClose();
+  const handleSubmit = async (data: { name: string }) => {
+    mutation.mutate(data.name);
   };
 
   return (
@@ -73,24 +78,33 @@ export default function AddDomainGroupDialog({
             {editingGroup ? "Edit Domain Group" : "Add Domain Group"}
           </DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <div>
             <Label htmlFor="name">Group Name</Label>
             <Input
               id="name"
               placeholder="Enter group name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              {...form.register("name")}
+              disabled={loading}
             />
-            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+            {form.formState.errors.name && (
+              <p className="text-sm text-red-500">
+                {form.formState.errors.name.message}
+              </p>
+            )}
           </div>
-          <Button onClick={handleSubmit} className="w-full">
-            {editingGroup ? "Update" : "Add"}
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Submitting..." : editingGroup ? "Update" : "Add"}
           </Button>
-          <Button variant="secondary" onClick={onClose} className="w-full mt-2">
+          <Button
+            variant="secondary"
+            onClick={onClose}
+            className="w-full mt-2"
+            disabled={loading}
+          >
             Cancel
           </Button>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

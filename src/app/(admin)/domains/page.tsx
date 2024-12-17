@@ -17,6 +17,7 @@ import axios from "axios";
 import RoleTable from "@/components/(admin)/domains/role-table";
 import { DomainGroupTable } from "@/components/(admin)/domains/domainGroup-table";
 import { useRouter } from "next/navigation";
+import { DomainTable } from "@/components/(admin)/domains/domain-table";
 export default function DomainsPage() {
 
 
@@ -83,7 +84,7 @@ export default function DomainsPage() {
       {/* Domain Groups Section */}
       <DomainGroupTable />
       {/* Domains Section */}
-      
+       <DomainTable/>
 
       {/* Dialogs */}
       {isRoleDialogOpen && (

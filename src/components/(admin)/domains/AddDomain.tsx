@@ -34,6 +34,7 @@ import {
 import { getDomainGroups } from "./domainGroup-table";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
+import { useParams, useSearchParams } from "next/navigation";
 
 // Form validation schema
 const formSchema = z.object({
@@ -77,7 +78,6 @@ function AddDomain() {
       });
       queryClient.invalidateQueries(["domain"]); // Optional: Invalidate roles query to refetch data
       setLoading(false);
-      
     },
     onError: (error: any) => {
       toast({
@@ -119,6 +119,10 @@ function AddDomain() {
 
     insertMutation.mutate(data);
   };
+  const searchParams = useSearchParams()
+ 
+  const id = searchParams.get('id');
+  console.log(id)
 
   return (
     <div className="p-4">

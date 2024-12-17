@@ -32,12 +32,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { getDomainGroups } from "./domainGroup-table";
-
+import { useRouter } from "next/navigation";
 export function DomainTable() {
   const [selectedDomainType, setSelectedDomainType] = useState("all");
   const [showDialog, setShowDialog] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
-
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   // Fetch Domain Data
@@ -63,8 +63,7 @@ export function DomainTable() {
 
   // Delete Mutation
   const deleteMutation = useMutation({
-    mutationFn: (id: string) =>
-      axios.get(`/api/domain/delete-domain/${id}`),
+    mutationFn: (id: string) => axios.get(`/api/domain/delete-domain/${id}`),
     onSuccess: () => {
       toast({ description: "Domain Deleted Successfully" });
       queryClient.invalidateQueries(["domain"]);
@@ -79,11 +78,7 @@ export function DomainTable() {
     },
   });
 
-  // Handlers
-  const handleEditDomain = (domain: any) => {
-    console.log("Edit domain", domain);
-  };
-
+ 
   const handleDeleteDomain = (id: string) => {
     setShowDialog(true);
     setSelectedDeleteId(id);
@@ -178,7 +173,9 @@ export function DomainTable() {
                     <div className="flex space-x-3">
                       <Button
                         variant="link"
-                        onClick={() => handleEditDomain(domain)}
+                        onClick={() =>
+                          router.push(`/domains/add-domain?id=${domain.id}`)
+                        }
                       >
                         Edit
                       </Button>

@@ -18,24 +18,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { getDomainGroups } from "./domainGroup-table";
-
 
 export function DomainTable() {
   const [selectedDomainType, setSelectedDomainType] = useState("all");
-  const [loading, setLoading] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
 
-  // Filter logic
+  const queryClient = useQueryClient();
 
-  const handleEditDomain = (domain: any) => {
-    console.log("Edit domain", domain);
-  };
-
-  const handleDeleteDomain = (id: any) => {
-    console.log("Delete domain with id", id);
-  };
+  // Fetch Domain Data
   const {
     isLoading: domainLoading,
     error: domainError,
@@ -43,51 +48,83 @@ export function DomainTable() {
   } = useQuery({
     queryKey: ["domain"],
     queryFn: () =>
-      axios
-        .get("/api/domain/get-domains")
-        .then((response) => response.data.message),
+      axios.get("/api/domain/get-domains").then((res) => res.data.message),
   });
-  console.log(domainData);
-  const filteredDomains =
-    domainData &&
-    domainData.filter((domain: any) =>
-      selectedDomainType === "all"
-        ? true
-        : domain.domainGroup.title === selectedDomainType
-    );
+
+  // Fetch Domain Groups
   const {
-    isLoading,
-    error,
+    isLoading: domainGroupsLoading,
+    error: domainGroupsError,
     data: domainGroups,
   } = useQuery({
     queryKey: ["domainGroup"],
     queryFn: () => getDomainGroups("/api/domain/get-domain-groups"),
   });
+
+  // Delete Mutation
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) =>
+      axios.get(`/api/domain/delete-domain/${id}`),
+    onSuccess: () => {
+      toast({ description: "Domain Deleted Successfully" });
+      queryClient.invalidateQueries(["domain"]);
+      setShowDialog(false);
+      setSelectedDeleteId(null);
+    },
+    onError: (error: any) => {
+      toast({
+        description: error.response?.data?.error || "An error occurred",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Handlers
+  const handleEditDomain = (domain: any) => {
+    console.log("Edit domain", domain);
+  };
+
+  const handleDeleteDomain = (id: string) => {
+    setShowDialog(true);
+    setSelectedDeleteId(id);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedDeleteId) deleteMutation.mutate(selectedDeleteId);
+  };
+
+  const filteredDomains =
+    domainData?.filter((domain: any) =>
+      selectedDomainType === "all"
+        ? true
+        : domain.domainGroup.title === selectedDomainType
+    ) || [];
+
   return (
     <Card>
+      {/* Header */}
       <CardHeader className="flex justify-between items-center">
         <h2 className="text-xl font-bold">Domains</h2>
         <Select
-          disabled={loading}
+          disabled={domainGroupsLoading}
           onValueChange={setSelectedDomainType}
           value={selectedDomainType}
-          defaultValue="all"
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-56">
             <SelectValue placeholder="All" />
           </SelectTrigger>
           <SelectContent>
-            {isLoading ? (
+            <SelectItem value="all">All</SelectItem>
+            {domainGroupsLoading ? (
               <SelectItem value="loading" disabled>
                 Loading...
               </SelectItem>
-            ) : error ? (
+            ) : domainGroupsError ? (
               <SelectItem value="error" disabled>
                 Error loading domain groups
               </SelectItem>
             ) : (
-              domainGroups &&
-              domainGroups.map((group: { id: string; title: string }) => (
+              domainGroups?.map((group: { id: string; title: string }) => (
                 <SelectItem key={group.id} value={group.title}>
                   {group.title}
                 </SelectItem>
@@ -96,6 +133,8 @@ export function DomainTable() {
           </SelectContent>
         </Select>
       </CardHeader>
+
+      {/* Table */}
       <CardContent>
         <Table>
           <TableHeader>
@@ -107,28 +146,26 @@ export function DomainTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {domainError && (
+            {domainError ? (
               <TableRow>
                 <TableCell colSpan={4} className="text-center">
                   Error Occurred
                 </TableCell>
               </TableRow>
-            )}
-            {
-              domainLoading && <TableRow>
-              <TableCell colSpan={4} className="text-center">
-                Loading...
-              </TableCell>
-            </TableRow>
-            }
-            {!domainLoading && filteredDomains && filteredDomains.length > 0 ? (
+            ) : domainLoading ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center">
+                  Loading...
+                </TableCell>
+              </TableRow>
+            ) : filteredDomains.length > 0 ? (
               filteredDomains.map((domain: any, i: number) => (
                 <TableRow key={domain.id}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-sm ${
-                        domain.type === "tech"
+                        domain.domainGroup.title === "Tech"
                           ? "bg-blue-100 text-blue-800"
                           : "bg-green-100 text-green-800"
                       }`}
@@ -166,6 +203,29 @@ export function DomainTable() {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure you want to delete this domain?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. Deleting this domain will remove it
+              permanently.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setShowDialog(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>
+              Yes, Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -119,10 +119,14 @@ function AddDomain() {
 
     insertMutation.mutate(data);
   };
-  const searchParams = useSearchParams()
- 
-  const id = searchParams.get('id');
-  console.log(id)
+  const searchParams = useSearchParams();
+
+  const id = searchParams.get("id");
+  useEffect(() => {
+    if(id){
+      
+    }
+  }, [id]);
 
   return (
     <div className="p-4">

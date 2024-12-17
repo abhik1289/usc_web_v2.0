@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import AddRoleDialog from "@/components/(admin)/domains/AddRoleDialog";
 import AddDomainGroupDialog from "@/components/(admin)/domains/AddDomainGroupDialog";
-import AddDomainDialog from "@/components/(admin)/domains/AddDomainDialog";
+import AddDomainDialog from "@/components/(admin)/domains/AddDomain";
 import {
   Role,
   DomainGroup,
@@ -16,8 +16,12 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import RoleTable from "@/components/(admin)/domains/role-table";
 import { DomainGroupTable } from "@/components/(admin)/domains/domainGroup-table";
-
+import { useRouter } from "next/navigation";
 export default function DomainsPage() {
+
+
+  const router = useRouter();
+
   const [roles, setRoles] = useState<Role[]>([]);
   const [domainGroups, setDomainGroups] = useState<DomainGroup[]>([]);
   const [domains, setDomains] = useState<Domain[]>([]);
@@ -67,7 +71,7 @@ export default function DomainsPage() {
           <Button onClick={() => setIsDomainGroupDialogOpen(true)}>
             Add Domain Group
           </Button>
-          <Button onClick={() => setIsDomainDialogOpen(true)}>
+          <Button onClick={() =>  router.push("/domains/add-domain")}>
             Add Domain
           </Button>
         </div>
@@ -104,17 +108,7 @@ export default function DomainsPage() {
           // editingGroup={editingItem?.type === "domainGroup" ? editingItem : null}
         />
       )}
-      {isDomainDialogOpen && (
-        <AddDomainDialog
-          onClose={() => {
-            setIsDomainDialogOpen(false);
-            setEditingItem(null);
-          }}
-          onAddDomain={handleAddDomain}
-          // onEditDomain={handleUpdateDomain}
-          // editingDomain={editingItem?.type === "domain" ? editingItem : null}
-        />
-      )}
+     
     </div>
   );
 }

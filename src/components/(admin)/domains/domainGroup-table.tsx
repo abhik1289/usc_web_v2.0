@@ -25,7 +25,7 @@ import {
 import { useState } from "react";
 import AddDomainGroupDialog from "./AddDomainGroupDialog";
 
-const getDomainGroups = async (url: string) => {
+export const getDomainGroups = async (url: string) => {
   const res = await axios.get(url);
   return res.data.domainGroups;
 };

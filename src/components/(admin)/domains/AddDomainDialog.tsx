@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -21,6 +22,9 @@ import {
 import { z } from "zod";
 import { domainSchema } from "./schemas";
 import { Domain } from "./type";
+import { useQuery } from "@tanstack/react-query";
+import { getDomainGroups } from "./domainGroup-table";
+// import {}
 
 interface FormErrors {
   type?: string;
@@ -47,15 +51,12 @@ export default function AddDomainDialog({
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const formattedErrors: FormErrors = error.errors.reduce(
-          (acc, err) => {
-            if (err.path.length) {
-              acc[err.path[0] as keyof FormErrors] = err.message;
-            }
-            return acc;
-          },
-          {} as FormErrors
-        );
+        const formattedErrors: FormErrors = error.errors.reduce((acc, err) => {
+          if (err.path.length) {
+            acc[err.path[0] as keyof FormErrors] = err.message;
+          }
+          return acc;
+        }, {} as FormErrors);
         setErrors(formattedErrors);
       }
       return false;
@@ -74,7 +75,14 @@ export default function AddDomainDialog({
     onAddDomain(newDomain);
     onClose();
   };
-
+  const {
+    isLoading,
+    error,
+    data: domainGroup,
+  } = useQuery({
+    queryKey: ["domainGroup"],
+    queryFn: () => getDomainGroups("/api/domain/get-domain-groups"),
+  });
   return (
     <Dialog open={true} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent>
@@ -85,16 +93,24 @@ export default function AddDomainDialog({
           {/* Domain Type */}
           <div className="space-y-2">
             <Label htmlFor="type">Domain Type</Label>
-            <Select value={type} onValueChange={(value) => setType(value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select domain type" />
+            <Select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Domain Group" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="tech">Tech</SelectItem>
-                <SelectItem value="nonTech">Non-Tech</SelectItem>
+                {domainGroup &&
+                  domainGroup.map(
+                    (item: { id: string; title: string }, i: number) => (
+                      <SelectItem key={i} value={item.id}>
+                        {item.title}
+                      </SelectItem>
+                    )
+                  )}
               </SelectContent>
             </Select>
-            {errors.type && <p className="text-sm text-red-500">{errors.type}</p>}
+            {errors.type && (
+              <p className="text-sm text-red-500">{errors.type}</p>
+            )}
           </div>
 
           {/* Domain Name */}
@@ -106,7 +122,9 @@ export default function AddDomainDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-sm text-red-500">{errors.name}</p>
+            )}
           </div>
         </div>
 

@@ -19,9 +19,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 interface AddDomainGroupDialogProps {
   onClose: () => void;
-  onAddDomainGroup: (group: DomainGroup) => void;
+  onAddDomainGroup?: (group: DomainGroup) => void;
   editingGroup?: DomainGroup | null;
   onEditDomainGroup?: (group: DomainGroup) => void;
+  selectedEditRoleId?: string | null;
+  selectedEditRoleTitle?: string | null;
 }
 
 export default function AddDomainGroupDialog({
@@ -29,6 +31,8 @@ export default function AddDomainGroupDialog({
   onAddDomainGroup,
   editingGroup,
   onEditDomainGroup,
+  selectedEditRoleId,
+  selectedEditRoleTitle,
 }: AddDomainGroupDialogProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -62,7 +66,7 @@ export default function AddDomainGroupDialog({
   const form = useForm({
     resolver: zodResolver(domainGroupSchema),
     defaultValues: {
-      name: editingGroup ? editingGroup.name : "",
+      name: selectedEditRoleTitle ? selectedEditRoleTitle : "",
     },
   });
 
@@ -75,7 +79,7 @@ export default function AddDomainGroupDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {editingGroup ? "Edit Domain Group" : "Add Domain Group"}
+            {selectedEditRoleTitle ? "Edit Domain Group" : "Add Domain Group"}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
@@ -94,7 +98,11 @@ export default function AddDomainGroupDialog({
             )}
           </div>
           <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Submitting..." : editingGroup ? "Update" : "Add"}
+            {loading
+              ? "Submitting..."
+              : selectedEditRoleTitle
+              ? "Update"
+              : "Add"}
           </Button>
           <Button
             variant="secondary"

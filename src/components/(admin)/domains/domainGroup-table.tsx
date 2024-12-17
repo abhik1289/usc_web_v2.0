@@ -23,6 +23,7 @@ import {
   AlertDialogHeader,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
+import AddDomainGroupDialog from "./AddDomainGroupDialog";
 
 const getDomainGroups = async (url: string) => {
   const res = await axios.get(url);
@@ -30,8 +31,6 @@ const getDomainGroups = async (url: string) => {
 };
 
 export const DomainGroupTable = () => {
-  const handleDeleteDomain = (id: number) => {};
-  const handleEditDomainGroup = (id: number) => {};
   const [showDialog, setShowDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
@@ -43,6 +42,14 @@ export const DomainGroupTable = () => {
   const [selectedEditRoleTitle, setSelectedEditRoleTitle] = useState<
     string | null
   >(null);
+
+  const handleDeleteDomain = (id: string) => {};
+  const handleEditDomainGroup = (id: string, title: string) => {
+    setShowEditDialog(true);
+    setSelectedEditRoleId(id);
+    setSelectedEditRoleTitle(title);
+  };
+
   const {
     isLoading,
     error,
@@ -95,7 +102,9 @@ export const DomainGroupTable = () => {
                       <div className="flex space-x-3">
                         <Button
                           variant="link"
-                          onClick={() => handleEditDomainGroup(group.id)}
+                          onClick={() =>
+                            handleEditDomainGroup(group.id, group.title)
+                          }
                         >
                           Edit
                         </Button>
@@ -120,9 +129,16 @@ export const DomainGroupTable = () => {
             </TableBody>
           </Table>
         </CardContent>
-        
       </Card>
-      {/* Delete confirmation dialog */}
+      {showEditDialog && (
+        <AddDomainGroupDialog
+          selectedEditRoleTitle={selectedEditRoleTitle}
+          selectedEditRoleId={selectedEditRoleId}
+          onClose={() => {
+            setShowEditDialog(false);
+          }}
+        />
+      )}
     </>
   );
 };

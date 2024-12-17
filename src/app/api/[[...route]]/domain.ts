@@ -291,12 +291,16 @@ const domain = new Hono()
       }
     }
   )
-  .get("/get-domains/:id", async (c) => {
+  .get("/get-domains", async (c) => {
     try {
       const id = c.req.param("id");
       const domainsDetails = await db.domainDetails.findMany({
-        where: {
-          domainGroupId: id,
+        include: {
+          domainGroup: {
+            select:{
+              title:true
+            }
+          },
         },
       });
       return c.json({ success: true, message: domainsDetails }, 200);

@@ -18,46 +18,81 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { getDomainGroups } from "./domainGroup-table";
 
-// Dummy data for domains
-const domains = [
-  { id: 1, type: "tech", name: "Web Development" },
-  { id: 2, type: "nonTech", name: "Content Writing" },
-  { id: 3, type: "tech", name: "Machine Learning" },
-  { id: 4, type: "nonTech", name: "Marketing" },
-];
 
 export function DomainTable() {
   const [selectedDomainType, setSelectedDomainType] = useState("all");
+  const [loading, setLoading] = useState(false);
 
   // Filter logic
-  const filteredDomains = domains.filter((domain) =>
-    selectedDomainType === "all" ? true : domain.type === selectedDomainType
-  );
 
-  const handleEditDomain = (domain:any) => {
+  const handleEditDomain = (domain: any) => {
     console.log("Edit domain", domain);
   };
 
-  const handleDeleteDomain = (id:any) => {
+  const handleDeleteDomain = (id: any) => {
     console.log("Delete domain with id", id);
   };
-
+  const {
+    isLoading: domainLoading,
+    error: domainError,
+    data: domainData,
+  } = useQuery({
+    queryKey: ["domain"],
+    queryFn: () =>
+      axios
+        .get("/api/domain/get-domains")
+        .then((response) => response.data.message),
+  });
+  console.log(domainData);
+  const filteredDomains =
+    domainData &&
+    domainData.filter((domain: any) =>
+      selectedDomainType === "all"
+        ? true
+        : domain.domainGroup.title === selectedDomainType
+    );
+  const {
+    isLoading,
+    error,
+    data: domainGroups,
+  } = useQuery({
+    queryKey: ["domainGroup"],
+    queryFn: () => getDomainGroups("/api/domain/get-domain-groups"),
+  });
   return (
     <Card>
       <CardHeader className="flex justify-between items-center">
         <h2 className="text-xl font-bold">Domains</h2>
         <Select
+          disabled={loading}
           onValueChange={setSelectedDomainType}
           value={selectedDomainType}
+          defaultValue="all"
         >
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by Type" />
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="All" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="tech">Tech</SelectItem>
-            <SelectItem value="nonTech">Non-Tech</SelectItem>
+            {isLoading ? (
+              <SelectItem value="loading" disabled>
+                Loading...
+              </SelectItem>
+            ) : error ? (
+              <SelectItem value="error" disabled>
+                Error loading domain groups
+              </SelectItem>
+            ) : (
+              domainGroups &&
+              domainGroups.map((group: { id: string; title: string }) => (
+                <SelectItem key={group.id} value={group.title}>
+                  {group.title}
+                </SelectItem>
+              ))
+            )}
           </SelectContent>
         </Select>
       </CardHeader>
@@ -72,40 +107,62 @@ export function DomainTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredDomains.map((domain) => (
-              <TableRow key={domain.id}>
-                <TableCell>{domain.id}</TableCell>
-                <TableCell>
-                  <span
-                    className={`px-2 py-1 rounded-full text-sm ${
-                      domain.type === "tech"
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-green-100 text-green-800"
-                    }`}
-                  >
-                    {domain.type}
-                  </span>
-                </TableCell>
-                <TableCell>{domain.name}</TableCell>
-                <TableCell>
-                  <div className="flex space-x-3">
-                    <Button
-                      variant="link"
-                      onClick={() => handleEditDomain(domain)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="link"
-                      className="text-red-500"
-                      onClick={() => handleDeleteDomain(domain.id)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
+            {domainError && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center">
+                  Error Occurred
                 </TableCell>
               </TableRow>
-            ))}
+            )}
+            {
+              domainLoading && <TableRow>
+              <TableCell colSpan={4} className="text-center">
+                Loading...
+              </TableCell>
+            </TableRow>
+            }
+            {!domainLoading && filteredDomains && filteredDomains.length > 0 ? (
+              filteredDomains.map((domain: any, i: number) => (
+                <TableRow key={domain.id}>
+                  <TableCell>{i + 1}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`px-2 py-1 rounded-full text-sm ${
+                        domain.type === "tech"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-green-100 text-green-800"
+                      }`}
+                    >
+                      {domain.domainGroup.title}
+                    </span>
+                  </TableCell>
+                  <TableCell>{domain.title}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-3">
+                      <Button
+                        variant="link"
+                        onClick={() => handleEditDomain(domain)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="link"
+                        className="text-red-500"
+                        onClick={() => handleDeleteDomain(domain.id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center">
+                  No data found
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </CardContent>

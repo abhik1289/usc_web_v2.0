@@ -17,7 +17,7 @@ import {
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogTitle,
-} from "@radix-ui/react-alert-dialog";
+} from "@/components/ui/alert-dialog";
 import {
   AlertDialogFooter,
   AlertDialogHeader,
@@ -128,7 +128,26 @@ export const DomainGroupTable = () => {
               )}
             </TableBody>
           </Table>
+          <AlertDialog open={true}>
+          {/* <AlertDialogTrigger asChild>
+           <Button variant="outline">Show Dialog</Button>
+         </AlertDialogTrigger> */}
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your
+                account and remove your data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction>Continue</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         </CardContent>
+        
       </Card>
       {showEditDialog && (
         <AddDomainGroupDialog
@@ -139,26 +158,7 @@ export const DomainGroupTable = () => {
           }}
         />
       )}
-      {
-         <AlertDialog  open={false} >
-         {/* <AlertDialogTrigger asChild>
-           <Button variant="outline">Show Dialog</Button>
-         </AlertDialogTrigger> */}
-         <AlertDialogContent>
-           <AlertDialogHeader>
-             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-             <AlertDialogDescription>
-               This action cannot be undone. This will permanently delete your
-               account and remove your data from our servers.
-             </AlertDialogDescription>
-           </AlertDialogHeader>
-           <AlertDialogFooter>
-             <AlertDialogCancel>Cancel</AlertDialogCancel>
-             <AlertDialogAction>Continue</AlertDialogAction>
-           </AlertDialogFooter>
-         </AlertDialogContent>
-       </AlertDialog>
-      }
+      {}
     </>
   );
 };

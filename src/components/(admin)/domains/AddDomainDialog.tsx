@@ -76,8 +76,8 @@ export default function AddDomainDialog({
     onClose();
   };
   const {
-    isLoading,
-    error,
+    isLoading: domainGroupLoading,
+    error: domainGroupError,
     data: domainGroup,
   } = useQuery({
     queryKey: ["domainGroup"],
@@ -93,12 +93,16 @@ export default function AddDomainDialog({
           {/* Domain Type */}
           <div className="space-y-2">
             <Label htmlFor="type">Domain Type</Label>
-            <Select>
+            {domainGroupError?<p>Error Occurred</p>:<Select>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select Domain Group" />
               </SelectTrigger>
               <SelectContent>
-                {domainGroup &&
+                
+                {domainGroupLoading? <SelectItem value="">
+                  Loading...
+                </SelectItem> :
+                  domainGroup &&
                   domainGroup.map(
                     (item: { id: string; title: string }, i: number) => (
                       <SelectItem key={i} value={item.id}>
@@ -107,7 +111,7 @@ export default function AddDomainDialog({
                     )
                   )}
               </SelectContent>
-            </Select>
+            </Select>}
             {errors.type && (
               <p className="text-sm text-red-500">{errors.type}</p>
             )}

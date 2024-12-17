@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const addDomainGroupSchema = z.object({
-  title: z.string().min(3).max(10),
+  title: z.string().min(3).max(20),
 });
 const addRoleSchema = z.object({
   title: z.string().min(3).max(30),

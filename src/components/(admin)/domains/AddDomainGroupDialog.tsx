@@ -42,13 +42,19 @@ export default function AddDomainGroupDialog({
     });
     return res.data;
   };
+  const updateDomainGroup = async (role: string) => {
+    const res = await axios.post(`/api/domain/update/${selectedEditRoleId}`, {
+      title: role,
+    });
+    return res.data;
+  };
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: getDomainGroup,
     onMutate: () => setLoading(true),
     onSuccess: () => {
       toast({
-        description: "Role added successfully!",
+        description: "Domain Group added successfully!",
       });
       queryClient.invalidateQueries(["domainGroup"]); // Optional: Invalidate roles query to refetch data
       setLoading(false);
@@ -62,7 +68,25 @@ export default function AddDomainGroupDialog({
       setLoading(false);
     },
   });
-
+  const updateMutation = useMutation({
+    mutationFn: updateDomainGroup,
+    onMutate: () => setLoading(true),
+    onSuccess: () => {
+      toast({
+        description: "Domain Group update successfully!",
+      });
+      queryClient.invalidateQueries(["domainGroup"]); // Optional: Invalidate roles query to refetch data
+      setLoading(false);
+      onClose();
+    },
+    onError: (error: any) => {
+      toast({
+        description: error.response?.data?.error || "An error occurred",
+        variant: "destructive",
+      });
+      setLoading(false);
+    },
+  });
   const form = useForm({
     resolver: zodResolver(domainGroupSchema),
     defaultValues: {
@@ -71,7 +95,11 @@ export default function AddDomainGroupDialog({
   });
 
   const handleSubmit = async (data: { name: string }) => {
-    mutation.mutate(data.name);
+    if (selectedEditRoleTitle) {
+      updateMutation.mutate(data.name);
+    } else {
+      mutation.mutate(data.name);
+    }
   };
 
   return (
@@ -97,13 +125,15 @@ export default function AddDomainGroupDialog({
               </p>
             )}
           </div>
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading
-              ? "Submitting..."
-              : selectedEditRoleTitle
-              ? "Update"
-              : "Add"}
-          </Button>
+          {selectedEditRoleTitle ? (
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? "Updating..." : "Update"}
+            </Button>
+          ) : (
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? "Submitting..." : "Add"}
+            </Button>
+          )}
           <Button
             variant="secondary"
             onClick={onClose}

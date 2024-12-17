@@ -297,9 +297,9 @@ const domain = new Hono()
       const domainsDetails = await db.domainDetails.findMany({
         include: {
           domainGroup: {
-            select:{
-              title:true
-            }
+            select: {
+              title: true,
+            },
           },
         },
       });
@@ -378,5 +378,33 @@ const domain = new Hono()
         );
       }
     }
-  );
+  )
+  .get("/domain-details/:id", async (c) => {
+    try {
+      const id = c.req.param("id");
+      console.log(id)
+      const domain = await db.domainDetails.findFirst({ where: { id: id },include:{
+        domainGroup:{
+          select:{
+            title:true
+          }
+        }
+      } });
+      console.log(domain)
+      if (!domain) {
+        return c.json({ success: false, error: "Invalid Id" }, 400);
+      } else {
+        return c.json({ success: true, message: domain }, 200);
+      }
+    } catch (error) {
+      console.error("Sign-in error:", error);
+      return c.json(
+        {
+          success: false,
+          error: "An unexpected error occurred. Please try again.",
+        },
+        500
+      );
+    }
+  });
 export default domain;

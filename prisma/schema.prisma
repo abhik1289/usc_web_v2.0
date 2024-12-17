@@ -152,3 +152,5 @@ model DomainDetails {
   userId        String      @db.ObjectId
   domainGroupId String      @db.ObjectId
 }
+
+

@@ -75,7 +75,8 @@ export default function AddDomainGroupDialog({
       toast({
         description: "Domain Group update successfully!",
       });
-      queryClient.invalidateQueries(["domainGroup"]); // Optional: Invalidate roles query to refetch data
+      queryClient.invalidateQueries(["domainGroup"]);
+      // selectedEditRoleId(null);
       setLoading(false);
       onClose();
     },

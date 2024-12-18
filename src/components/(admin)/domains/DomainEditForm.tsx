@@ -1,3 +1,4 @@
+"use client";
 import {
   Form,
   FormControl,
@@ -22,7 +23,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useGetDomainGroup } from "@/hooks/api/domain/useGetDomainGroup";
 import { useEditDomainDetails } from "@/hooks/api/domain/useEditDomainDetails";
-
+import { useRouter } from "next/navigation";
 const formSchema = z.object({
   title: z
     .string()
@@ -54,6 +55,9 @@ export const DomainEditForm = ({
   defaultValues,
   id,
 }: DomainAccountFormInterface) => {
+
+  const router = useRouter();
+
   const {
     data: domainGroups,
     isLoading: groupsLoading,
@@ -69,6 +73,9 @@ export const DomainEditForm = ({
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     modifyMutation.mutate(values);
+    if(modifyMutation.isSuccess){
+      router.push("/domains")
+    }
   };
   return (
     <Form {...form}>

@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 interface Lead {
   id: number;
   name: string;
@@ -54,6 +55,8 @@ export default function LeadsPage() {
     return true;
   });
 
+  const router = useRouter();
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -69,7 +72,7 @@ export default function LeadsPage() {
               <SelectItem value="non-tech">Non-Tech</SelectItem>
             </SelectContent>
           </Select>
-          <Button onClick={() => setIsDialogOpen(true)}>Add Lead</Button>
+          <Button onClick={() => router.push("/leads/add-lead")}>Add Lead</Button>
         </div>
       </div>
 

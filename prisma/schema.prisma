@@ -100,11 +100,12 @@ model Testimonials {
 }
 
 model Roles {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
   title     String
-  createdBy User   @relation(fields: [userId], references: [id])
+  createdBy User    @relation(fields: [userId], references: [id])
   Main      Main[]
-  userId    String @db.ObjectId
+  userId    String  @db.ObjectId
+  Leads     Leads[]
 }
 
 model Main {
@@ -146,22 +147,23 @@ model DomainDetails {
 }
 
 model Leads {
-  id                 String        @id @default(auto()) @map("_id") @db.ObjectId
-  fullName           String
-  isCoreMember       Boolean       
-  coreMemberPosition String?
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  isCurrent          Boolean
-  createdBy          User          @relation(fields: [userId], references: [id])
-  userId             String        @db.ObjectId
-  profilePhoto       String
-  domainGroup        DomainGroup   @relation(fields: [domainGroupId], references: [id])
-  domainGroupId      String        @db.ObjectId
-  domainName         DomainDetails @relation(fields: [domainNameId], references: [id])
-  domainNameId       String        @db.ObjectId
-  index              Int
-  Social             Social[]
+  id                   String        @id @default(auto()) @map("_id") @db.ObjectId
+  fullName             String
+  isCoreMember         Boolean
+  coreMemberPosition   Roles?         @relation(fields: [coreMemberPositionId], references: [id])
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  isCurrent            Boolean
+  createdBy            User          @relation(fields: [userId], references: [id])
+  userId               String        @db.ObjectId
+  profilePhoto         String
+  domainGroup          DomainGroup   @relation(fields: [domainGroupId], references: [id])
+  domainGroupId        String        @db.ObjectId
+  domainName           DomainDetails @relation(fields: [domainNameId], references: [id])
+  domainNameId         String        @db.ObjectId
+  index                Int
+  Social               Social[]
+  coreMemberPositionId String?        @db.ObjectId
 }
 
 model Social {

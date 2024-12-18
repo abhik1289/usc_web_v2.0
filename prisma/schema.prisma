@@ -148,8 +148,8 @@ model DomainDetails {
 model Leads {
   id                 String        @id @default(auto()) @map("_id") @db.ObjectId
   fullName           String
-  isCoreMember       Boolean
-  coreMemberPosition String
+  isCoreMember       Boolean       
+  coreMemberPosition String?
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
   isCurrent          Boolean
@@ -165,12 +165,12 @@ model Leads {
 }
 
 model Social {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  Lead         Leads  @relation(fields: [leadId], references: [id])
-  leadId      String @db.ObjectId
-  githubUrl    String
-  instagramUrl String
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  Lead         Leads   @relation(fields: [leadId], references: [id])
+  leadId       String  @db.ObjectId
+  githubUrl    String?
+  instagramUrl String?
   email        String
-  portfolioUrl String
-  linkedinUrl  String
+  portfolioUrl String?
+  linkedinUrl  String?
 }

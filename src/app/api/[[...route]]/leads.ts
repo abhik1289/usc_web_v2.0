@@ -6,15 +6,18 @@ import { getCookie } from "hono/cookie";
 import { Event } from "@prisma/client";
 import { decodeSignInToken } from "@/lib/authentication/token";
 import mongoose, { ObjectId } from "mongoose";
+import { LeadsSchema } from "@/schemas/leads/leads.schema";
 
-const leads = new Hono()
-  .post("/add-lead", zValidator("json", eventSchema), async (c) => {
+const leads = new Hono().post(
+  "/add-lead",
+  zValidator("json", LeadsSchema),
+  async (c) => {
     try {
       const token = getCookie(c, "token");
       if (!token) {
         return c.json({ success: false, error: "Token not found" }, 401);
       } else {
-        
+        const 
       }
     } catch (error) {
       console.error("Sign-in error:", error);
@@ -26,10 +29,7 @@ const leads = new Hono()
         500
       );
     }
-  
-
-})
- 
-
+  }
+);
 
 export { leads };

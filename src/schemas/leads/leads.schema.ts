@@ -4,21 +4,22 @@ import { z } from "zod";
 const SocialSchema = z.object({
   githubUrl: z.string().optional(),
   instagramUrl: z.string().optional(),
-  email: z.string().email(),
+  email: z.string().email({ message: "Invalid email address." }),
   portfolioUrl: z.string().optional(),
   linkedinUrl: z.string().optional(),
 });
 
 // Leads Schema
 const LeadsSchema = z.object({
-  fullName: z.string().min(4).max(15),
+  fullName: z.string().min(4, { message: "Full name must be at least 4 characters long." }).max(15, { message: "Full name cannot exceed 15 characters." }),
   isCoreMember: z.boolean(),
   coreMemberPosition: z.string().optional(),
   isCurrent: z.boolean(),
   profilePhoto: z.string(),
   domainGroupId: z.string(),
   domainNameId: z.string(),
-  index: z.number(),
+  index: z.number().optional(),
+  Social: SocialSchema,
 });
 
 // Export schemas

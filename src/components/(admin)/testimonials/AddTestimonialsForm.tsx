@@ -27,11 +27,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetRoles } from "@/hooks/api/roles/useGetRoles";
+import useInsertTestimonial from "@/hooks/api/testimonials/useInsertTestimonials";
 interface AddTestimonialsFormInterface {
   defaultValues: {
     fullName: string;
     text: string;
-    position: string;
+    rolesId: string;
     index?: number;
     photoUrl: string;
   };
@@ -50,11 +51,12 @@ export const AddTestimonialsForm = ({
     defaultValues,
   });
 
-  const InsertTestimonial = useGetTestimonial();
+  const InsertTestimonial = useInsertTestimonial();
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof testimonialSchema>) {
     InsertTestimonial.mutate(values);
+    form.reset();
   }
 
   return (
@@ -81,24 +83,33 @@ export const AddTestimonialsForm = ({
         <div className="flex gap-4">
           <FormField
             control={form.control}
-            name="position"
+            name="rolesId"
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel>Position</FormLabel>
                 <FormControl>
-                  <Select {...field}>
+                  <Select
+                    onValueChange={field.onChange}
+                    disabled={roles.isLoading || InsertTestimonial.isLoading}
+                    {...field}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel> Role</SelectLabel>
-                        {roles.data && roles.data.map((item: any, i: number) => (
-                          <SelectItem key={i} value={item.id}>
-                            {item.title}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
+                      {roles.data && roles.data.length === 0 ? (
+                        <p>No role found</p>
+                      ) : (
+                        <SelectGroup>
+                          <SelectLabel> Role</SelectLabel>
+                          {roles.data &&
+                            roles.data.map((item: any, i: number) => (
+                              <SelectItem key={i} value={item.id}>
+                                {item.title}
+                              </SelectItem>
+                            ))}
+                        </SelectGroup>
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>

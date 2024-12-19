@@ -9,7 +9,7 @@ const testimonialSchema = z.object({
     .string()
     .url("Photo URL must be a valid URL.")
     .min(1, "Photo URL is required."),
-  position: z
+    rolesId: z
     .string()
     .min(1, "Position is required.")
     .max(50, "Position must not exceed 50 characters."),

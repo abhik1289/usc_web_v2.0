@@ -1,23 +1,17 @@
 "use client";
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Image from "next/image";
+
 import { Button } from "@/components/ui/button";
 import useGetTestimonials from "@/hooks/api/testimonials/useGetTestimonials";
 import TestimonialsSkeletonCard from "./testimonials-card-skeleton";
 import { useDeleteTestimonials } from "@/hooks/api/testimonials/useDeleteTestimonials";
 import AlertDialogBox from "../AlertDialog.tsx/AlertDialog";
-// import testimonials from './../../../app/api/[[...route]]/testimonials';
+
+import Image from "next/image";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 export default function TestimonialsCard() {
-  //   const [testimonials, setTestimonials] = useState([]);
   const [selectedDeletedId, setSelectedDeletedId] = useState<string | null>();
   const [showDialog, setShowDialog] = useState(false);
 
@@ -33,7 +27,14 @@ export default function TestimonialsCard() {
   const handleConfirmDeleteTestimonial = () => {
     if (selectedDeletedId) {
       deleteTestimonialsMutation.mutate(selectedDeletedId);
+      setShowDialog(false);
     }
+  };
+
+  const router = useRouter();
+
+  const handleTestimonialEdit = (id: string) => {
+    router.push(`/testimonials/add?id=${id}`)
   };
   return (
     <div>
@@ -45,7 +46,7 @@ export default function TestimonialsCard() {
         <p>No Record found</p>
       ) : (
         testimonials.data &&
-        testimonials.data.map((testimonial: any) => {
+        testimonials.data.map((testimonial: any, i: number) => {
           return (
             <Card
               key={testimonial.id}
@@ -69,16 +70,15 @@ export default function TestimonialsCard() {
                 <CardTitle className="text-lg font-semibold text-gray-100">
                   {testimonial.fullName}
                 </CardTitle>
-                <p className="text-sm text-gray-400">{testimonial.position}</p>
+                <p className="text-sm text-gray-400">
+                  {testimonial.position.title}
+                </p>
               </CardHeader>
               <CardFooter className="flex justify-center space-x-4 p-4 border-t border-gray-700 bg-gray-900">
                 <Button
                   variant="ghost"
                   className="text-blue-400 hover:text-blue-300"
-                  onClick={() => {
-                    // setEditingTestimonial(testimonial);
-                    // setIsDialogOpen(true);
-                  }}
+                  onClick={() => handleTestimonialEdit(testimonial.id)}
                 >
                   Edit
                 </Button>

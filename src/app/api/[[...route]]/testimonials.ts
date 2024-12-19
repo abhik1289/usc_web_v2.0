@@ -9,7 +9,7 @@ import { z } from "zod";
 const testimonials = new Hono()
   .post("/add", zValidator("json", testimonialSchema), async (c) => {
     try {
-      const { fullName, photoUrl, position, text } = c.req.valid("json");
+      const { fullName, photoUrl, rolesId, text } = c.req.valid("json");
 
       const token = getCookie(c, "token");
       if (!token) {
@@ -18,14 +18,15 @@ const testimonials = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
         const testimonials = await db.testimonials.findMany();
+        // console.log("-------------->", testimonials);
         let index;
-        if (!testimonials) {
+        if (testimonials.length === 0) {
           index = 0;
         } else {
           index = testimonials[testimonials.length - 1].index + 1;
         }
         await db.testimonials.create({
-          data: { fullName, photoUrl, position, text, index, userId: id },
+          data: { fullName, photoUrl, rolesId, text, index, userId: id },
         });
         return c.json(
           {
@@ -48,11 +49,49 @@ const testimonials = new Hono()
   })
   .get("/", async (c) => {
     try {
-      const testimonials = await db.testimonials.findMany();
+      const testimonials = await db.testimonials.findMany({
+        include: {
+          position: {
+            select: {
+              title: true,
+            },
+          },
+        },
+      });
       return c.json(
         {
           success: true,
           message: testimonials,
+        },
+        200
+      );
+    } catch (error) {
+      console.error("Sign-in error:", error);
+      return c.json(
+        {
+          success: false,
+          error: "An unexpected error occurred. Please try again.",
+        },
+        500
+      );
+    }
+  })
+  .get("/:id", async (c) => {
+    try {
+      const testimonial = await db.testimonials.findFirst({
+        where: { id: c.req.param("id") },
+        include: {
+          position: {
+            select: {
+              title: true,
+            },
+          },
+        },
+      });
+      return c.json(
+        {
+          success: true,
+          message: testimonial,
         },
         200
       );
@@ -150,12 +189,12 @@ const testimonials = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
         const Tid = c.req.param("id");
-        const { fullName, photoUrl, position, text } = c.req.valid("json");
+        const { fullName, photoUrl, rolesId, text } = c.req.valid("json");
         await db.testimonials.update({
           where: {
             id: Tid,
           },
-          data: { fullName, photoUrl, position, text, userId: id },
+          data: { fullName, photoUrl, rolesId, text, userId: id },
         });
         return c.json(
           {

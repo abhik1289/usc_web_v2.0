@@ -90,22 +90,24 @@ model Testimonials {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   fullName  String
   photoUrl  String
-  position  String
+  position  Roles    @relation(fields: [rolesId], references: [id])
   createdBy User     @relation(fields: [userId], references: [id])
   text      String
   index     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String   @db.ObjectId
+  rolesId   String   @db.ObjectId
 }
 
 model Roles {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  createdBy User    @relation(fields: [userId], references: [id])
-  Main      Main[]
-  userId    String  @db.ObjectId
-  Leads     Leads[]
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  createdBy    User           @relation(fields: [userId], references: [id])
+  Main         Main[]
+  userId       String         @db.ObjectId
+  Leads        Leads[]
+  Testimonials Testimonials[]
 }
 
 model Main {
@@ -150,7 +152,7 @@ model Leads {
   id                   String        @id @default(auto()) @map("_id") @db.ObjectId
   fullName             String
   isCoreMember         Boolean
-  coreMemberPosition   Roles?         @relation(fields: [coreMemberPositionId], references: [id])
+  coreMemberPosition   Roles?        @relation(fields: [coreMemberPositionId], references: [id])
   createdAt            DateTime      @default(now())
   updatedAt            DateTime      @updatedAt
   isCurrent            Boolean
@@ -163,7 +165,7 @@ model Leads {
   domainNameId         String        @db.ObjectId
   index                Int
   Social               Social[]
-  coreMemberPositionId String?        @db.ObjectId
+  coreMemberPositionId String?       @db.ObjectId
 }
 
 model Social {

@@ -80,9 +80,9 @@ export default function LeadsPage() {
         
               <TableCell>Domain Name</TableCell>
               <TableCell>Socials</TableCell>
-              <TableCell>Photo</TableCell>
               <TableCell>Core Member</TableCell>
               <TableCell>Profile Photo</TableCell>
+              <TableCell>Photo</TableCell>
 
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -124,16 +124,12 @@ export default function LeadsPage() {
                   <div className="flex space-x-3">
                       <Button
                         variant="link"
-                        // onClick={() =>
-                        //   router.push(`/domains/add-domain?id=${domain.id}`)
-                        // }
                       >
                         Edit
                       </Button>
                       <Button
                         variant="link"
                         className="text-red-500"
-                        // onClick={() => handleDeleteDomain(domain.id)}
                       >
                         Delete
                       </Button>

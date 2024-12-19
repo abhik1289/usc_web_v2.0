@@ -196,7 +196,7 @@ const leads = new Hono()
       if (!token) {
         return c.json({ success: false, error: "Token not found" }, 401);
       } else {
-        const lead = await db.leads.findMany({
+        const leads = await db.leads.findMany({
           include: {
             Social: true,
             coreMemberPosition: {
@@ -224,7 +224,7 @@ const leads = new Hono()
         return c.json(
           {
             success: true,
-            lead: lead,
+            leads: leads,
           },
           200
         );

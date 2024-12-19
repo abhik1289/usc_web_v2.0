@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/select";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useGetLeads } from "@/hooks/api/leads/useGetLeads";
+
 interface Lead {
   id: number;
   name: string;
@@ -29,33 +31,26 @@ interface Lead {
 }
 
 export default function LeadsPage() {
-  const [leads, setLeads] = useState<Lead[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [filter, setFilter] = useState("all");
 
-  const handleAddLead = (newLead: Lead) => {
-    setLeads((prevLeads) => [...prevLeads, newLead]);
-  };
+  const router = useRouter();
+  const leadsInfo = useGetLeads();
+  const leads = leadsInfo.data;
 
-  const handleEditLead = (updatedLead: Lead) => {
-    setLeads((prevLeads) =>
-      prevLeads.map((lead) => (lead.id === updatedLead.id ? updatedLead : lead))
+  const renderDomainBadge = (domainName: string) => {
+    const isTech = domainName === "Tech";
+    return (
+      <span
+        className={`px-2 py-1 rounded-full text-sm ${
+          isTech ? "bg-blue-100 text-blue-800" : "bg-green-100 text-green-800"
+        }`}
+      >
+        {domainName}
+      </span>
     );
   };
-
-  const handleDeleteLead = (id: number) => {
-    setLeads((prevLeads) => prevLeads.filter((lead) => lead.id !== id));
-  };
-
-  const filteredLeads = leads.filter((lead) => {
-    if (filter === "all") return true;
-    if (filter === "tech") return lead.domainType === "Tech";
-    if (filter === "non-tech") return lead.domainType === "Non-Tech";
-    return true;
-  });
-
-  const router = useRouter();
 
   return (
     <div className="p-6 space-y-6">
@@ -76,89 +71,90 @@ export default function LeadsPage() {
         </div>
       </div>
 
-      <div className=" rounded-lg shadow-md">
+      <div className="rounded-lg shadow-md">
         <Table>
           <TableHeader>
-            <TableRow className=" ">
-              {[
-                "ID",
-                "Name",
-                "Domain Type",
-                "Domain Name",
-                "Socials",
-                "Photo",
-                "Actions",
-              ].map((header) => (
-                <TableCell key={header}>{header}</TableCell>
-              ))}
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Name</TableCell>
+        
+              <TableCell>Domain Name</TableCell>
+              <TableCell>Socials</TableCell>
+              <TableCell>Photo</TableCell>
+              <TableCell>Core Member</TableCell>
+              <TableCell>Profile Photo</TableCell>
+
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHeader>
-          <TableBody className="text-black">
-            {filteredLeads.map((lead) => (
-              <TableRow key={lead.id}>
-                <TableCell>{lead.id}</TableCell>
-                <TableCell>{lead.name}</TableCell>
-                <TableCell>
-                  <span
-                    className={`px-2 py-1 rounded-full text-sm ${
-                      lead.domainType === "Tech"
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-green-100 text-green-800"
-                    }`}
-                  >
-                    {lead.domainType}
-                  </span>
-                </TableCell>
-                <TableCell>{lead.domainName}</TableCell>
-                <TableCell>{lead.socials}</TableCell>
-                <TableCell>
-                  {lead.photo && (
-                    <Image
-                      width={100}
-                      height={100}
-                      src={URL.createObjectURL(lead.photo)}
-                      alt={lead.name}
-                      className="h-16 w-16 object-cover rounded"
-                    />
-                  )}
-                </TableCell>
-                <TableCell>
-                  <div className="flex space-x-2">
-                    <Button
-                      className="text-black"
-                      variant="link"
-                      onClick={() => {
-                        setEditingLead(lead);
-                        setIsDialogOpen(true);
-                      }}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      onClick={() => handleDeleteLead(lead.id)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
+          <TableBody>
+            {leadsInfo.isLoading ? (
+              <TableRow>
+                <TableCell className="text-center" colSpan={7}>
+                  Loading...
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              leads.map((lead: any, i: number) => (
+                <TableRow key={lead.id}>
+                  <TableCell>{i + 1}</TableCell>
+                  <TableCell>{`${lead.fullName?.split(" ")[0]}${lead.isCurrent==false?" (F)":""}`}</TableCell>
+     
+                  <TableCell>{lead.domainName.title}</TableCell>
+                  <TableCell>Avik</TableCell>
+                  <TableCell>Avik</TableCell>
+
+                  <TableCell>
+                    {lead.isCoreMember ? lead.coreMemberPosition.title:'No'}
+                   
+                  </TableCell>
+                  <TableCell>
+                  
+                     {lead.profilePhoto && (
+                      <Image
+                        width={100}
+                        height={100}
+                        src={lead.profilePhoto}
+                        alt={lead.id}
+                        className="h-16 w-16 object-cover rounded"
+                      />
+                    )} 
+                  </TableCell>
+                  <TableCell>
+                  <div className="flex space-x-3">
+                      <Button
+                        variant="link"
+                        // onClick={() =>
+                        //   router.push(`/domains/add-domain?id=${domain.id}`)
+                        // }
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="link"
+                        className="text-red-500"
+                        // onClick={() => handleDeleteDomain(domain.id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
 
-      {isDialogOpen && (
+      {/* {isDialogOpen && (
         <LeadsDialog
           onClose={() => {
             setIsDialogOpen(false);
             setEditingLead(null);
           }}
-          onAddLead={handleAddLead}
-          onEditLead={handleEditLead}
           editingLead={editingLead}
         />
-      )}
+      )} */}
     </div>
   );
 }

@@ -1,10 +1,11 @@
 
+import { AddTestimonials } from '@/components/(admin)/testimonials/AddTestimonials'
 import React from 'react'
 
-function AddTestimonials() {
+function AddTestimonialsPage() {
   return (
-    <div>AddTestnimonilas</div>
+    <AddTestimonials/>
   )
 }
 
-export default AddTestimonials
+export default AddTestimonialsPage

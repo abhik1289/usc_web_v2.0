@@ -13,29 +13,23 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+
 import { toast } from "@/hooks/use-toast";
 import AddRoleDialog from "./AddRoleDialog";
+import AlertDialogBox from "./../AlertDialog.tsx/AlertDialog";
 
 const RoleTable = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
-  const [selectedEditRoleId, setSelectedEditRoleId] = useState<string | null>(null);
-
-  const [selectedEditRoleTitle, setSelectedEditRoleTitle] = useState<string | null>(
+  const [selectedEditRoleId, setSelectedEditRoleId] = useState<string | null>(
     null
   );
+
+  const [selectedEditRoleTitle, setSelectedEditRoleTitle] = useState<
+    string | null
+  >(null);
 
   const queryClient = useQueryClient();
 
@@ -158,29 +152,14 @@ const RoleTable = () => {
       </CardContent>
 
       {/* Delete confirmation dialog */}
-      <AlertDialog open={showDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Are you sure you want to delete this role?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. Deleting this role will remove it
-              from the system permanently, and it cannot be recovered.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setShowDialog(false)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleConfirmDelete} // Confirm delete when "Yes" is clicked
-            >
-              Yes, Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <AlertDialogBox
+        show={showDialog}
+        title="Are you sure you want to delete this role?"
+        description="This action cannot be undone. Deleting this role will remove it from
+            the system permanently, and it cannot be recovered."
+        setShow={() => setShowDialog(false)}
+        onConfirm={handleConfirmDelete}
+      />
       {showEditDialog && (
         <AddRoleDialog
           onClose={() => {

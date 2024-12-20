@@ -1,12 +1,12 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-export const useGetDomainGroup = () => {
+export const useGetDomainDetails = () => {
   const query = useQuery({
-    queryKey: ["domainGroups"],
+    queryKey: ["domainDetails"],
     queryFn: async () => {
-      const res = await axios.get("/api/domain/get-domain-groups");
-      return res.data.message;
+      const res = await axios.get("/api/domain/get-domains");
+      return res.data.domainGroups;
     },
   });
   return query;

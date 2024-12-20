@@ -33,6 +33,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useGetRoles } from "@/hooks/api/roles/useGetRoles";
+import { useGetDomainGroup } from "@/hooks/api/domain/useGetDomainGroup";
+import { useGetDomainDetails } from "@/hooks/api/domain/useGetDomainDetails";
 const formSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -52,7 +55,10 @@ function AddLead() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
-
+  const roles = useGetRoles();
+  const domainGroups = useGetDomainGroup();
+  const domainDetails = useGetDomainDetails();
+  console.log(domainDetails.data)
   return (
     <div className="p-2">
       <Card>
@@ -202,28 +208,117 @@ function AddLead() {
                     control={form.control}
                     name="email"
                     render={({ field }) => (
-                      <FormItem className="flex flex-1 flex-row items-center justify-between rounded-lg shadow-sm">
+                      <FormItem className="flex-1">
+                        <FormLabel>Position</FormLabel>
                         <FormControl>
-                          <Select>
-                            <SelectTrigger className="">
-                              <SelectValue placeholder="Select a fruit" />
+                          <Select
+                            onValueChange={field.onChange}
+                            disabled={roles.isLoading}
+                            {...field}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Fruits</SelectLabel>
-                                <SelectItem value="apple">Apple</SelectItem>
-                                <SelectItem value="banana">Banana</SelectItem>
-                                <SelectItem value="blueberry">
-                                  Blueberry
-                                </SelectItem>
-                                <SelectItem value="grapes">Grapes</SelectItem>
-                                <SelectItem value="pineapple">
-                                  Pineapple
-                                </SelectItem>
-                              </SelectGroup>
+                              {roles.data && roles.data.length === 0 ? (
+                                <p>No role found</p>
+                              ) : (
+                                <SelectGroup>
+                                  <SelectLabel> Role</SelectLabel>
+                                  {roles.data &&
+                                    roles.data.map((item: any, i: number) => (
+                                      <SelectItem key={i} value={item.id}>
+                                        {item.title}
+                                      </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                              )}
                             </SelectContent>
                           </Select>
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="flex w-full gap-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Domain Group</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            disabled={roles.isLoading}
+                            {...field}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {domainGroups.data &&
+                              domainGroups.data.length === 0 ? (
+                                <p>No role found</p>
+                              ) : (
+                                <SelectGroup>
+                                  <SelectLabel> Role</SelectLabel>
+                                  {domainGroups.data &&
+                                    domainGroups.data.map(
+                                      (item: any, i: number) => (
+                                        <SelectItem key={i} value={item.id}>
+                                          {item.title}
+                                        </SelectItem>
+                                      )
+                                    )}
+                                </SelectGroup>
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="flex w-full gap-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Domain Group</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            disabled={roles.isLoading}
+                            {...field}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {domainDetails.data &&
+                              domainDetails.data.length === 0 ? (
+                                <p>No role found</p>
+                              ) : (
+                                <SelectGroup>
+                                  <SelectLabel> Role</SelectLabel>
+                                  {domainDetails.data &&
+                                    domainDetails.data.map(
+                                      (item: any, i: number) => (
+                                        <SelectItem key={i} value={item.id}>
+                                          {item.title}
+                                        </SelectItem>
+                                      )
+                                    )}
+                                </SelectGroup>
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />

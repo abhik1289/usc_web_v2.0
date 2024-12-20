@@ -26,6 +26,8 @@ interface UserData {
 export function UserTable() {
   const [data, setData] = useState<UserData[]>([]);
   const [open, setOpen] = useState<boolean>(false);
+  const [role, setRole] = useState<string>("");
+  const [editId, setEditId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const { toast } = useToast();
 
@@ -67,7 +69,7 @@ export function UserTable() {
           variant: "destructive",
         });
       }
-    } catch (error:any) {
+    } catch (error: any) {
       // console.log(error)
       toast({
         description: error.response.data.error || "An error occurred.",
@@ -76,8 +78,10 @@ export function UserTable() {
     }
   };
 
-  const handleChangeRole = (email: string) => {
+  const handleChangeRole = (userId: string, role: string) => {
     setOpen(true);
+    setRole(role);
+    setEditId(userId)
   };
 
   return (
@@ -111,7 +115,7 @@ export function UserTable() {
                 <TableCell>{user.role}</TableCell>
                 <TableCell className="text-right space-x-2">
                   <button
-                    onClick={() => handleChangeRole(user.email)}
+                    onClick={() => handleChangeRole(user.id, user.role)}
                     className="text-blue-500 hover:underline"
                   >
                     Edit
@@ -143,7 +147,7 @@ export function UserTable() {
           </TableRow>
         </TableFooter>
       </Table>
-      <ChangeRoleDialog open={open} setOpen={setOpen} />
+      <ChangeRoleDialog editId={editId} role={role} open={open} setOpen={setOpen} />
     </>
   );
 }

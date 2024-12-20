@@ -50,6 +50,11 @@ const testimonials = new Hono()
   .get("/", async (c) => {
     try {
       const testimonials = await db.testimonials.findMany({
+        orderBy: [
+          {
+            index: "asc",
+          },
+        ],
         include: {
           position: {
             select: {
@@ -189,12 +194,13 @@ const testimonials = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
         const Tid = c.req.param("id");
-        const { fullName, photoUrl, rolesId, text,index } = c.req.valid("json");
+        const { fullName, photoUrl, rolesId, text, index } =
+          c.req.valid("json");
         await db.testimonials.update({
           where: {
             id: Tid,
           },
-          data: { fullName, photoUrl, rolesId, text, userId: id,index },
+          data: { fullName, photoUrl, rolesId, text, userId: id, index },
         });
         return c.json(
           {

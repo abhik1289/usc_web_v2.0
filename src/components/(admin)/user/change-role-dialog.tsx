@@ -31,14 +31,21 @@ import { useState } from "react";
 interface ChangeRoleDialogInterface {
   open: boolean;
   setOpen: (value: boolean) => void;
+  role: string;
+  editId: string | null;
 }
 
-export function ChangeRoleDialog({ open, setOpen }: ChangeRoleDialogInterface) {
+export function ChangeRoleDialog({
+  open,
+  setOpen,
+  role,
+  editId,
+}: ChangeRoleDialogInterface) {
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof changeRole>>({
     resolver: zodResolver(changeRole),
     defaultValues: {
-      role: "MODERATOR", 
+      role: "ADMIN",
     },
   });
 
@@ -63,9 +70,7 @@ export function ChangeRoleDialog({ open, setOpen }: ChangeRoleDialogInterface) {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Change Role</DialogTitle>
-          <DialogDescription>
-            Select a new role for the user.
-          </DialogDescription>
+          <DialogDescription>Select a new role for the user.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -77,7 +82,12 @@ export function ChangeRoleDialog({ open, setOpen }: ChangeRoleDialogInterface) {
                 <FormItem>
                   <FormLabel>Role</FormLabel>
                   <FormControl>
-                    <Select disabled={loading} {...field}>
+                    <Select
+                      // value={role}
+                      onValueChange={field.onChange}
+                      disabled={loading}
+                      {...field}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select Role" />
                       </SelectTrigger>

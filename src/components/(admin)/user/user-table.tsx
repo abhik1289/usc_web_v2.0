@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { ChangeRoleDialog } from "./change-role-dialog";
+import { useGetUsers } from "@/hooks/api/user/useGetUsers";
 
 interface UserData {
   id: string;
@@ -31,29 +32,8 @@ export function UserTable() {
   const [loading, setLoading] = useState<boolean>(true);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get("/api/user/get-users");
-        if (response.data.success) {
-          setData(response.data.users);
-        } else {
-          toast({
-            description: "Failed to fetch users.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        toast({
-          description: "An error occurred while fetching users.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUsers();
-  }, [toast]);
+
+  const users = useGetUsers();
 
   const deleteUser = async (email: string) => {
     try {
@@ -81,7 +61,7 @@ export function UserTable() {
   const handleChangeRole = (userId: string, role: string) => {
     setOpen(true);
     setRole(role);
-    setEditId(userId)
+    setEditId(userId);
   };
 
   return (
@@ -97,48 +77,58 @@ export function UserTable() {
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
-        {loading ? (
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={5} className="text-center">
-                Loading...
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        ) : data.length > 0 ? (
-          <TableBody>
-            {data.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.firstName}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.isActive ? "Active" : "Inactive"}</TableCell>
-                <TableCell>{user.role}</TableCell>
-                <TableCell className="text-right space-x-2">
-                  <button
-                    onClick={() => handleChangeRole(user.id, user.role)}
-                    className="text-blue-500 hover:underline"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => deleteUser(user.email)}
-                    className="text-red-500 hover:underline"
-                  >
-                    Delete
-                  </button>
+        {
+          users.isError ? (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  Error Occurs
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        ) : (
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={5} className="text-center">
-                No users found.
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        )}
+            </TableBody>
+          ) : users.isLoading ? (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  Loading...
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          ) : users.data && users?.data.length === 0 ? (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  No users found.
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          ) : users.data && users?.data.length > 0 ? (
+            <TableBody>
+              {users?.data.map((user: any) => (
+                <TableRow key={user.id}>
+                  <TableCell className="font-medium">{user.firstName}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.isActive ? "Active" : "Inactive"}</TableCell>
+                  <TableCell>{user.role}</TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <button
+                      onClick={() => handleChangeRole(user.id, user.role)}
+                      className="text-blue-500 hover:underline"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteUser(user.email)}
+                      className="text-red-500 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          ) : null
+        }
         <TableFooter>
           <TableRow>
             <TableCell colSpan={5} className="text-right">
@@ -147,7 +137,12 @@ export function UserTable() {
           </TableRow>
         </TableFooter>
       </Table>
-      <ChangeRoleDialog editId={editId} role={role} open={open} setOpen={setOpen} />
+      <ChangeRoleDialog
+        editId={editId}
+        role={role}
+        open={open}
+        setOpen={setOpen}
+      />
     </>
   );
 }

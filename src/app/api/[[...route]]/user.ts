@@ -169,46 +169,46 @@ export const user = new Hono<{ Variables: Variables }>()
           { success: false, error: "Super admin only add a new user" },
           409
         );
-      }else{
-      const { firstName, email, role } = await c.req.json();
-      const existingUser: User | null = await getUserByEmail(email);
+      } else {
+        const { firstName, email, role } = await c.req.json();
+        const existingUser: User | null = await getUserByEmail(email);
 
-      if (existingUser) {
-        return c.json(
-          { success: false, error: "This email already exits" },
-          409
-        );
-      }
+        if (existingUser) {
+          return c.json(
+            { success: false, error: "This email already exits" },
+            409
+          );
+        }
 
-      // Create a new user record in the database
-      const token = generateActiveToken(email);
-      const tokenExpiration = Date.now() + 60 * 60 * 1000;
-      await db.user.create({
-        data: {
+        // Create a new user record in the database
+        const token = generateActiveToken(email);
+        const tokenExpiration = Date.now() + 60 * 60 * 1000;
+        await db.user.create({
+          data: {
+            firstName: firstName,
+            email: email,
+            role: role,
+            activeToken: token,
+            activeTokenExpires: new Date(tokenExpiration),
+          },
+        });
+        const setupUrl = `${process.env.CLIENT_URL}/set-up?token=${token}`;
+        const status: {
+          error?: string;
+          data?: string;
+        } = await axios.post(`${process.env.CLIENT_URL}/api/send`, {
           firstName: firstName,
-          email: email,
-          role: role,
-          activeToken: token,
-          activeTokenExpires: new Date(tokenExpiration),
-        },
-      });
-      const setupUrl = `${process.env.CLIENT_URL}/set-up?token=${token}`;
-      const status: {
-        error?: string;
-        data?: string;
-      } = await axios.post(`${process.env.CLIENT_URL}/api/send`, {
-        firstName: firstName,
-        role,
-        setupUrl,
-        email,
-      });
-      if (status.error) {
-        return c.json(
-          { success: false, error: "Problem occurred" },
-          { status: 401 }
-        );
+          role,
+          setupUrl,
+          email,
+        });
+        if (status.error) {
+          return c.json(
+            { success: false, error: "Problem occurred" },
+            { status: 401 }
+          );
+        }
       }
-    }
       return c.json({ success: true, message: "User Invitation send" }, 200);
     } catch (error) {
       console.error("Sign-in error:", error);
@@ -390,13 +390,47 @@ export const user = new Hono<{ Variables: Variables }>()
         } else {
           await db.user.delete({
             where: {
-              id:  c.req.param("id"),
+              id: c.req.param("id"),
             },
           });
           return c.json({ success: true, message: "Deleted account" });
         }
       }
     } catch (e) {
+      return c.json(
+        { error: "An unexpected error occurred. Please try again." },
+        500
+      );
+    }
+  })
+  .get("/:id", async (c) => {
+    try {
+      const token = getCookie(c, "token");
+      console.log(token);
+      if (!token) {
+        return c.json(
+          {
+            error: "token not found",
+            success: false,
+          },
+          401
+        );
+      } else {
+        const users: User | null = await db.user.findFirst({
+          where: { id: c.req.param("id") },
+        });
+
+        return c.json(
+          {
+            success: true,
+            users,
+          },
+          200
+        );
+      }
+    } catch (error) {
+      console.log(error);
+
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
         500

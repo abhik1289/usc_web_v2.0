@@ -31,14 +31,12 @@ import { useState } from "react";
 interface ChangeRoleDialogInterface {
   open: boolean;
   setOpen: (value: boolean) => void;
-  role: string;
   editId: string | null;
 }
 
 export function ChangeRoleDialog({
   open,
   setOpen,
-  role,
   editId,
 }: ChangeRoleDialogInterface) {
   const [loading, setLoading] = useState(false);

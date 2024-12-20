@@ -370,7 +370,7 @@ export const user = new Hono<{ Variables: Variables }>()
       );
     }
   })
-  .post("/delete-user", async (c) => {
+  .get("/delete-user/:id", async (c) => {
     try {
       const token = getCookie(c, "token");
       if (!token) {
@@ -382,7 +382,7 @@ export const user = new Hono<{ Variables: Variables }>()
           401
         );
       } else {
-        const { email } = await c.req.json();
+        // const { email } = await c.req.json();
         const user: SignInTokenPayload = decodeSignInToken(token);
         const role = user.payload.role!;
         if (role != "SUPERADMIN") {
@@ -390,7 +390,7 @@ export const user = new Hono<{ Variables: Variables }>()
         } else {
           await db.user.delete({
             where: {
-              email: email,
+              id:  c.req.param("id"),
             },
           });
           return c.json({ success: true, message: "Deleted account" });

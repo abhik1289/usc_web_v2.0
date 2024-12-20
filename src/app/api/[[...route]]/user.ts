@@ -416,14 +416,14 @@ export const user = new Hono<{ Variables: Variables }>()
           401
         );
       } else {
-        const users: User | null = await db.user.findFirst({
+        const user: User | null = await db.user.findFirst({
           where: { id: c.req.param("id") },
         });
 
         return c.json(
           {
             success: true,
-            users,
+            user,
           },
           200
         );

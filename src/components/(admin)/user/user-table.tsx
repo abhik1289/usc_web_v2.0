@@ -29,7 +29,7 @@ interface UserData {
 export function UserTable() {
   const [open, setOpen] = useState<boolean>(false);
   const [role, setRole] = useState<string>("");
-  const [editId, setEditId] = useState<string | null>(null);
+  const [editId, setEditId] = useState<string>("");
   const [deleteId, setDeleteId] = useState<string>("");
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
@@ -125,7 +125,7 @@ export function UserTable() {
       </Table>
       <ChangeRoleDialog
         editId={editId}
-        role={role}
+        // role={role}
         open={open}
         setOpen={setOpen}
       />

@@ -27,11 +27,12 @@ import {
 } from "@/components/ui/select";
 import { changeRole, ROLES } from "@/schemas/auth/user.schema";
 import { useState } from "react";
+import useGetUserById from "@/hooks/api/user/useGetUserById";
 
 interface ChangeRoleDialogInterface {
   open: boolean;
   setOpen: (value: boolean) => void;
-  editId: string | null;
+  editId: string;
 }
 
 export function ChangeRoleDialog({
@@ -39,11 +40,13 @@ export function ChangeRoleDialog({
   setOpen,
   editId,
 }: ChangeRoleDialogInterface) {
+  const userInfo = useGetUserById(editId);
+
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof changeRole>>({
     resolver: zodResolver(changeRole),
-    defaultValues: {
-      role: "ADMIN",
+    defaultValues: userInfo.data && {
+      role: userInfo.data &&userInfo.data.role,
     },
   });
 
@@ -81,7 +84,7 @@ export function ChangeRoleDialog({
                   <FormLabel>Role</FormLabel>
                   <FormControl>
                     <Select
-                      // value={role}
+                      
                       onValueChange={field.onChange}
                       disabled={loading}
                       {...field}

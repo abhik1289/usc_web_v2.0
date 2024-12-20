@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,7 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetRoles } from "@/hooks/api/roles/useGetRoles";
-import useInsertTestimonial from "@/hooks/api/testimonials/useInsertTestimonials";
+import useEditTestimonial from "@/hooks/api/testimonials/useEditTestimonials";
+import { useRouter } from "next/navigation";
 interface AddTestimonialsFormInterface {
   defaultValues: {
     fullName: string;
@@ -39,26 +38,32 @@ interface AddTestimonialsFormInterface {
     photoUrl: string;
   };
   isEdit: boolean;
+  isLoading: boolean;
+  editId: string;
 }
 
 export const EditTestimonialsForm = ({
   defaultValues,
   isEdit,
+  isLoading,
+  editId,
 }: AddTestimonialsFormInterface) => {
   const roles = useGetRoles();
 
-  // 1. Define your form.
   const form = useForm<z.infer<typeof testimonialSchema>>({
     resolver: zodResolver(testimonialSchema),
     defaultValues,
   });
 
-  const InsertTestimonial = useInsertTestimonial();
+  const EditTestimonial = useEditTestimonial(editId);
+  const router = useRouter();
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof testimonialSchema>) {
-    InsertTestimonial.mutate(values);
-    form.reset();
+    console.log(values)
+    EditTestimonial.mutate(values);
+    setTimeout(() => {
+      router.push("/testimonials");
+    }, 500);
   }
 
   return (
@@ -71,11 +76,7 @@ export const EditTestimonialsForm = ({
             <FormItem>
               <FormLabel>Fullname</FormLabel>
               <FormControl>
-                <Input
-                  disabled={InsertTestimonial.isLoading}
-                  placeholder="John Doe"
-                  {...field}
-                />
+                <Input disabled={isLoading || EditTestimonial.isLoading} placeholder="John Doe" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -92,7 +93,7 @@ export const EditTestimonialsForm = ({
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
-                    disabled={roles.isLoading || InsertTestimonial.isLoading}
+                    disabled={roles.isLoading || isLoading || EditTestimonial.isLoading }
                     {...field}
                   >
                     <SelectTrigger>
@@ -129,7 +130,7 @@ export const EditTestimonialsForm = ({
                   <FormLabel>Sequence</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={InsertTestimonial.isLoading}
+                      disabled={isLoading || EditTestimonial.isLoading}
                       type="number"
                       placeholder="1"
                       {...field}
@@ -150,7 +151,7 @@ export const EditTestimonialsForm = ({
               <FormLabel>Opinion</FormLabel>
               <FormControl>
                 <Textarea
-                  disabled={InsertTestimonial.isLoading}
+                  disabled={isLoading || EditTestimonial.isLoading}
                   placeholder="Share your experience..."
                   {...field}
                 />
@@ -160,8 +161,8 @@ export const EditTestimonialsForm = ({
           )}
         />
 
-        <Button disabled={InsertTestimonial.isLoading} type="submit">
-          {InsertTestimonial.isLoading ? "Adding" : "Add"}
+        <Button disabled={isLoading || EditTestimonial.isLoading} type="submit">
+          {isLoading || EditTestimonial.isLoading? "Editing" : "Edit"}
         </Button>
       </form>
     </Form>

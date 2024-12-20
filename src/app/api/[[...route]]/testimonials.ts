@@ -189,12 +189,12 @@ const testimonials = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
         const Tid = c.req.param("id");
-        const { fullName, photoUrl, rolesId, text } = c.req.valid("json");
+        const { fullName, photoUrl, rolesId, text,index } = c.req.valid("json");
         await db.testimonials.update({
           where: {
             id: Tid,
           },
-          data: { fullName, photoUrl, rolesId, text, userId: id },
+          data: { fullName, photoUrl, rolesId, text, userId: id,index },
         });
         return c.json(
           {

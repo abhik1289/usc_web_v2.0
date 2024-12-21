@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import ChampionDialog from "@/components/(admin)/champion/ChampionDialog";
+// import ChampionDialog from "@/components/(admin)/champion/ChampionDialog";
 import { Champion } from "@/components/(admin)/champion/type";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Separator } from "@/components/ui/separator";

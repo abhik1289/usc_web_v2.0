@@ -7,12 +7,11 @@ import { getCookie } from "hono/cookie";
 import { z } from "zod";
 
 const champions = new Hono()
-  .post("/", zValidator("json", championSchema), async (c) => {
+  .post("/add", zValidator("json", championSchema), async (c) => {
     try {
       const { profilePhoto, coverPhoto, fullName, description, role } =
         c.req.valid("json");
       const token = getCookie(c, "token");
-    //   console.log(token)
       if (!token) {
         return c.json({ success: false, error: "Token not found" }, 401);
       } else {
@@ -20,7 +19,7 @@ const champions = new Hono()
         const { id } = userToken.payload;
         let index;
         const champions = await db.champions.findMany();
-        if (!champions) {
+        if (champions.length===0) {
           index = 0;
         } else {
           index = champions[champions.length - 1].index + 1;
@@ -45,7 +44,7 @@ const champions = new Hono()
         );
       }
     } catch (error) {
-      console.error("Sign-in error:", error);
+      console.error("error:", error);
       return c.json(
         {
           success: false,

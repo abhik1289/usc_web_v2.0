@@ -9,15 +9,12 @@ import {
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { QueryClient, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
-// import { event } from "@/app/api/[[...route]]/event";
+import useGetEvents from "@/hooks/api/events/useGetEvents";
 
-const getRequestHandler = async (url: string) => {
-  const response = await axios.get(url);
-  return response.data.events;
-};
+
 
 interface Event {
   data: [
@@ -119,11 +116,8 @@ const TableView = ({ data, onDelete, onVisibility }: Event) => {
 };
 
 const EventTable = () => {
-  const { isLoading, error, data, refetch } = useQuery({
-    queryKey: ["events"],
-    queryFn: () => getRequestHandler("/api/event/all-events"),
-  });
-
+  
+  const events = useGetEvents();
   const { toast } = useToast();
   const queryClient = new QueryClient();
 
@@ -214,15 +208,15 @@ const EventTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {error ? (
+          {events.isError ? (
             <ErrorHandle />
-          ) : isLoading ? (
+          ) : events.isLoading ? (
             <HandleLoading />
-          ) : data && data.length === 0 ? (
+          ) : events.data && events.data.length === 0 ? (
             <ZeroDataTable />
           ) : (
             <TableView
-              data={data}
+              data={events.data}
               onVisibility={handleVisibility}
               onDelete={handleDeleteEvent}
             />

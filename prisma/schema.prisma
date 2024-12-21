@@ -76,7 +76,7 @@ model Champions {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   profilePhoto String
   fullName     String
-  role         String
+  role         Roles    @relation(fields: [rolesId], references: [id])
   coverPhoto   String
   description  String
   index        Int
@@ -84,6 +84,7 @@ model Champions {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   userId       String   @db.ObjectId
+  rolesId      String   @db.ObjectId
 }
 
 model Testimonials {
@@ -108,6 +109,7 @@ model Roles {
   userId       String         @db.ObjectId
   Leads        Leads[]
   Testimonials Testimonials[]
+  Champions    Champions[]
 }
 
 model Main {

@@ -162,7 +162,7 @@ const champions = new Hono()
           );
         }
       } catch (error) {
-        console.error("Sign-in error:", error);
+        console.error("error:", error);
         return c.json(
           {
             success: false,

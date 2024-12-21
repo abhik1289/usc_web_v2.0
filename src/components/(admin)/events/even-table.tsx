@@ -13,6 +13,8 @@ import { QueryClient, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import useGetEvents from "@/hooks/api/events/useGetEvents";
+import { useState } from "react";
+import AlertDialogBox from "../AlertDialog.tsx/AlertDialog";
 
 
 
@@ -70,8 +72,7 @@ const TableView = ({ data, onDelete, onVisibility }: Event) => {
           <TableCell>{event.title}</TableCell>
           <TableCell>
             {event.eventType === "SINGLE" ? (
-              `${new Date(event.startDate).toLocaleDateString()} [${
-                event.startTime1
+              `${new Date(event.startDate).toLocaleDateString()} [${event.startTime1
               }-${event.endTime1}]`
             ) : (
               <span>
@@ -116,11 +117,12 @@ const TableView = ({ data, onDelete, onVisibility }: Event) => {
 };
 
 const EventTable = () => {
-  
+  const [showDialog, setShowDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState<string>("");
   const events = useGetEvents();
   const { toast } = useToast();
   const queryClient = new QueryClient();
-
+console.log(events.data)
   const deleteMutation = useMutation({
     mutationFn: (id: string) => axios.get(`/api/event/delete-event/${id}`), // Use DELETE method
     onMutate: async (id) => {
@@ -148,7 +150,7 @@ const EventTable = () => {
         description: "Deleted event",
         variant: "destructive",
       });
-      refetch(); // Refetch to ensure data is fresh after deletion
+      // refetch(); // Refetch to ensure data is fresh after deletion
     },
   });
 
@@ -162,10 +164,10 @@ const EventTable = () => {
           data: previousEvents.data.filter((event: any) =>
             event.id === id
               ? {
-                  ...event,
-                  displayType:
-                    event.displayType == "PRIVATE" ? "PUBLIC" : "PRIVATE",
-                }
+                ...event,
+                displayType:
+                  event.displayType == "PRIVATE" ? "PUBLIC" : "PRIVATE",
+              }
               : event
           ),
         });
@@ -188,43 +190,50 @@ const EventTable = () => {
   });
 
   const handleDeleteEvent = (id: string) => {
-    deleteMutation.mutate(id);
+    setShowDialog(true);
+    setDeleteId(id);
   };
 
   const handleVisibility = (id: string) => {
     visibilityMutation.mutate(id);
   };
-  return (
-    <Card>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Venue</TableHead>
-            <TableHead>Visibility</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {events.isError ? (
-            <ErrorHandle />
-          ) : events.isLoading ? (
-            <HandleLoading />
-          ) : events.data && events.data.length === 0 ? (
-            <ZeroDataTable />
-          ) : (
-            <TableView
-              data={events.data}
-              onVisibility={handleVisibility}
-              onDelete={handleDeleteEvent}
-            />
-          )}
-        </TableBody>
-      </Table>
-    </Card>
-  );
+  const handleConfirmDelete = () => {
+    if (deleteId) {
+      deleteMutation.mutate(deleteId);
+    }
+    return (
+      <Card>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>ID</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Venue</TableHead>
+              <TableHead>Visibility</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {events.isError ? (
+              <ErrorHandle />
+            ) : events.isLoading ? (
+              <HandleLoading />
+            ) : events.data && events.data.length === 0 ? (
+              <ZeroDataTable />
+            ) : (
+              <TableView
+                data={events.data}
+                onVisibility={handleVisibility}
+                onDelete={handleDeleteEvent}
+              />
+            )}
+          </TableBody>
+        </Table>
+        <AlertDialogBox show={showDialog} setShow={() => setShowDialog(false)} title=" Delete Confirmation" description="Are you sure you want to delete this item? This action cannot be undone. Please confirm to proceed or cancel to keep the item." onConfirm={handleConfirmDelete} />
+      </Card>
+    );
+  }
 };
 
 export default EventTable;

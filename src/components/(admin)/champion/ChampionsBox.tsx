@@ -3,7 +3,7 @@ import { useGetChampions } from '@/hooks/api/champions/useGetChampions'
 import React from 'react'
 import Image from 'next/image'
 import { ChampionCardSkeleton } from './ChampionCardSkeleton';
-import ChampionCard from './ChampionCard';
+import ChampionCard, { CahmpionCardInterface } from './ChampionCard';
 
 function ChampionsBox() {
 
@@ -12,7 +12,7 @@ function ChampionsBox() {
 
     return (
         <div>
-            {champions.isError ? <p>Error Occres</p> : champions.isLoading ? <ChampionCardSkeleton /> : champions.data && champions.data.length == 0 ? <div className="text-center">No champions found</div> : champions.data && champions.data.map((champion: any, i: number) => <ChampionCard
+            {champions.isError ? <p>Error Occres</p> : champions.isLoading ? <ChampionCardSkeleton /> : champions.data && champions.data.length == 0 ? <div className="text-center">No champions found</div> : champions.data && champions.data.map((champion: CahmpionCardInterface, i: number) => <ChampionCard
                 key={i}
                 fullName={champion.fullName}
                 description={champion.description}

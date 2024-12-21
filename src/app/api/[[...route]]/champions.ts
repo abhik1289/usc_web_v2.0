@@ -74,6 +74,30 @@ const champions = new Hono()
         500
       );
     }
+  }).get("/:id", async (c) => {
+    try {
+      const champions = await db.champions.findFirst({
+        where: {
+          id: c.req.param("id")
+        }
+      });
+      return c.json(
+        {
+          success: true,
+          champions,
+        },
+        200
+      );
+    } catch (error) {
+      console.error("error:", error);
+      return c.json(
+        {
+          success: false,
+          error: "An unexpected error occurred. Please try again.",
+        },
+        500
+      );
+    }
   })
   .get("/delete/:id", async (c) => {
     try {

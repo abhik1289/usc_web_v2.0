@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
-import { ChangeRoleDialog } from "./change-role-dialog";
+import { ChangeRoleDialog, Roles } from "./change-role-dialog";
 import { useGetUsers } from "@/hooks/api/user/useGetUsers";
 import AlertDialogBox from "../AlertDialog.tsx/AlertDialog";
 import { useDeleteUser } from "@/hooks/api/user/useDeleteUser";
@@ -28,7 +28,7 @@ interface UserData {
 
 export function UserTable() {
   const [open, setOpen] = useState<boolean>(false);
-  const [role, setRole] = useState<string>("");
+  const [role, setRole] = useState<Roles>("MODERATOR");
   const [editId, setEditId] = useState<string>("");
   const [deleteId, setDeleteId] = useState<string>("");
   const [showDialog, setShowDialog] = useState<boolean>(false);
@@ -40,10 +40,11 @@ export function UserTable() {
     setShowDialog(true);
   };
 
-  const handleChangeRole = (userId: string, role: string) => {
+  const handleChangeRole = (userId: string, role: Roles) => {
+    console.log("Role is",role);
     setOpen(true);
-    setRole(role);
     setEditId(userId);
+    setRole(role);
   };
 
   const handleDeleteConfirm = () => {

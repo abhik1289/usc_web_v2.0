@@ -56,7 +56,15 @@ const champions = new Hono()
   })
   .get("/", async (c) => {
     try {
-      const champions = await db.champions.findMany();
+      const champions = await db.champions.findMany({
+        include: {
+          role: {
+            select: {
+              title: true
+            }
+          }
+        }
+      });
       return c.json(
         {
           success: true,

@@ -10,10 +10,9 @@ const championSchema = z.object({
     .string()
     .min(1, "Full name is required.")
     .max(15, "Full name must not exceed 15 characters."),
-  role: z
+    rolesId: z
     .string()
-    .min(1, "Role is required.")
-    .max(7, "Role must not exceed 7 characters."),
+    .min(1, "Role is required."),
   coverPhoto: z
     .string()
     .url("Cover photo must be a valid URL.")

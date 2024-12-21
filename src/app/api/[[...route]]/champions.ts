@@ -9,7 +9,7 @@ import { z } from "zod";
 const champions = new Hono()
   .post("/add", zValidator("json", championSchema), async (c) => {
     try {
-      const { profilePhoto, coverPhoto, fullName, description, role } =
+      const { profilePhoto, coverPhoto, fullName, description, rolesId } =
         c.req.valid("json");
       const token = getCookie(c, "token");
       if (!token) {
@@ -30,7 +30,7 @@ const champions = new Hono()
             coverPhoto,
             fullName,
             description,
-            role,
+            rolesId,
             index,
             userId: id,
           },
@@ -182,7 +182,7 @@ const champions = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
         const Tid = c.req.param("id");
-        const { profilePhoto, coverPhoto, fullName, description, role } =
+        const { profilePhoto, coverPhoto, fullName, description, rolesId } =
           c.req.valid("json");
         await db.champions.update({
           where: {
@@ -193,7 +193,7 @@ const champions = new Hono()
             coverPhoto,
             fullName,
             description,
-            role,
+            rolesId,
             userId: id,
           },
         });

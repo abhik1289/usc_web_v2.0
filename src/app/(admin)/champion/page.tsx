@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import ChampionsBox from "@/components/(admin)/champion/ChampionsBox";
 export default function ChampionPage() {
   const [champions, setChampions] = useState<Champion[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -67,69 +68,9 @@ export default function ChampionPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {champions.map((champion) => (
-          <Card key={champion.id} className="hover:shadow-lg transition-shadow">
-            {champion.image && (
-              <AspectRatio ratio={16 / 9} className="overflow-hidden">
-                <Image
-                  width={100}
-                  height={100}
-                  src={URL.createObjectURL(champion.image)}
-                  alt={champion.title}
-                  className="w-full h-full object-cover"
-                />
-              </AspectRatio>
-            )}
-            <CardHeader>
-              <CardTitle>{champion.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 line-clamp-3">
-                {champion.description}
-              </p>
-            </CardContent>
-            <Separator />
-            <CardFooter className="flex justify-end space-x-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setEditingChampion(champion);
-                  setIsDialogOpen(true);
-                }}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => handleDeleteChampion(champion.id)}
-              >
-                Delete
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+      <ChampionsBox />
 
-      {champions.length === 0 && (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">
-            No champions added yet. Add your first champion!
-          </p>
-        </div>
-      )}
-
-      {/* Champion Dialog */}
-      {isDialogOpen && (
-        <ChampionDialog
-          onClose={closeDialog}
-          onAddChampion={handleAddChampion}
-          onEditChampion={handleEditChampion}
-          editingChampion={editingChampion}
-        />
-      )}
+      
     </div>
   );
 }

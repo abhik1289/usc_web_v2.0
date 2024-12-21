@@ -33,20 +33,24 @@ interface ChangeRoleDialogInterface {
   open: boolean;
   setOpen: (value: boolean) => void;
   editId: string;
+  defaultValues: {
+    role: string;
+  }
 }
 
 export function ChangeRoleDialog({
   open,
   setOpen,
   editId,
+  defaultValues
 }: ChangeRoleDialogInterface) {
   const userInfo = useGetUserById(editId);
 
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof changeRole>>({
     resolver: zodResolver(changeRole),
-    defaultValues: userInfo.data && {
-      role: userInfo.data &&userInfo.data.role,
+    defaultValues: {
+      role: defaultValues.role
     },
   });
 
@@ -84,7 +88,7 @@ export function ChangeRoleDialog({
                   <FormLabel>Role</FormLabel>
                   <FormControl>
                     <Select
-                      
+
                       onValueChange={field.onChange}
                       disabled={loading}
                       {...field}

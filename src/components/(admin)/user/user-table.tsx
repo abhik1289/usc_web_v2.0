@@ -124,6 +124,7 @@ export function UserTable() {
         </TableFooter>
       </Table>
       <ChangeRoleDialog
+        defaultValues={{ role }}
         editId={editId}
         // role={role}
         open={open}

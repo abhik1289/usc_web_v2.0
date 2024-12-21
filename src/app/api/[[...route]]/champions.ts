@@ -19,7 +19,7 @@ const champions = new Hono()
         const { id } = userToken.payload;
         let index;
         const champions = await db.champions.findMany();
-        if (champions.length===0) {
+        if (champions.length === 0) {
           index = 0;
         } else {
           index = champions[champions.length - 1].index + 1;
@@ -60,12 +60,12 @@ const champions = new Hono()
       return c.json(
         {
           success: true,
-          message: champions,
+          champions,
         },
         200
       );
     } catch (error) {
-      console.error("Sign-in error:", error);
+      console.error("error:", error);
       return c.json(
         {
           success: false,

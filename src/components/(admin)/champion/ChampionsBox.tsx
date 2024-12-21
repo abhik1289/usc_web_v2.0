@@ -12,15 +12,26 @@ function ChampionsBox() {
 
     return (
         <div>
-            {champions.isError ? <p>Error Occres</p> : champions.isLoading ? <ChampionCardSkeleton /> : champions.data && champions.data.length == 0 ? <div className="text-center">No champions found</div> : champions.data && champions.data.map((champion: CahmpionCardInterface, i: number) => <ChampionCard
-                key={i}
-                fullName={champion.fullName}
-                description={champion.description}
-                profilePhoto={champion.profilePhoto}
-                coverPhoto={champion.coverPhoto}
-                role={{ title: champion.role.title }}
-                id={champion.id}
-            />)}
+            {champions.isError ? (
+                <p>Error Occurred</p>
+            ) : champions.isLoading ? (
+                [0, 1, 2].map((item) => <ChampionCardSkeleton key={item} />)
+            ) : champions.data && champions.data.length === 0 ? (
+                <div className="text-center">No champions found</div>
+            ) : (
+                champions.data &&
+                champions.data.map((champion: CahmpionCardInterface, i: number) => (
+                    <ChampionCard
+                        key={i}
+                        fullName={champion.fullName}
+                        description={champion.description}
+                        profilePhoto={champion.profilePhoto}
+                        coverPhoto={champion.coverPhoto}
+                        role={{ title: champion.role.title }}
+                        id={champion.id}
+                    />
+                ))
+            )}
         </div >
     )
 }

@@ -24,8 +24,8 @@ import { toast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { useGetDomainGroup } from "@/hooks/api/domain/useGetDomainGroup";
-import { useAddDomainDetails } from "@/hooks/api/domain/useAddDomainDetails";
+import { useGetDomainGroup } from "@/hooks/api/domainDetails/useGetDomainGroup";
+import { useAddDomainDetails } from "@/hooks/api/domainDetails/useAddDomainDetails";
 
 const formSchema = z.object({
   title: z

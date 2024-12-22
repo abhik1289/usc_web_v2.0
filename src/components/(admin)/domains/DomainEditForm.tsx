@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useGetDomainGroup } from "@/hooks/api/domain/useGetDomainGroup";
-import { useEditDomainDetails } from "@/hooks/api/domain/useEditDomainDetails";
+import { useGetDomainGroup } from "@/hooks/api/domainDetails/useGetDomainGroup";
+import { useEditDomainDetails } from "@/hooks/api/domainDetails/useEditDomainDetails";
 import { useRouter } from "next/navigation";
 const formSchema = z.object({
   title: z

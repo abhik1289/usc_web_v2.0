@@ -34,8 +34,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetRoles } from "@/hooks/api/roles/useGetRoles";
-import { useGetDomainGroup } from "@/hooks/api/domain/useGetDomainGroup";
-import { useGetDomainDetails } from "@/hooks/api/domain/useGetDomainDetails";
+import { useGetDomainGroup } from "@/hooks/api/domainDetails/useGetDomainGroup";
+import { useGetDomainDetails } from "@/hooks/api/domainDetails/useGetDomainDetails";
 const formSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",

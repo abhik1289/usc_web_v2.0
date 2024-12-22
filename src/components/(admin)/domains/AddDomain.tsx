@@ -17,7 +17,7 @@ import {
 
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
-import { useGetDomainGroup } from "@/hooks/api/domain/useGetDomainGroup";
+import { useGetDomainGroup } from "@/hooks/api/domainDetails/useGetDomainGroup";
 import { DomainAddForm } from "./DomainAddForm";
 import { DomainEditForm } from "./DomainEditForm";
 

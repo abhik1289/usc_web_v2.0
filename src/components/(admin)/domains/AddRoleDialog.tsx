@@ -24,6 +24,8 @@ import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import useGetAddRole from "@/hooks/api/role/useGetAddRole";
+import useEditRole from "@/hooks/api/role/useEditRole";
 
 interface AddRoleDialogProps {
   onClose: () => void;
@@ -32,7 +34,7 @@ interface AddRoleDialogProps {
   showEditDialog?: boolean;
   onEditRole?: () => void;
   selectedEditRoleTitle?: string | null;
-  selectedEditRoleId?: string | null;
+  selectedEditRoleId?: string;
 }
 
 const formSchema = z.object({
@@ -41,10 +43,7 @@ const formSchema = z.object({
   }),
 });
 
-const addRoleHandler = async (role: string) => {
-  const res = await axios.post("/api/domain/add-role", { title: role });
-  return res.data;
-};
+
 
 export default function AddRoleDialog({
   onClose,
@@ -55,67 +54,26 @@ export default function AddRoleDialog({
   selectedEditRoleTitle,
   selectedEditRoleId,
 }: AddRoleDialogProps) {
-  const editRoleHandler = async (role: string) => {
-    const res = await axios.post(
-      `/api/domain/update-role/${selectedEditRoleId}`,{
-        title: role
-      }
-    );
-    return res.data;
-  };
-  const [loading, setLoading] = useState(false);
+ 
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { role: selectedEditRoleTitle ? selectedEditRoleTitle : "" },
   });
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: addRoleHandler,
-    onMutate: () => setLoading(true),
-    onSuccess: () => {
-      toast({
-        description: "Role added successfully!",
-      });
-      queryClient.invalidateQueries(["roles"]); // Optional: Invalidate roles query to refetch data
-      setLoading(false);
-      onClose();
-    },
-    onError: (error: any) => {
-      toast({
-        description: error.response?.data?.error || "An error occurred",
-        variant: "destructive",
-      });
-      setLoading(false);
-    },
-  });
 
-  const editMutation = useMutation({
-    mutationFn: editRoleHandler,
-    onMutate: () => setLoading(true),
-    onSuccess: () => {
-      toast({
-        description: "Role Modified successfully!",
-      });
-      queryClient.invalidateQueries(["roles"]); // Optional: Invalidate roles query to refetch data
-      setLoading(false);
-      onClose();
-    },
-    onError: (error: any) => {
-      toast({
-        description: error.response?.data?.error || "An error occurred",
-        variant: "destructive",
-      });
-      setLoading(false);
-    },
-  });
+  const mutation = useGetAddRole();
+
+  const editMutation = useEditRole(selectedEditRoleId);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (editingRole) {
-      editMutation.mutate(values.role);
+      editMutation.mutate({ role: values.role });
+      onClose();
     } else {
-      mutation.mutate(values.role); // Trigger the mutation with the role
+      mutation.mutate({ role: values.role }); // Trigger the mutation with the role
+      onClose();
+
     }
   };
 
@@ -135,7 +93,7 @@ export default function AddRoleDialog({
                   <FormLabel>Role</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={loading}
+                      disabled={editMutation.isLoading || mutation.isLoading}
                       placeholder="Enter role"
                       {...field}
                     />
@@ -145,12 +103,12 @@ export default function AddRoleDialog({
               )}
             />
             {editingRole ? (
-              <Button disabled={loading} type="submit">
-                {loading ? "Editing..." : "Edit"}
+              <Button disabled={editMutation.isLoading || mutation.isLoading} type="submit">
+                {editMutation.isLoading || mutation.isLoading ? "Editing..." : "Edit"}
               </Button>
             ) : (
-              <Button disabled={loading} type="submit">
-                {loading ? "Submitting..." : "Submit"}
+              <Button disabled={editMutation.isLoading || mutation.isLoading} type="submit">
+                {editMutation.isLoading || mutation.isLoading ? "Submitting..." : "Submit"}
               </Button>
             )}
           </form>

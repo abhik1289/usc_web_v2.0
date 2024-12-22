@@ -24,8 +24,8 @@ const RoleTable = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [selectedRoleId, setSelectedRoleId] = useState<string>("");
-  const [selectedEditRoleId, setSelectedEditRoleId] = useState<string | null>(
-    null
+  const [selectedEditRoleId, setSelectedEditRoleId] = useState<string>(
+    ""
   );
   const [selectedEditRoleTitle, setSelectedEditRoleTitle] = useState<
     string | null

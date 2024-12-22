@@ -5,8 +5,9 @@ import TestimonialDialog from "@/components/(admin)/testimonials/TestimonialDial
 import { Testimonial } from "@/components/(admin)/testimonials/type";
 
 import { Button } from "@/components/ui/button";
-import TestimonialsCard from "@/components/(admin)/testimonials/testimonials-card";
+// import TestimonialsCard from "@/components/(admin)/testimonials/testimonials-box";
 import { useRouter } from "next/navigation";
+import TestimonialsBox from "@/components/(admin)/testimonials/testimonials-box";
 export default function TestimonialsPage() {
 
 
@@ -25,7 +26,7 @@ export default function TestimonialsPage() {
         </Button>
       </header>
 
-      <TestimonialsCard/>
+      <TestimonialsBox/>
 
       
 

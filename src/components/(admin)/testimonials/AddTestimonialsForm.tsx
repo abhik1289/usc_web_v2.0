@@ -33,7 +33,7 @@ interface AddTestimonialsFormInterface {
     fullName: string;
     text: string;
     rolesId: string;
-    index?: number;
+    index?: string;
     photoUrl: string;
   };
   isEdit: boolean;

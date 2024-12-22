@@ -50,8 +50,11 @@ export default function TestimonialsCard() {
           return (
             <Card
               key={testimonial.id}
-              className="hover:shadow-xl transition-shadow my-4 bg-gray-800 border border-gray-700 rounded-lg overflow-hidden"
+              className="hover:shadow-xl transition-shadow my-4 bg-gray-800 border border-gray-700 rounded-lg overflow-hidden relative"
             >
+              <div className="index absolute bg-blue-500 rounded-full flex justify-center items-center w-[30px] h-[30px] top-6 right-6">
+                {testimonial.index}
+              </div>
               <CardHeader className="text-center p-6">
                 {testimonial.photoUrl && (
                   <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden shadow-md">

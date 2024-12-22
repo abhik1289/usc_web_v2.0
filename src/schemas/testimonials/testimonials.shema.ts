@@ -17,7 +17,7 @@ const testimonialSchema = z.object({
     .string()
     .min(1, "Testimonial text is required.")
     .max(500, "Text must not exceed 500 characters."),
-  index: z.number().optional(),
+  index: z.string().optional(),
   // Auto-incremented, so not required
 });
 

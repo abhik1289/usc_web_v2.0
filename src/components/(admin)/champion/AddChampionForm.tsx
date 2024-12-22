@@ -7,7 +7,11 @@ import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React from 'react'
 import { useForm } from 'react-hook-form'
-
+import {
+  usePlateEditor,
+  Plate,
+  PlateContent,
+} from '@udecode/plate-common/react';
 import { z } from "zod";
 
 
@@ -32,6 +36,7 @@ function AddChampionForm() {
     // ✅ This will be type-safe and validated.
     console.log(values)
   }
+  const editor = usePlateEditor();
   return (
     <CardContent>
       <div className="image_upload_box">
@@ -56,6 +61,9 @@ function AddChampionForm() {
                 </FormItem>
               )}
             />
+            <Plate editor={editor}>
+      <PlateContent placeholder="Type..." />
+    </Plate>
             <Button type="submit">Submit</Button>
           </form>
         </Form>

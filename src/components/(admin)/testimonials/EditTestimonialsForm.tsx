@@ -34,7 +34,7 @@ interface AddTestimonialsFormInterface {
     fullName: string;
     text: string;
     rolesId: string;
-    index?: number;
+    index?: string;
     photoUrl: string;
   };
   isEdit: boolean;
@@ -131,7 +131,7 @@ export const EditTestimonialsForm = ({
                   <FormControl>
                     <Input
                       disabled={isLoading || EditTestimonial.isLoading}
-                      type="number"
+                      type="string"
                       placeholder="1"
                       {...field}
                     />

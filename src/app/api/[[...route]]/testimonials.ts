@@ -142,49 +142,6 @@ const testimonials = new Hono()
       );
     }
   })
-  .post(
-    "/edit-sequence/:id",
-    zValidator(
-      "json",
-      z.object({
-        index: z.number().nonnegative(),
-      })
-    ),
-    async (c) => {
-      try {
-        const token = getCookie(c, "token");
-        if (!token) {
-          return c.json({ success: false, error: "Token not found" }, 401);
-        } else {
-          const userToken = decodeSignInToken(token);
-
-          const { id } = userToken.payload;
-          const { index } = c.req.valid("json");
-          const Tid = c.req.param("id");
-          await db.testimonials.update({
-            where: { id: Tid },
-            data: { index, userId: id },
-          });
-          return c.json(
-            {
-              success: true,
-              message: "Sequence updated successfully",
-            },
-            200
-          );
-        }
-      } catch (error) {
-        console.error("Sign-in error:", error);
-        return c.json(
-          {
-            success: false,
-            error: "An unexpected error occurred. Please try again.",
-          },
-          500
-        );
-      }
-    }
-  )
   .post("/update/:id", zValidator("json", testimonialSchema), async (c) => {
     try {
       const token = getCookie(c, "token");
@@ -196,11 +153,12 @@ const testimonials = new Hono()
         const Tid = c.req.param("id");
         const { fullName, photoUrl, rolesId, text, index } =
           c.req.valid("json");
+        const sequence = parseInt(index || '0');
         await db.testimonials.update({
           where: {
             id: Tid,
           },
-          data: { fullName, photoUrl, rolesId, text, userId: id, index },
+          data: { fullName, photoUrl, rolesId, text, userId: id, index: sequence },
         });
         return c.json(
           {

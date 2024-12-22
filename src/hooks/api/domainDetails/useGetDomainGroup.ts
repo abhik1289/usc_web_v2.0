@@ -6,7 +6,7 @@ export const useGetDomainGroup = () => {
     queryKey: ["domainGroups"],
     queryFn: async () => {
       const res = await axios.get("/api/domain/get-domain-groups");
-      return res.data.message;
+      return res.data.domainGroups;
     },
   });
   return query;

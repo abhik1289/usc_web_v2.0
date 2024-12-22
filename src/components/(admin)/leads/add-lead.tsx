@@ -33,8 +33,24 @@ function AddLead() {
             Enter the details to add a new lead to the system.
           </CardDescription>
         </CardHeader>
-        <AddLeadForm />
-        
+        <AddLeadForm 
+        defaultValues={{
+          fullName: "",
+          isCoreMember: false,
+          isCurrent: true,
+          profilePhoto: "",
+          domainGroupId: "",
+          domainNameId: "",
+          // index: '',
+          Social: {
+            email: "",
+            linkedinUrl: "",
+            githubUrl: "",
+            instagramUrl: "",
+            portfolioUrl: "",
+          },
+        }} />
+
       </Card>
     </div>
   );

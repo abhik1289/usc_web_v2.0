@@ -16,37 +16,40 @@ import SelectionFiled from '../InputFields/SelectionFiled';
 import { useGetDomainGroup } from '@/hooks/api/domainDetails/useGetDomainGroup';
 import { useGetDomainDetails } from '@/hooks/api/domainDetails/useGetDomainDetails';
 import SwitchFiled from '../InputFields/SwitchFiled';
+interface AddLeadFormProps {
+    defaultValues: {
+        fullName: string,
+        isCoreMember: boolean,
+        isCurrent: boolean,
+        profilePhoto: string,
+        domainGroupId: string,
+        domainNameId: string,
+        Social: {
+            email: string,
+            linkedinUrl: string,
+            githubUrl: string,
+            instagramUrl: string,
+            portfolioUrl: string,
+        },
+    };
+}
 
-export default function AddLeadForm() {
+
+export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
     const form = useForm<z.infer<typeof LeadsSchema>>({
         resolver: zodResolver(LeadsSchema),
-        defaultValues: {
-            fullName: "",
-            isCoreMember: false,
-            isCurrent: true,
-            profilePhoto: "",
-            domainGroupId: "",
-            domainNameId: "",
-            index: 0,
-            Social: {
-                email: "",
-                linkedinUrl: "",
-                githubUrl: "",
-                instagramUrl: "",
-                portfolioUrl: "",
-            },
-        },
+        defaultValues
     });
 
     function onSubmit(values: z.infer<typeof LeadsSchema>) {
-        console.log(values);
+        
     }
     const roles = useGetRoles();
     const domainGropus = useGetDomainGroup();
     const domainDetails = useGetDomainDetails();
 
     const filteredDomainDetails = domainDetails.data?.filter((item: any) => item.domainGroupId === form.getValues("domainGroupId"));
-    console.log(filteredDomainDetails)
+ 
     return (
         <CardContent>
             <Form {...form}>

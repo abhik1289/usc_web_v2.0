@@ -19,14 +19,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useGetLeads } from "@/hooks/api/leads/useGetLeads";
 function LeadsTable() {
-     const [isDialogOpen, setIsDialogOpen] = useState(false);
-      const [filter, setFilter] = useState("all");
+
     const leadsInfo = useGetLeads();
     const leads = leadsInfo.data;
-    //   const router = useRouter();
+    const router = useRouter()
     return (
         <div className="p-6 space-y-6">
-            
+
 
             <div className="rounded-lg shadow-md">
                 <Table>
@@ -81,6 +80,7 @@ function LeadsTable() {
                                         <div className="flex space-x-3">
                                             <Button
                                                 variant="link"
+                                                onClick={() => router.push(`/leads/add-lead?id=${lead.id}`)}
                                             >
                                                 Edit
                                             </Button>

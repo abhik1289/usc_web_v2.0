@@ -18,7 +18,7 @@ const LeadsSchema = z.object({
   profilePhoto: z.string(),
   domainGroupId: z.string(),
   domainNameId: z.string(),
-  index: z.number(),
+  index: z.string().optional(),
   Social: SocialSchema,
 });
 

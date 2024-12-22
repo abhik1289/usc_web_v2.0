@@ -16,7 +16,8 @@ import SelectionFiled from '../InputFields/SelectionFiled';
 import { useGetDomainGroup } from '@/hooks/api/domainDetails/useGetDomainGroup';
 import { useGetDomainDetails } from '@/hooks/api/domainDetails/useGetDomainDetails';
 import SwitchFiled from '../InputFields/SwitchFiled';
-interface AddLeadFormProps {
+import { useAddLead } from '@/hooks/api/leads/useAddLead';
+export interface AddLeadFormProps {
     defaultValues: {
         fullName: string,
         isCoreMember: boolean,
@@ -41,15 +42,19 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
         defaultValues
     });
 
+
+    const insertMutation = useAddLead();
+
     function onSubmit(values: z.infer<typeof LeadsSchema>) {
-        
+        console.log(values)
+        insertMutation.mutate(values);
     }
     const roles = useGetRoles();
     const domainGropus = useGetDomainGroup();
     const domainDetails = useGetDomainDetails();
 
     const filteredDomainDetails = domainDetails.data?.filter((item: any) => item.domainGroupId === form.getValues("domainGroupId"));
- 
+
     return (
         <CardContent>
             <Form {...form}>

@@ -38,7 +38,7 @@ function AddLead() {
           fullName: "",
           isCoreMember: false,
           isCurrent: true,
-          profilePhoto: "",
+          profilePhoto: "https://avatar.iran.liara.run/public/girl",
           domainGroupId: "",
           domainNameId: "",
           // index: '',

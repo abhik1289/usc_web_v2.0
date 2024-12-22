@@ -1,32 +1,10 @@
 import React from 'react'
 import { Button } from "@/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    FormDescription,
+    Form
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
-    Card,
     CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
 } from "@/components/ui/card";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,12 +16,7 @@ import SelectionFiled from '../InputFields/SelectionFiled';
 import { useGetDomainGroup } from '@/hooks/api/domainDetails/useGetDomainGroup';
 import { useGetDomainDetails } from '@/hooks/api/domainDetails/useGetDomainDetails';
 import SwitchFiled from '../InputFields/SwitchFiled';
-const formSchema = z.object({
-    username: z.string().min(2, {
-        message: "Username must be at least 2 characters.",
-    }),
-    email: z.string().email({ message: "Invalid email address." }),
-});
+
 export default function AddLeadForm() {
     const form = useForm<z.infer<typeof LeadsSchema>>({
         resolver: zodResolver(LeadsSchema),
@@ -71,7 +44,9 @@ export default function AddLeadForm() {
     const roles = useGetRoles();
     const domainGropus = useGetDomainGroup();
     const domainDetails = useGetDomainDetails();
-    console.log(domainGropus)
+
+    const filteredDomainDetails = domainDetails.data?.filter((item: any) => item.domainGroupId === form.getValues("domainGroupId"));
+    console.log(filteredDomainDetails)
     return (
         <CardContent>
             <Form {...form}>
@@ -138,7 +113,7 @@ export default function AddLeadForm() {
                                 control={form.control}
                             />
                         </div>
-                        <div className="flex w-full gap-4">
+                        {form.getValues("isCoreMember") && <div className="flex w-full gap-4">
                             <SelectionFiled
                                 control={form.control}
                                 name="coreMemberPositionId"
@@ -148,7 +123,7 @@ export default function AddLeadForm() {
                                 placeholder='Select a role'
                                 label='Role'
                             />
-                        </div>
+                        </div>}
                         <div className="flex w-full gap-4">
                             <SelectionFiled
                                 control={form.control}
@@ -160,7 +135,7 @@ export default function AddLeadForm() {
                                 label='Domain Group'
                             />
                         </div>
-                        <div className="flex w-full gap-4">
+                        {filteredDomainDetails && filteredDomainDetails.length > 0 && <div className="flex w-full gap-4">
                             <SelectionFiled
                                 control={form.control}
                                 name="domainNameId"
@@ -168,9 +143,10 @@ export default function AddLeadForm() {
                                 infos={domainDetails}
                                 notFound='No domain found'
                                 placeholder='Select a domain'
+                                filterdata={filteredDomainDetails}
                                 label='Domain'
                             />
-                        </div>
+                        </div>}
                     </div>
 
                     <Button type="submit">Submit</Button>

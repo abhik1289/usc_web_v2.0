@@ -15,9 +15,10 @@ interface SelectionFiledProps {
     infos: any;
     notFound: string;
     defaultText: string;
+    filterdata?: any;
 }
 
-export default function SelectionFiled({ control, name, placeholder, label, infos, notFound, defaultText }: SelectionFiledProps) {
+export default function SelectionFiled({ control, name, placeholder, label, infos, notFound, defaultText, filterdata }: SelectionFiledProps) {
     return (
         <FormField
             control={control}
@@ -40,12 +41,19 @@ export default function SelectionFiled({ control, name, placeholder, label, info
                                 ) : (
                                     <SelectGroup>
                                         <SelectLabel>{defaultText}</SelectLabel>
-                                        {infos.data &&
-                                            infos.data.map((item: any, i: number) => (
-                                                <SelectItem key={i} value={item.id}>
-                                                    {item.title}
-                                                </SelectItem>
-                                            ))}
+                                        {
+                                            filterdata ? (filterdata &&
+                                                filterdata.map((item: any, i: number) => (
+                                                    <SelectItem key={i} value={item.id}>
+                                                        {item.title}
+                                                    </SelectItem>)
+                                                )) : (infos.data &&
+                                                    infos.data.map((item: any, i: number) => (
+                                                        <SelectItem key={i} value={item.id}>
+                                                            {item.title}
+                                                        </SelectItem>)
+                                                    ))
+                                        }
                                     </SelectGroup>
                                 )}
                             </SelectContent>

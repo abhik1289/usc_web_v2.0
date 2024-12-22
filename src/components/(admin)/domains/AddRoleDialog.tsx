@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Role } from "./type";
+// import { Role } from "./type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -27,10 +27,10 @@ import axios from "axios";
 
 interface AddRoleDialogProps {
   onClose: () => void;
-  onAddRole?: (role: Role) => void;
+  onAddRole?: () => void;
   editingRole?: boolean | null;
   showEditDialog?: boolean;
-  onEditRole?: (role: Role) => void;
+  onEditRole?: () => void;
   selectedEditRoleTitle?: string | null;
   selectedEditRoleId?: string | null;
 }

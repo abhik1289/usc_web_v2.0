@@ -17,55 +17,27 @@ import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import AddRoleDialog from "./AddRoleDialog";
 import AlertDialogBox from "./../AlertDialog.tsx/AlertDialog";
+import { useGetRoles } from "@/hooks/api/roles/useGetRoles";
+import useDeleteRole from "@/hooks/api/role/useDeleteRole";
 
 const RoleTable = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
-
-  const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
+  const [selectedRoleId, setSelectedRoleId] = useState<string>("");
   const [selectedEditRoleId, setSelectedEditRoleId] = useState<string | null>(
     null
   );
-
   const [selectedEditRoleTitle, setSelectedEditRoleTitle] = useState<
     string | null
   >(null);
 
-  const queryClient = useQueryClient();
 
+  const roles = useGetRoles();
   // Mutation for deleting a role
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => axios.get(`/api/domain/delete-role/${id}`),
-    onSuccess: () => {
-      toast({
-        description: "Role Deleted Successfully",
-      });
-      queryClient.invalidateQueries(["roles"]); // Refetch the roles after deletion
-      setShowDialog(false); // Close the dialog
-      setSelectedRoleId(null); // Reset selected role id
-    },
-    onError: (error: any) => {
-      toast({
-        description: error.response?.data?.error || "An error occurred",
-        variant: "destructive",
-      });
-    },
-  });
+  const deleteMutation = useDeleteRole(selectedRoleId);
 
-  // Fetch roles using useQuery
-  const getRoles = async (url: string) => {
-    const res = await axios.get(url);
-    return res.data.roles;
-  };
 
-  const {
-    isLoading,
-    error,
-    data: rolesData,
-  } = useQuery({
-    queryKey: ["roles"],
-    queryFn: () => getRoles("/api/domain/get-roles"),
-  });
+
 
   // Handle delete confirmation
   const handleDeleteRole = (id: string) => {
@@ -77,6 +49,7 @@ const RoleTable = () => {
     if (selectedRoleId) {
       deleteMutation.mutate(selectedRoleId); // Trigger the mutation with the selected role ID
     }
+    setShowDialog(false);
   };
 
   return (
@@ -93,7 +66,7 @@ const RoleTable = () => {
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
-          {error ? (
+          {roles.isError ? (
             <TableBody>
               <TableRow>
                 <TableCell className="text-center" colSpan={3}>
@@ -101,7 +74,7 @@ const RoleTable = () => {
                 </TableCell>
               </TableRow>
             </TableBody>
-          ) : isLoading ? (
+          ) : roles.isLoading ? (
             <TableBody>
               <TableRow>
                 <TableCell className="text-center" colSpan={3}>
@@ -109,9 +82,9 @@ const RoleTable = () => {
                 </TableCell>
               </TableRow>
             </TableBody>
-          ) : rolesData && rolesData.length > 0 ? (
+          ) : roles.data && roles.data.length > 0 ? (
             <TableBody>
-              {rolesData.map((role: any, i: number) => (
+              {roles.data.map((role: any, i: number) => (
                 <TableRow key={i}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{role.title}</TableCell>

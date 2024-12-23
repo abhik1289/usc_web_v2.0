@@ -40,6 +40,7 @@ function AddLead() {
             domainGroupId: lead.data && lead.data.domainGroupId,
             domainNameId: lead.data && lead.data.domainNameId,
             index: lead.data && lead.data.index,
+            coreMemberPositionId: lead.data && lead.data.coreMemberPositionId,
             Social: {
               email: lead.data && lead.data.Social.email,
               linkedinUrl: lead.data && lead.data.Social.linkedinUrl,

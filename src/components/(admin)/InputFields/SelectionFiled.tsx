@@ -17,10 +17,11 @@ interface SelectionFiledProps {
     defaultText: string;
     filterdata?: any;
     disabled?: boolean;
-
+    defualtValue?: string;
 }
 
-export default function SelectionFiled({ control, name, placeholder, label, infos, notFound, defaultText, filterdata, disabled }: SelectionFiledProps) {
+export default function SelectionFiled({ control, name, placeholder, label, infos, notFound, defaultText, filterdata, disabled, defualtValue }: SelectionFiledProps) {
+    // console.log(field.name)
     return (
         <FormField
             control={control}
@@ -32,6 +33,7 @@ export default function SelectionFiled({ control, name, placeholder, label, info
                         <Select
                             onValueChange={field.onChange}
                             disabled={infos.isLoading || disabled}
+                            defaultValue={field.name}
                             {...field}
                         >
                             <SelectTrigger>

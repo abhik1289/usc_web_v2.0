@@ -27,6 +27,7 @@ export interface EditLeadFormProps {
         profilePhoto: string,
         domainGroupId: string,
         domainNameId: string,
+        coreMemberPositionId: string,
         index: string,
         Social: {
             email: string,
@@ -61,7 +62,7 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
     return (
         <CardContent>
             <Form  {...form}>
-                <form  onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="flex flex-wrap gap-4 w-full">
                         <div className="flex w-full gap-4">
                             <InputFiled
@@ -142,7 +143,6 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
                         {form.getValues("isCoreMember") && <div className="flex w-full gap-4">
                             <SelectionFiled
                                 disabled={disabled}
-
                                 control={form.control}
                                 name="coreMemberPositionId"
                                 defaultText=''
@@ -150,12 +150,13 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
                                 notFound='No role found'
                                 placeholder='Select a role'
                                 label='Role'
+                                defualtValue={defaultValues.coreMemberPositionId}
                             />
                         </div>}
                         <div className="flex w-full gap-4">
                             <SelectionFiled
                                 disabled={disabled}
-
+                                defualtValue={defaultValues.domainGroupId}
                                 control={form.control}
                                 name="domainGroupId"
                                 defaultText=''
@@ -168,7 +169,7 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
                         {filteredDomainDetails && filteredDomainDetails.length > 0 && <div className="flex w-full gap-4">
                             <SelectionFiled
                                 disabled={disabled}
-
+                                defualtValue={defaultValues.domainNameId}
                                 control={form.control}
                                 name="domainNameId"
                                 defaultText=''

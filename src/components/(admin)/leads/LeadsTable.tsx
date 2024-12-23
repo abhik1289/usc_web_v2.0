@@ -18,11 +18,29 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useGetLeads } from "@/hooks/api/leads/useGetLeads";
+import AlertDialogBox from '../AlertDialog.tsx/AlertDialog';
+import useDeleteLead from '@/hooks/api/leads/useDeleteLead';
 function LeadsTable() {
 
+    const [showDialog, setShowDialog] = useState<boolean>(false);
+    const [deleteId, setDeleteId] = useState<string | null>();
     const leadsInfo = useGetLeads();
     const leads = leadsInfo.data;
-    const router = useRouter()
+    const router = useRouter();
+    const deleteLead = useDeleteLead();
+
+    const handleDelte = (id: string) => {
+        setShowDialog(true);
+        setDeleteId(id);
+    }
+    const handleDeleteConfirm = () => {
+        if (deleteId) {
+            deleteLead.mutate({ id: deleteId });
+            setDeleteId(null);
+            setShowDialog(false);
+        }
+    }
+
     return (
         <div className="p-6 space-y-6">
 
@@ -93,6 +111,7 @@ function LeadsTable() {
                                             <Button
                                                 variant="link"
                                                 className="text-red-500"
+                                                onClick={() => handleDelte(lead.id)}
                                             >
                                                 Delete
                                             </Button>
@@ -103,7 +122,13 @@ function LeadsTable() {
                         )}
                     </TableBody>
                 </Table>
-
+                <AlertDialogBox
+                    title='Confirm Lead Deletion'
+                    description='Are you sure you want to delete this lead? This action cannot be undone and will permanently remove all associated data, including their social links and profile details.'
+                    show={showDialog}
+                    onConfirm={handleDeleteConfirm}
+                    setShow={() => setShowDialog(false)}
+                />
             </div>
         </div>
     )

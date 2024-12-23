@@ -12,8 +12,8 @@ const SocialSchema = z.object({
 // Leads Schema
 const LeadsSchema = z.object({
   fullName: z.string().min(4, { message: "Full name must be at least 4 characters long." }).max(15, { message: "Full name cannot exceed 15 characters." }),
-  isCoreMember: z.boolean(),
-  coreMemberPositionId: z.string().optional(),
+  isCoreMember: z.boolean().optional(),
+  coreMemberPositionId: z.string().optional().nullable(),
   isCurrent: z.boolean(),
   profilePhoto: z.string(),
   domainGroupId: z.string(),

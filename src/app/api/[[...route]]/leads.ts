@@ -17,10 +17,6 @@ const leads = new Hono()
       } else {
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
-        
-
-
-
         const {
           fullName,
           isCoreMember,
@@ -51,7 +47,7 @@ const leads = new Hono()
         const lead = await db.leads.create({
           data: {
             fullName,
-            isCoreMember,
+            isCoreMember: isCoreMember ? true : false,
             coreMemberPositionId,
             isCurrent,
             profilePhoto,
@@ -217,6 +213,7 @@ const leads = new Hono()
         const leads = await db.leads.findMany({
           include: {
             Social: true,
+            
             coreMemberPosition: {
               select: {
                 title: true,

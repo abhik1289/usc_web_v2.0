@@ -3,11 +3,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import React from 'react'
 
-function useEditLead() {
+function useEditLead(id: string) {
+    console.log("first")
     const queryClient = useQueryClient();
     const modifyMutation = useMutation({
         mutationFn: async (data: any) => {
-            const { fullName, isCoreMember, isCurrent, profilePhoto, domainGroupId, domainNameId, Social, id, index } =
+            const { fullName, isCoreMember, isCurrent, profilePhoto, domainGroupId, domainNameId, Social,  index } =
                 data;
             const convertInt = parseInt(index)
             const url = `/api/leads/update-lead/${id}`;

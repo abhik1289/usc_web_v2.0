@@ -153,7 +153,7 @@ model DomainDetails {
 model Leads {
   id                   String        @id @default(auto()) @map("_id") @db.ObjectId
   fullName             String
-  isCoreMember         Boolean
+  isCoreMember         Boolean       @default(false)
   coreMemberPosition   Roles?        @relation(fields: [coreMemberPositionId], references: [id])
   createdAt            DateTime      @default(now())
   updatedAt            DateTime      @updatedAt
@@ -172,7 +172,7 @@ model Leads {
 
 model Social {
   id           String  @id @default(auto()) @map("_id") @db.ObjectId
-  lead         Leads?  @relation(fields: [leadId], references: [id],onDelete: Cascade)
+  lead         Leads?  @relation(fields: [leadId], references: [id], onDelete: Cascade)
   leadId       String? @unique @db.ObjectId
   githubUrl    String?
   instagramUrl String?

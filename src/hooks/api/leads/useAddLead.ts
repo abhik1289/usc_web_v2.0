@@ -8,8 +8,8 @@ export const useAddLead = () => {
     const insertMutation = useMutation({
         mutationFn: async (data: any) => {
             const { fullName, isCoreMember, isCurrent, profilePhoto, domainGroupId, domainNameId, Social } =
-                data.defaultValues;
-         
+                data;
+
             const url = `/api/leads/add-lead`;
 
             const res = await axios.post(url, {

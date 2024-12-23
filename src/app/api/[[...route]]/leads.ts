@@ -17,7 +17,7 @@ const leads = new Hono()
       } else {
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
-        console.log("THE ID IS: ",id)
+        
 
 
 
@@ -31,6 +31,14 @@ const leads = new Hono()
           domainNameId,
           Social,
         } = c.req.valid("json");
+        console.log(fullName,
+          isCoreMember,
+          coreMemberPositionId,
+          isCurrent,
+          profilePhoto,
+          domainGroupId,
+          domainNameId,
+          Social)
         const { githubUrl, instagramUrl, linkedinUrl, email, portfolioUrl } =
           Social;
         const leads = await db.leads.findMany();

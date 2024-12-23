@@ -17,6 +17,7 @@ import { useGetDomainGroup } from '@/hooks/api/domainDetails/useGetDomainGroup';
 import { useGetDomainDetails } from '@/hooks/api/domainDetails/useGetDomainDetails';
 import SwitchFiled from '../InputFields/SwitchFiled';
 import { useAddLead } from '@/hooks/api/leads/useAddLead';
+import useEditLead from '@/hooks/api/leads/useEditLead';
 export interface EditLeadFormProps {
     id: string;
     disabled: boolean;
@@ -28,7 +29,7 @@ export interface EditLeadFormProps {
         domainGroupId: string,
         domainNameId: string,
         coreMemberPositionId: string,
-        index: string,
+        // index: string,
         Social: {
             email: string,
             linkedinUrl: string,
@@ -47,11 +48,11 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
     });
 
 
-    const insertMutation = useAddLead();
+    const editMutation = useEditLead();
 
     function onSubmit(values: z.infer<typeof LeadsSchema>) {
         console.log(values)
-        insertMutation.mutate(values);
+        // editMutation.mutate({ ...values, id: id });
     }
     const roles = useGetRoles();
     const domainGropus = useGetDomainGroup();
@@ -165,6 +166,14 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
                                 placeholder='Select a domain group'
                                 label='Domain Group'
                             />
+                            {/* <InputFiled
+                                name="index"
+                                control={form.control}
+                                placeholder="0"
+                                label="index"
+                                disabled={disabled}
+
+                            /> */}
                         </div>
                         {filteredDomainDetails && filteredDomainDetails.length > 0 && <div className="flex w-full gap-4">
                             <SelectionFiled
@@ -182,7 +191,7 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
                         </div>}
                     </div>
 
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit">Edit</Button>
                 </form>
             </Form>
         </CardContent>

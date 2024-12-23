@@ -11,9 +11,10 @@ interface InputFiledProps {
     name: string;
     placeholder: string;
     label: string;
+    disabled?: boolean;
 }
 
-export default function InputFiled({ control, name, placeholder, label }: InputFiledProps) {
+export default function InputFiled({ control, name, placeholder, label, disabled }: InputFiledProps) {
     return (
         <FormField
             control={control}
@@ -22,7 +23,7 @@ export default function InputFiled({ control, name, placeholder, label }: InputF
                 <FormItem className="flex-1">
                     <FormLabel>{label}</FormLabel>
                     <FormControl>
-                        <Input placeholder={placeholder} {...field} />
+                        <Input disabled={disabled || false} placeholder={placeholder} {...field} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>

@@ -38,6 +38,7 @@ export default function LeadsPage() {
   return (
     <div className=" p-4">
       <LeadsFilterBox />
-      <LeadsTable /></div>
+      <LeadsTable />
+      </div>
   );
 }

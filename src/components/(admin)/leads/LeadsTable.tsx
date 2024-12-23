@@ -33,39 +33,45 @@ function LeadsTable() {
                         <TableRow>
                             <TableCell>ID</TableCell>
                             <TableCell>Name</TableCell>
-
                             <TableCell>Domain Name</TableCell>
                             <TableCell>Socials</TableCell>
                             <TableCell>Core Member</TableCell>
                             <TableCell>Profile Photo</TableCell>
                             <TableCell>Photo</TableCell>
-
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {leadsInfo.isLoading ? (
+                        {leadsInfo.isError ? (
                             <TableRow>
-                                <TableCell className="text-center" colSpan={7}>
+                                <TableCell className='text-center' colSpan={8}>
+                                    Error while fetching data
+                                </TableCell>
+                            </TableRow>
+                        ) : leadsInfo.isLoading ? (
+                            <TableRow>
+                                <TableCell className="text-center" colSpan={8}>
                                     Loading...
+                                </TableCell>
+                            </TableRow>
+                        ) : leads.length === 0 ? (
+                            <TableRow>
+                                <TableCell className='text-center' colSpan={8}>
+                                    No Record Found
                                 </TableCell>
                             </TableRow>
                         ) : (
                             leads.map((lead: any, i: number) => (
                                 <TableRow key={lead.id}>
                                     <TableCell>{i + 1}</TableCell>
-                                    <TableCell>{`${lead.fullName?.split(" ")[0]}${lead.isCurrent == false ? " (F)" : ""}`}</TableCell>
-
+                                    <TableCell>{`${lead.fullName?.split(" ")[0]}${lead.isCurrent === false ? " (F)" : ""}`}</TableCell>
                                     <TableCell>{lead.domainName.title}</TableCell>
                                     <TableCell>Avik</TableCell>
                                     <TableCell>Avik</TableCell>
-
                                     <TableCell>
                                         {lead.isCoreMember ? lead.coreMemberPosition.title : 'No'}
-
                                     </TableCell>
                                     <TableCell>
-
                                         {lead.profilePhoto && (
                                             <Image
                                                 width={100}
@@ -97,6 +103,7 @@ function LeadsTable() {
                         )}
                     </TableBody>
                 </Table>
+
             </div>
         </div>
     )

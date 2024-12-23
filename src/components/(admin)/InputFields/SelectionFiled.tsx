@@ -16,9 +16,11 @@ interface SelectionFiledProps {
     notFound: string;
     defaultText: string;
     filterdata?: any;
+    disabled?: boolean;
+
 }
 
-export default function SelectionFiled({ control, name, placeholder, label, infos, notFound, defaultText, filterdata }: SelectionFiledProps) {
+export default function SelectionFiled({ control, name, placeholder, label, infos, notFound, defaultText, filterdata, disabled }: SelectionFiledProps) {
     return (
         <FormField
             control={control}
@@ -29,7 +31,7 @@ export default function SelectionFiled({ control, name, placeholder, label, info
                     <FormControl>
                         <Select
                             onValueChange={field.onChange}
-                            disabled={infos.isLoading}
+                            disabled={infos.isLoading || disabled}
                             {...field}
                         >
                             <SelectTrigger>

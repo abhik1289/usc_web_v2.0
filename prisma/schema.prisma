@@ -166,14 +166,14 @@ model Leads {
   domainName           DomainDetails @relation(fields: [domainNameId], references: [id])
   domainNameId         String        @db.ObjectId
   index                Int
-  Social               Social[]
   coreMemberPositionId String?       @db.ObjectId
+  Social               Social?
 }
 
 model Social {
   id           String  @id @default(auto()) @map("_id") @db.ObjectId
-  Lead         Leads   @relation(fields: [leadId], references: [id])
-  leadId       String  @db.ObjectId
+  lead         Leads?  @relation(fields: [leadId], references: [id],onDelete: Cascade)
+  leadId       String? @unique @db.ObjectId
   githubUrl    String?
   instagramUrl String?
   email        String

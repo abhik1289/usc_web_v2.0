@@ -185,7 +185,7 @@ console.log(events.data)
         description: "Change Visibility",
         // variant: "destructive",
       });
-      refetch(); // Refetch to ensure data is fresh after deletion
+      // refetch(); // Refetch to ensure data is fresh after deletion
     },
   });
 

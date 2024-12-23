@@ -30,6 +30,8 @@ function AddLead() {
           </CardDescription>
         </CardHeader>
         {id && lead.data ? <EditLeadForm
+          id={id}
+          disabled={lead.isLoading}
           defaultValues={{
             fullName: lead.data && lead.data.fullName,
             isCoreMember: lead.data && lead.data.isCoreMember,

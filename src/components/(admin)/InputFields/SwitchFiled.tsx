@@ -12,9 +12,10 @@ interface SwitchFiledProps {
     name: string;
     title: string;
     description: string;
+    disabled?: boolean;
 }
 
-export default function SwitchFiled({ control, name, title, description }: SwitchFiledProps) {
+export default function SwitchFiled({ control, name, title, description, disabled }: SwitchFiledProps) {
     return (
         <FormField
             control={control}
@@ -29,6 +30,7 @@ export default function SwitchFiled({ control, name, title, description }: Switc
                     </div>
                     <FormControl>
                         <Switch
+                            disabled={disabled || false}
                             checked={field.value}
                             onCheckedChange={field.onChange}
                         />

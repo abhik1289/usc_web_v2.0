@@ -17,6 +17,10 @@ const leads = new Hono()
       } else {
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
+        console.log("THE ID IS: ",id)
+
+
+
         const {
           fullName,
           isCoreMember,
@@ -25,11 +29,17 @@ const leads = new Hono()
           profilePhoto,
           domainGroupId,
           domainNameId,
-          index,
           Social,
         } = c.req.valid("json");
         const { githubUrl, instagramUrl, linkedinUrl, email, portfolioUrl } =
           Social;
+        const leads = await db.leads.findMany();
+        let index;
+        if (leads.length === 0) {
+          index = 0;
+        } else {
+          index = leads[leads.length - 1].index + 1;
+        }
         const lead = await db.leads.create({
           data: {
             fullName,
@@ -40,7 +50,7 @@ const leads = new Hono()
             domainGroupId,
             domainNameId,
             userId: id,
-            index: index,
+            index,
           },
         });
         await db.social.create({
@@ -105,7 +115,7 @@ const leads = new Hono()
             domainGroupId,
             domainNameId,
             userId: id,
-            index: index,
+            index: parseInt(index!),
           },
         });
         await db.social.create({

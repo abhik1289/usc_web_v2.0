@@ -18,6 +18,8 @@ import { useGetDomainDetails } from '@/hooks/api/domainDetails/useGetDomainDetai
 import SwitchFiled from '../InputFields/SwitchFiled';
 import { useAddLead } from '@/hooks/api/leads/useAddLead';
 export interface EditLeadFormProps {
+    id: string;
+    disabled: boolean;
     defaultValues: {
         fullName: string,
         isCoreMember: boolean,
@@ -37,7 +39,7 @@ export interface EditLeadFormProps {
 }
 
 
-export default function EditLeadForm({ defaultValues }: EditLeadFormProps) {
+export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFormProps) {
     const form = useForm<z.infer<typeof LeadsSchema>>({
         resolver: zodResolver(LeadsSchema),
         defaultValues
@@ -58,8 +60,8 @@ export default function EditLeadForm({ defaultValues }: EditLeadFormProps) {
 
     return (
         <CardContent>
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <Form  {...form}>
+                <form  onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="flex flex-wrap gap-4 w-full">
                         <div className="flex w-full gap-4">
                             <InputFiled
@@ -67,12 +69,15 @@ export default function EditLeadForm({ defaultValues }: EditLeadFormProps) {
                                 control={form.control}
                                 placeholder="John Doe"
                                 label="Full Name"
+                                disabled={disabled}
                             />
                             <InputFiled
                                 control={form.control}
                                 name="Social.email"
                                 placeholder="example@domain.com"
                                 label="Email Address"
+                                disabled={disabled}
+
                             />
                         </div>
 
@@ -82,12 +87,16 @@ export default function EditLeadForm({ defaultValues }: EditLeadFormProps) {
                                 control={form.control}
                                 placeholder="https://github.com/username"
                                 label="GitHub Profile"
+                                disabled={disabled}
+
                             />
                             <InputFiled
                                 name="Social.instagramUrl"
                                 control={form.control}
                                 placeholder="https://instagram.com/username"
                                 label="Instagram Profile"
+                                disabled={disabled}
+
                             />
                         </div>
 
@@ -97,12 +106,16 @@ export default function EditLeadForm({ defaultValues }: EditLeadFormProps) {
                                 control={form.control}
                                 placeholder="https://linkedin.com/in/username"
                                 label="LinkedIn Profile"
+                                disabled={disabled}
+
                             />
                             <InputFiled
                                 name="Social.portfolioUrl"
                                 control={form.control}
                                 placeholder="https://yourportfolio.com"
                                 label="Portfolio URL"
+                                disabled={disabled}
+
                             />
                         </div>
 
@@ -112,6 +125,8 @@ export default function EditLeadForm({ defaultValues }: EditLeadFormProps) {
                                 description=""
                                 name="isCoreMember"
                                 control={form.control}
+                                disabled={disabled}
+
                             />
                         </div>
                         <div className="flex w-full gap-4">
@@ -120,10 +135,14 @@ export default function EditLeadForm({ defaultValues }: EditLeadFormProps) {
                                 description=""
                                 name="isCurrent"
                                 control={form.control}
+                                disabled={disabled}
+
                             />
                         </div>
                         {form.getValues("isCoreMember") && <div className="flex w-full gap-4">
                             <SelectionFiled
+                                disabled={disabled}
+
                                 control={form.control}
                                 name="coreMemberPositionId"
                                 defaultText=''
@@ -135,6 +154,8 @@ export default function EditLeadForm({ defaultValues }: EditLeadFormProps) {
                         </div>}
                         <div className="flex w-full gap-4">
                             <SelectionFiled
+                                disabled={disabled}
+
                                 control={form.control}
                                 name="domainGroupId"
                                 defaultText=''
@@ -146,6 +167,8 @@ export default function EditLeadForm({ defaultValues }: EditLeadFormProps) {
                         </div>
                         {filteredDomainDetails && filteredDomainDetails.length > 0 && <div className="flex w-full gap-4">
                             <SelectionFiled
+                                disabled={disabled}
+
                                 control={form.control}
                                 name="domainNameId"
                                 defaultText=''

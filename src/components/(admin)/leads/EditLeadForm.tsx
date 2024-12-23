@@ -50,16 +50,16 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
 
     const editMutation = useEditLead();
 
-    function onSubmit(values: z.infer<typeof LeadsSchema>) {
-        console.log(values)
-        // editMutation.mutate({ ...values, id: id });
-    }
+
     const roles = useGetRoles();
     const domainGropus = useGetDomainGroup();
     const domainDetails = useGetDomainDetails();
 
     const filteredDomainDetails = domainDetails.data?.filter((item: any) => item.domainGroupId === form.getValues("domainGroupId"));
-
+    function onSubmit(values: z.infer<typeof LeadsSchema>) {
+        console.log(values)
+        // editMutation.mutate({ ...values, id: id });
+    }
     return (
         <CardContent>
             <Form  {...form}>

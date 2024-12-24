@@ -25,13 +25,14 @@ import {
 interface CalenderInputProps {
     control: any;
     label: string;
+    name: string;
 }
 
-function CalenderInput({ control, label }: CalenderInputProps) {
+function CalenderInput({ control, label,name }: CalenderInputProps) {
     return (
         <FormField
             control={control}
-            name="dob"
+            name={name}
             render={({ field }) => (
                 <FormItem className="flex flex-col flex-1">
                     <FormLabel>{label}</FormLabel>

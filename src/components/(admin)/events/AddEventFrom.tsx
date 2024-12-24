@@ -31,12 +31,29 @@ import RadioInput from './Inputs/RadioInput';
 import CalenderInput from './Inputs/CalenderInput';
 import SelectionFiled from '../InputFields/SelectionFiled';
 import SwitchFiled from '../InputFields/SwitchFiled';
+import { start } from 'repl';
 const formSchema = z.object({
     username: z.string().min(2, {
         message: "Username must be at least 2 characters.",
     }),
     description: z.string(),
     location: z.string(),
+    linkedinUrl: z.string().url(),
+    instagramUrl: z.string().url(),
+    isPublic: z.boolean(),
+    duration: z.enum(['SINGLE', 'MULTIPLE']),
+    startDate: z.string(),
+    endDate: z.string(),
+    startTime: z.string(),
+    endTime: z.string(),
+    startTime1: z.string(),
+    endTime1: z.string().optional().nullable(),
+    startTime2: z.string().optional().nullable(),
+    endTime2: z.string().optional().nullable(),
+    startDate1: z.string().optional().nullable(),
+    endDate1: z.string().optional().nullable(),
+    startDate2: z.string().optional().nullable(),
+    endDate2: z.string().optional().nullable(),
 })
 function AddEventFrom() {
     const form = useForm<z.infer<typeof formSchema>>({
@@ -89,30 +106,75 @@ function AddEventFrom() {
                             <RadioInput
                                 control={form.control}
                                 label='Event Duration'
-                                name=''
+                                name='eventType'
                             />
 
                         </div>
                         <div className="flex w-full gap-4 items-center">
-                            <CalenderInput label='Selcet date' control={form.control} />
-                            <InputFiled type='time' control={form.control} name='' placeholder='HEE' label='Start Time' />
-                            <InputFiled type='time' control={form.control} name='' placeholder='' label='End Time' />
+                            <CalenderInput
+                                name='startDate'
+                                label='Selcet date'
+                                control={form.control}
+                            />
+                            <InputFiled
+                                type='time'
+                                control={form.control}
+                                name=''
+                                placeholder=''
+                                label='Start Time'
+                            />
+                            <InputFiled
+                                type='time'
+                                control={form.control}
+                                name=''
+                                placeholder=''
+                                label='End Time'
+                            />
                         </div>
                         <div className="flex w-full gap-4 items-center">
-                            <CalenderInput label='Starting Date' control={form.control} />
-                            <InputFiled type='time' control={form.control} name='' placeholder='' label='Start Time' />
-                            <InputFiled type='time' control={form.control} name='' placeholder='' label='End Time' />
+                            <CalenderInput
+                                name='startDate1'
+                                label='Starting Date'
+                                control={form.control}
+                            />
+                            <InputFiled
+                                type='time'
+                                control={form.control}
+                                name=''
+                                placeholder=''
+                                label='Start Time'
+                            />
+                            <InputFiled
+                                type='time'
+                                control={form.control}
+                                name=''
+                                placeholder=''
+                                label='End Time'
+                            />
                         </div>
                         <div className="flex w-full gap-4 items-center">
-                            <CalenderInput label='End Date' control={form.control} />
-                            <InputFiled type='time' control={form.control} name='' placeholder='' label='Start Time' />
-                            <InputFiled type='time' control={form.control} name='' placeholder='' label='End Time' />
+                            <CalenderInput
+                                name='startDate2'
+                                label='End Date'
+                                control={form.control}
+                            />
+                            <InputFiled
+                                type='time'
+                                control={form.control}
+                                name='' placeholder=''
+                                label='Start Time'
+                            />
+                            <InputFiled type='time'
+                                control={form.control}
+                                name='' placeholder=''
+                                label='End Time'
+                            />
                         </div>
                         <div className="flex w-full gap-4 items-center">
                             <SwitchFiled
                                 control={form.control}
                                 title="Make this event public?"
-                                name=""
+                                name="isPublic"
                             />
                         </div>
                         <div className="flex w-full gap-4">

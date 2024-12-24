@@ -9,10 +9,10 @@ import {
 
 import { Card } from '@/components/ui/card'
 import React, { useState } from 'react'
-import useGetEvents from "@/hooks/api/events/useGetEvents";
 import { useToast } from "@/hooks/use-toast";
 import { QueryClient, useMutation } from "@tanstack/react-query";
-import { ErrorHandle, HandleLoading, TableView, ZeroDataTable } from "./TableBodyCompenents";
+
+import TableBodyBox from "./TableBody";
 
 
 
@@ -21,7 +21,7 @@ import { ErrorHandle, HandleLoading, TableView, ZeroDataTable } from "./TableBod
 const EventTable: React.FC = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<string>("");
-  const events = useGetEvents();
+
   const { toast } = useToast();
   const queryClient = new QueryClient();
   // const deleteMutation = useMutation({
@@ -87,20 +87,7 @@ const EventTable: React.FC = () => {
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {events.isError ? (
-            <ErrorHandle />
-          ) : events.isLoading ? (
-            <HandleLoading />
-          ) : events.data && events.data.length === 0 ? (
-            <ZeroDataTable />
-          ) : (
-            events.data && <TableView
-              data={events.data}
-              onDelete={handleDeleteEvent}
-            />)
-          }
-        </TableBody>
+        <TableBodyBox handleDeleteEvent={handleDeleteEvent} />
       </Table>
     </Card>
   )

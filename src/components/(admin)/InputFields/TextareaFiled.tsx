@@ -4,6 +4,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 
 import React from 'react'
 import { Input } from "@/components/ui/input";
+import { Textarea } from '@/components/ui/textarea';
 
 
 interface InputFiledProps {
@@ -12,10 +13,9 @@ interface InputFiledProps {
     placeholder: string;
     label: string;
     disabled?: boolean;
-    type?: string;
 }
 
-export default function InputFiled({ control, name, placeholder, label, disabled, type }: InputFiledProps) {
+export default function TextareaFiled({ control, name, placeholder, label, disabled }: InputFiledProps) {
     return (
         <FormField
             control={control}
@@ -24,7 +24,7 @@ export default function InputFiled({ control, name, placeholder, label, disabled
                 <FormItem className="flex-1">
                     <FormLabel>{label}</FormLabel>
                     <FormControl>
-                        <Input type={type ? type : "text"} disabled={disabled || false} placeholder={placeholder} {...field} />
+                        <Textarea disabled={disabled || false} placeholder={placeholder} {...field} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>

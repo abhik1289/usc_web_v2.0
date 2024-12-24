@@ -33,7 +33,7 @@ import SelectionFiled from '../InputFields/SelectionFiled';
 import SwitchFiled from '../InputFields/SwitchFiled';
 import { start } from 'repl';
 const formSchema = z.object({
-    username: z.string().min(2, {
+    title: z.string().min(2, {
         message: "Username must be at least 2 characters.",
     }),
     description: z.string(),
@@ -43,7 +43,6 @@ const formSchema = z.object({
     isPublic: z.boolean(),
     duration: z.enum(['SINGLE', 'MULTIPLE']),
     startDate: z.string(),
-    endDate: z.string(),
     startTime: z.string(),
     endTime: z.string(),
     startTime1: z.string(),
@@ -59,8 +58,24 @@ function AddEventFrom() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: "",
+            title: "",
             description: "",
+            location: "",
+            linkedinUrl: "",
+            instagramUrl: "",
+            isPublic: false,
+            duration: 'SINGLE',
+            startDate: "",
+            startTime: "",
+            endTime: "",
+            startTime1: "",
+            endTime1: "",
+            startTime2: "",
+            endTime2: "",
+            startDate1: "",
+            endDate1: "",
+            startDate2: "",
+            endDate2: "",
 
         },
     })
@@ -70,6 +85,7 @@ function AddEventFrom() {
         // ✅ This will be type-safe and validated.
         console.log(values)
     }
+console.log(form.getValues('duration'))
     return (
         <CardContent>
             <Form {...form}>
@@ -106,70 +122,76 @@ function AddEventFrom() {
                             <RadioInput
                                 control={form.control}
                                 label='Event Duration'
-                                name='eventType'
+                                name='duration'
                             />
 
                         </div>
-                        <div className="flex w-full gap-4 items-center">
-                            <CalenderInput
-                                name='startDate'
-                                label='Selcet date'
-                                control={form.control}
-                            />
-                            <InputFiled
-                                type='time'
-                                control={form.control}
-                                name=''
-                                placeholder=''
-                                label='Start Time'
-                            />
-                            <InputFiled
-                                type='time'
-                                control={form.control}
-                                name=''
-                                placeholder=''
-                                label='End Time'
-                            />
-                        </div>
-                        <div className="flex w-full gap-4 items-center">
-                            <CalenderInput
-                                name='startDate1'
-                                label='Starting Date'
-                                control={form.control}
-                            />
-                            <InputFiled
-                                type='time'
-                                control={form.control}
-                                name=''
-                                placeholder=''
-                                label='Start Time'
-                            />
-                            <InputFiled
-                                type='time'
-                                control={form.control}
-                                name=''
-                                placeholder=''
-                                label='End Time'
-                            />
-                        </div>
-                        <div className="flex w-full gap-4 items-center">
-                            <CalenderInput
-                                name='startDate2'
-                                label='End Date'
-                                control={form.control}
-                            />
-                            <InputFiled
-                                type='time'
-                                control={form.control}
-                                name='' placeholder=''
-                                label='Start Time'
-                            />
-                            <InputFiled type='time'
-                                control={form.control}
-                                name='' placeholder=''
-                                label='End Time'
-                            />
-                        </div>
+                        {form.getValues('duration') === 'SINGLE' ?
+                            <div className="flex w-full gap-4 items-center">
+                                <CalenderInput
+                                    name='startDate'
+                                    label='Selcet date'
+                                    control={form.control}
+                                />
+                                <InputFiled
+                                    type='time'
+                                    control={form.control}
+                                    name='startTime'
+                                    placeholder=''
+                                    label='Start Time'
+                                />
+                                <InputFiled
+                                    type='time'
+                                    control={form.control}
+                                    name='endTime'
+                                    placeholder=''
+                                    label='End Time'
+                                />
+                            </div> : <>
+                                <div className="flex w-full gap-4 items-center">
+                                    <CalenderInput
+                                        name='startDate1'
+                                        label='Starting Date'
+                                        control={form.control}
+                                    />
+                                    <InputFiled
+                                        type='time'
+                                        control={form.control}
+                                        name='startTime1'
+                                        placeholder=''
+                                        label='Start Time'
+                                    />
+                                    <InputFiled
+                                        type='time'
+                                        control={form.control}
+                                        name='endTime1'
+                                        placeholder=''
+                                        label='End Time'
+                                    />
+                                </div>
+                                <div className="flex w-full gap-4 items-center">
+                                    <CalenderInput
+                                        name='startDate2'
+                                        label='End Date'
+                                        control={form.control}
+                                    />
+                                    <InputFiled
+                                        type='time'
+                                        control={form.control}
+                                        name='startDate2'
+                                        placeholder=''
+                                        label='Start Time'
+                                    />
+                                    <InputFiled type='time'
+                                        control={form.control}
+                                        name='endDate2'
+                                        placeholder=''
+                                        label='End Time'
+                                    />
+                                </div>
+                            </>}
+
+
                         <div className="flex w-full gap-4 items-center">
                             <SwitchFiled
                                 control={form.control}

@@ -1,18 +1,14 @@
 import {
   Table,
-  TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { Card } from '@/components/ui/card'
 import React, { useState } from 'react'
-import { useToast } from "@/hooks/use-toast";
-import { QueryClient, useMutation } from "@tanstack/react-query";
-
 import TableBodyBox from "./TableBody";
+import useDeleteEvent from "@/hooks/api/events/useDeleteEvent";
+import AlertDialogBox from "../AlertDialog.tsx/AlertDialog";
 
 
 
@@ -22,58 +18,22 @@ const EventTable: React.FC = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<string>("");
 
-  const { toast } = useToast();
-  const queryClient = new QueryClient();
-  // const deleteMutation = useMutation({
-  //   mutationFn: (id: string) => axios.get(`/api/event/delete-event/${id}`), // Use DELETE method
+  const deleteMutation = useDeleteEvent(deleteId);
 
-  //   onError: (err, id, context) => {
 
-  //   },
-  //   onSuccess: () => {
-  //     toast({
-  //       description: "Deleted event",
-  //       variant: "destructive",
-  //     });
-  //     // refetch(); // Refetch to ensure data is fresh after deletion
-  //   },
-  // });
-
-  // const visibilityMutation = useMutation({
-  //   mutationFn: (id: string) => axios.get(`/api/event/change-view/${id}`),
-  //   onMutate: async (id: string) => {
-  //     await queryClient.cancelQueries(["events"]);
-  //     const previousEvents = queryClient.getQueryData<Event>(["events"]);
-
-  //     return { previousEvents }; // Return context for rollback
-  //   },
-  //   onError: (err, id, context) => {
-  //     // Rollback to previous state in case of error
-  //     if (context?.previousEvents) {
-  //       queryClient.setQueryData<Event>(["events"], context.previousEvents);
-  //     }
-  //   },
-  //   onSuccess: () => {
-  //     toast({
-  //       description: "Change Visibility",
-  //       // variant: "destructive",
-  //     });
-  //     // refetch(); // Refetch to ensure data is fresh after deletion
-  //   },
-  // });
 
   const handleDeleteEvent = (id: string) => {
     setShowDialog(true);
     setDeleteId(id);
   };
 
-  const handleVisibility = (id: string) => {
-    // visibilityMutation.mutate(id);
-  };
+
   const handleConfirmDelete = () => {
     if (deleteId) {
-      // deleteMutation.mutate(deleteId);
+      deleteMutation.mutate(deleteId);
+
     }
+    setShowDialog(false);
   }
   return (
     <Card>
@@ -89,6 +49,13 @@ const EventTable: React.FC = () => {
         </TableHeader>
         <TableBodyBox handleDeleteEvent={handleDeleteEvent} />
       </Table>
+      <AlertDialogBox
+        title="Confirm Event Deletion"
+        description="Are you sure you want to delete this event? This action cannot be undone."
+        show={showDialog}
+        setShow={() => setShowDialog(false)}
+        onConfirm={handleConfirmDelete}
+      />
     </Card>
   )
 }

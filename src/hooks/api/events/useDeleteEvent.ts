@@ -5,18 +5,18 @@ import axios from "axios";
 
 export default function useDeleteEvent(id:string) {
     const queryClient = useQueryClient();
-    const modifyMutation = useMutation({
+    const deleteMutation = useMutation({
       mutationFn: async (data: any) => {
-        const url = `/api/testimonials/delete/${id}`;
+        const url = `/api/event/delete-event/${id}`;
   
         const res = await axios.get(url);
         return res;
       },
       onSuccess: () => {
         toast({
-          description: "Testimonials Deleted successfully!",
+          description: "Event Deleted successfully!",
         });
-        queryClient.invalidateQueries(["testimonials"]);
+        queryClient.invalidateQueries(["events"]);
       },
       onError: (error: any) => {
         toast({
@@ -25,5 +25,5 @@ export default function useDeleteEvent(id:string) {
         });
       },
     });
-    return modifyMutation;
+    return deleteMutation;
 }

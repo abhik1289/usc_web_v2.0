@@ -18,7 +18,7 @@ const leads = new Hono()
       } else {
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
-       
+
 
 
         const {
@@ -210,46 +210,37 @@ const leads = new Hono()
   })
   .get("/", async (c) => {
     try {
-      // const token = getCookie(c, "token");
-      // if (!token) {
-      //   return c.json({ success: false, error: "Token not found" }, 401);
-      // } else {
-      //   const leads = await db.leads.findMany({
-      //     include: {
-      //       Social: true,
-            
-      //       coreMemberPosition: {
-      //         select: {
-      //           title: true,
-      //         },
-      //       },
-      //       createdBy: {
-      //         select: {
-      //           firstName: true,
-      //         },
-      //       },
-      //       domainGroup: {
-      //         select: {
-      //           title: true,
-      //         },
-      //       },
-      //       domainName: {
-      //         select: {
-      //           title: true,
-      //         },
-      //       },
-      //     },
-      //   });
-      //   return c.json(
-      //     {
-      //       success: true,
-      //       leads: leads,
-      //     },
-      //     200
-      //   );
-      // }
+      console.log("first")
+      const leads = await db.leads.findMany({
+        include: {
+          Social: true,
+          domainGroup: {
+            select: {
+              title: true
+            }
+          },
+          coreMemberPosition: {
+            select: {
+              title: true
+            }
+          },
+          domainName: {
+            select: {
+              title: true
+            }
+          }
+        }
+      });
+      return c.json(
+        {
+          success: true,
+          leads: leads,
+        },
+        200
+      );
+
     } catch (error) {
-      console.error("Sign-in error:", error);
+      // console.error("", error);
       return c.json(
         {
           success: false,

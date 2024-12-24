@@ -30,7 +30,11 @@ const EventTable: React.FC = () => {
 
   const handleConfirmDelete = () => {
     if (deleteId) {
-      deleteMutation.mutate(deleteId);
+      deleteMutation.mutate(deleteId, {
+        onSuccess: () => {
+          setDeleteId("");
+        }
+      });
 
     }
     setShowDialog(false);

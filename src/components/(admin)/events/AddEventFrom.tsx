@@ -35,14 +35,16 @@ const formSchema = z.object({
     username: z.string().min(2, {
         message: "Username must be at least 2 characters.",
     }),
-    dob: z.any()
+    description: z.string(),
+    location: z.string(),
 })
 function AddEventFrom() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             username: "",
-            dob: ""
+            description: "",
+
         },
     })
     // 2. Define a submit handler.
@@ -130,6 +132,7 @@ function AddEventFrom() {
                         </div>
 
                     </div>
+                    <Button type="submit" className="w-full">Add Event</Button>
                 </form>
             </Form>
         </CardContent>

@@ -20,6 +20,7 @@ export default function TestimonialsBox() {
       ) : (
         testimonials.data &&
         testimonials.data.map((testimonial: TestimonialCardInterface, i: number) => <TestimonialsCard
+          key={i}
           index={testimonial.index}
           fullName={testimonial.fullName}
           text={testimonial.text}

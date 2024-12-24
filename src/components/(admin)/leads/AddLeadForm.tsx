@@ -46,8 +46,9 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
     const insertMutation = useAddLead();
 
     function onSubmit(values: z.infer<typeof LeadsSchema>) {
-        console.log(values)
+        // console.log(values)
         insertMutation.mutate(values);
+        form.reset();
     }
     const roles = useGetRoles();
     const domainGropus = useGetDomainGroup();
@@ -62,12 +63,15 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
                     <div className="flex flex-wrap gap-4 w-full">
                         <div className="flex w-full gap-4">
                             <InputFiled
+                                disabled={insertMutation.isLoading}
                                 name="fullName"
                                 control={form.control}
                                 placeholder="John Doe"
                                 label="Full Name"
                             />
                             <InputFiled
+                                disabled={insertMutation.isLoading}
+
                                 control={form.control}
                                 name="Social.email"
                                 placeholder="example@domain.com"
@@ -77,12 +81,16 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
 
                         <div className="flex w-full gap-4">
                             <InputFiled
+                                disabled={insertMutation.isLoading}
+
                                 name="Social.githubUrl"
                                 control={form.control}
                                 placeholder="https://github.com/username"
                                 label="GitHub Profile"
                             />
                             <InputFiled
+                                disabled={insertMutation.isLoading}
+
                                 name="Social.instagramUrl"
                                 control={form.control}
                                 placeholder="https://instagram.com/username"
@@ -92,12 +100,16 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
 
                         <div className="flex w-full gap-4">
                             <InputFiled
+                                disabled={insertMutation.isLoading}
+
                                 name="Social.linkedinUrl"
                                 control={form.control}
                                 placeholder="https://linkedin.com/in/username"
                                 label="LinkedIn Profile"
                             />
                             <InputFiled
+                                disabled={insertMutation.isLoading}
+
                                 name="Social.portfolioUrl"
                                 control={form.control}
                                 placeholder="https://yourportfolio.com"
@@ -107,6 +119,8 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
 
                         <div className="flex w-full gap-4">
                             <SwitchFiled
+                                disabled={insertMutation.isLoading}
+
                                 title="Core Memeber "
                                 description=""
                                 name="isCoreMember"
@@ -115,6 +129,8 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
                         </div>
                         <div className="flex w-full gap-4">
                             <SwitchFiled
+                                disabled={insertMutation.isLoading}
+
                                 title="Current Memeber: "
                                 description=""
                                 name="isCurrent"
@@ -123,6 +139,8 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
                         </div>
                         {form.getValues("isCoreMember") && <div className="flex w-full gap-4">
                             <SelectionFiled
+                                disabled={insertMutation.isLoading}
+
                                 control={form.control}
                                 name="coreMemberPositionId"
                                 defaultText=''
@@ -134,6 +152,8 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
                         </div>}
                         <div className="flex w-full gap-4">
                             <SelectionFiled
+                                disabled={insertMutation.isLoading}
+
                                 control={form.control}
                                 name="domainGroupId"
                                 defaultText=''
@@ -145,6 +165,8 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
                         </div>
                         {filteredDomainDetails && filteredDomainDetails.length > 0 && <div className="flex w-full gap-4">
                             <SelectionFiled
+                                disabled={insertMutation.isLoading}
+
                                 control={form.control}
                                 name="domainNameId"
                                 defaultText=''
@@ -157,7 +179,9 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
                         </div>}
                     </div>
 
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit">{
+                        insertMutation.isLoading ? "Loading..." : "Submit"
+                    }</Button>
                 </form>
             </Form>
         </CardContent>

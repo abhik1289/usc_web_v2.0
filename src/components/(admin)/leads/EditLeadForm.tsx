@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -13,7 +15,7 @@ import { useGetDomainGroup } from '@/hooks/api/domainDetails/useGetDomainGroup';
 import { useGetDomainDetails } from '@/hooks/api/domainDetails/useGetDomainDetails';
 import SwitchFiled from '../InputFields/SwitchFiled';
 import useEditLead from '@/hooks/api/leads/useEditLead';
-
+import { useRouter } from 'next/navigation';
 export interface EditLeadFormProps {
     id: string;
     disabled: boolean;
@@ -37,6 +39,10 @@ export interface EditLeadFormProps {
 }
 
 export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFormProps) {
+
+
+    const router = useRouter();
+
     const form = useForm<z.infer<typeof LeadsSchema>>({
         resolver: zodResolver(LeadsSchema),
         defaultValues,
@@ -50,11 +56,12 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
     const filteredDomainDetails = domainDetails.data?.filter(
         (item: any) => item.domainGroupId === form.getValues("domainGroupId")
     );
-
+    console.log(filteredDomainDetails)
     const onSubmit = (values: z.infer<typeof LeadsSchema>) => {
-        console.log("this is calling", values);
+        // console.log("this is calling", values);
         editMutation.mutate(values);
-        console.log("first")
+        router.push("/leads");
+        // console.log("first")
     };
     console.log(form.formState.errors);
     return (

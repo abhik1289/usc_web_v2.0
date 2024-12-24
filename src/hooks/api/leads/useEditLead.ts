@@ -10,11 +10,11 @@ function useEditLead(id: string) {
         mutationFn: async (data: any) => {
             const { fullName, isCoreMember, isCurrent, profilePhoto, domainGroupId, domainNameId, Social,  index } =
                 data;
-            const convertInt = parseInt(index)
+            // const convertInt = parseInt(index)
             const url = `/api/leads/update-lead/${id}`;
 
             const res = await axios.post(url, {
-                fullName, isCoreMember, isCurrent, profilePhoto, domainGroupId, domainNameId, Social, index: convertInt
+                fullName, isCoreMember, isCurrent, profilePhoto, domainGroupId, domainNameId, Social, index
             });
             return res.data;
         },

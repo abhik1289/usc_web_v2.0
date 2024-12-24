@@ -126,9 +126,9 @@ const leads = new Hono()
             index: parseInt(index!),
           },
         });
-        await db.social.create({
+        await db.social.update({
+          where: { leadId: lead.id },
           data: {
-            leadId: lead.id,
             githubUrl,
             instagramUrl,
             linkedinUrl,
@@ -210,7 +210,6 @@ const leads = new Hono()
   })
   .get("/", async (c) => {
     try {
-      console.log("first")
       const leads = await db.leads.findMany({
         include: {
           Social: true,
@@ -226,7 +225,8 @@ const leads = new Hono()
           },
           domainName: {
             select: {
-              title: true
+              title: true,
+              id: true
             }
           }
         }

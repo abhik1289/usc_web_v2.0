@@ -29,6 +29,8 @@ import { cn } from '@/lib/utils';
 import { format } from "date-fns"
 import RadioInput from './Inputs/RadioInput';
 import CalenderInput from './Inputs/CalenderInput';
+import SelectionFiled from '../InputFields/SelectionFiled';
+import SwitchFiled from '../InputFields/SwitchFiled';
 const formSchema = z.object({
     username: z.string().min(2, {
         message: "Username must be at least 2 characters.",
@@ -56,31 +58,31 @@ function AddEventFrom() {
                     <div className="flex flex-wrap gap-4 w-full">
                         <div className="flex w-full gap-4">
                             <InputFiled
-                                name="username"
+                                name="title"
                                 control={form.control}
-                                placeholder="John Doe"
+                                placeholder="Enter event title"
                                 label="Title"
                             />
-
                         </div>
+
                         <div className="flex w-full gap-4">
                             <TextareaFiled
-                                name="username"
+                                name="description"
                                 control={form.control}
-                                placeholder="John Doe"
+                                placeholder="Enter a brief description of the event"
                                 label="Description"
                             />
-
                         </div>
+
                         <div className="flex w-full gap-4">
                             <InputFiled
-                                name="username"
+                                name="location"
                                 control={form.control}
-                                placeholder="John Doe"
+                                placeholder="Enter the event location"
                                 label="Location"
                             />
-
                         </div>
+
                         <div className="flex w-full gap-4">
                             <RadioInput
                                 control={form.control}
@@ -90,10 +92,43 @@ function AddEventFrom() {
 
                         </div>
                         <div className="flex w-full gap-4 items-center">
-                            <CalenderInput control={form.control} />
+                            <CalenderInput label='Selcet date' control={form.control} />
+                            <InputFiled type='time' control={form.control} name='' placeholder='HEE' label='Start Time' />
+                            <InputFiled type='time' control={form.control} name='' placeholder='' label='End Time' />
+                        </div>
+                        <div className="flex w-full gap-4 items-center">
+                            <CalenderInput label='Starting Date' control={form.control} />
                             <InputFiled type='time' control={form.control} name='' placeholder='' label='Start Time' />
                             <InputFiled type='time' control={form.control} name='' placeholder='' label='End Time' />
                         </div>
+                        <div className="flex w-full gap-4 items-center">
+                            <CalenderInput label='End Date' control={form.control} />
+                            <InputFiled type='time' control={form.control} name='' placeholder='' label='Start Time' />
+                            <InputFiled type='time' control={form.control} name='' placeholder='' label='End Time' />
+                        </div>
+                        <div className="flex w-full gap-4 items-center">
+                            <SwitchFiled
+                                control={form.control}
+                                title="Make this event public?"
+                                name=""
+                            />
+                        </div>
+                        <div className="flex w-full gap-4">
+                            <InputFiled
+                                name="linkedinUrl"
+                                control={form.control}
+                                placeholder="https://linkedin.com/in/username"
+                                label="LinkedIn URL"
+                            />
+
+                            <InputFiled
+                                name="instagramUrl"
+                                control={form.control}
+                                placeholder="https://instagram.com/username"
+                                label="Instagram URL"
+                            />
+                        </div>
+
                     </div>
                 </form>
             </Form>

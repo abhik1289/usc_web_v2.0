@@ -11,7 +11,7 @@ interface SwitchFiledProps {
     control: any;
     name: string;
     title: string;
-    description: string;
+    description?: string;
     disabled?: boolean;
 }
 

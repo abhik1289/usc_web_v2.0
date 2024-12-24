@@ -23,17 +23,18 @@ import {
 
 
 interface CalenderInputProps {
-    control: any
+    control: any;
+    label: string;
 }
 
-function CalenderInput({ control }: CalenderInputProps) {
+function CalenderInput({ control, label }: CalenderInputProps) {
     return (
         <FormField
             control={control}
             name="dob"
             render={({ field }) => (
                 <FormItem className="flex flex-col flex-1">
-                    <FormLabel>Event Date</FormLabel>
+                    <FormLabel>{label}</FormLabel>
                     <Popover>
                         <PopoverTrigger asChild>
                             <FormControl>

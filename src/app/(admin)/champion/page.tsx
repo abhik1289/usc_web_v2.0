@@ -1,19 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-// import ChampionDialog from "@/components/(admin)/champion/ChampionDialog";
 import { Champion } from "@/components/(admin)/champion/type";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Separator } from "@/components/ui/separator";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import ChampionsBox from "@/components/(admin)/champion/ChampionsBox";
 export default function ChampionPage() {
   const [champions, setChampions] = useState<Champion[]>([]);

@@ -1,5 +1,6 @@
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import React from 'react'
+import AddForm from './AddForm'
 
 function AddTeacher() {
   return (
@@ -10,6 +11,7 @@ function AddTeacher() {
           This is the form to add a mentor or advisor
         </CardDescription>
       </CardHeader>
+      <AddForm />
     </Card>
   )
 }

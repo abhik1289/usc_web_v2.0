@@ -50,7 +50,8 @@ const mentor = new Hono()
         } catch (error) {
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
-    }).get("/get-members", async (c) => {
+    })
+    .get("/get-members", async (c) => {
         try {
             const mentors = await db.teachers.findMany({
                 include: {
@@ -70,7 +71,8 @@ const mentor = new Hono()
         } catch (error) {
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
-    }).get("/:id", async (c) => {
+    })
+    .get("/:id", async (c) => {
         try {
             const token = getCookie(c, "token");
             if (!token) {
@@ -98,7 +100,8 @@ const mentor = new Hono()
         } catch (error) {
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
-    }).get("/delete/:id", async (c) => {
+    })
+    .get("/delete/:id", async (c) => {
         try {
             const token = getCookie(c, "token");
             if (!token) {

@@ -42,7 +42,7 @@ export default function ChampionCard({ coverPhoto, fullName, role, profilePhoto,
                 </div>
                 <div className="chmapion_description py-2 flex flex-wrap gap-2 items-center">
                     <div className="profile_photo">
-                        <img src={profilePhoto} width={100} height={100} alt={fullName} className='w-[40px] h-[40px] rounded-full' />
+                        <Image src={profilePhoto} width={100} height={100} alt={fullName} className='w-[40px] h-[40px] rounded-full' />
                     </div>
                     <div className="text">
                         <h1 className='text-xl font-bold'>{fullName}</h1>

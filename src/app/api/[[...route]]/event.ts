@@ -32,7 +32,7 @@ const event = new Hono()
         const userData = decodeSignInToken(token);
 
         const userId = userData.payload.id!;
-        let id = new mongoose.Types.ObjectId(userId);
+        const id = new mongoose.Types.ObjectId(userId);
         console.log("User ID:", userId);
         console.log(id);
         const user = db.user.findUnique({

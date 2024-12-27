@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import TestimonialDialog from "@/components/(admin)/testimonials/TestimonialDialog";
-import { Testimonial } from "@/components/(admin)/testimonials/type";
+// import { Testimonial } from "@/components/(admin)/testimonials/type";
 
 import { Button } from "@/components/ui/button";
 // import TestimonialsCard from "@/components/(admin)/testimonials/testimonials-box";

@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import AddRoleDialog from "@/components/(admin)/domains/AddRoleDialog";
 import AddDomainGroupDialog from "@/components/(admin)/domains/AddDomainGroupDialog";
 import AddDomainDialog from "@/components/(admin)/domains/AddDomain";
-import {
-  Role,
-  DomainGroup,
-  Domain,
-  EditingItem,
-} from "@/components/(admin)/domains/type";
+// import {
+//   Role,
+//   DomainGroup,
+//   Domain,
+//   EditingItem,
+// } from "@/components/(admin)/domains/type";
 import { Button } from "@/components/ui/button";
 
 import { useQuery } from "@tanstack/react-query";
@@ -23,39 +23,14 @@ export default function DomainsPage() {
 
   const router = useRouter();
 
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [domainGroups, setDomainGroups] = useState<DomainGroup[]>([]);
-  const [domains, setDomains] = useState<Domain[]>([]);
+
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
   const [isDomainGroupDialogOpen, setIsDomainGroupDialogOpen] = useState(false);
-  const [isDomainDialogOpen, setIsDomainDialogOpen] = useState(false);
-  const [selectedDomainType, setSelectedDomainType] = useState("all");
-  const [editingItem, setEditingItem] = useState<EditingItem | null>(null);
+  
 
-  const handleAddRole = (newRole: Role) => setRoles([...roles, newRole]);
-  const handleAddDomainGroup = (newGroup: DomainGroup) =>
-    setDomainGroups([...domainGroups, newGroup]);
-  const handleAddDomain = (newDomain: Domain) =>
-    setDomains([...domains, newDomain]);
+  
 
-  const handleEditDomain = (domain: Domain) => {
-    // setEditingItem({ type: "domain", ...domain });
-    setIsDomainDialogOpen(true);
-    console.log(domain);
-  };
-
-  const handleUpdateRole = (updatedRole: Role) => {
-    setRoles((prev) =>
-      prev.map((role) => (role.id === updatedRole.id ? updatedRole : role))
-    );
-  };
-
-  const handleUpdateDomainGroup = (updatedGroup: DomainGroup) => {
-    setDomainGroups((prev) =>
-      prev.map((group) => (group.id === updatedGroup.id ? updatedGroup : group))
-    );
-  };
-
+ 
   // const handleUpdateDomain = (updatedDomain: Domain) => {
   //   setDomains((prev) => prev.map((domain) => (domain.id === updatedDomain.id ? updatedDomain : domain)));
   // };
@@ -91,10 +66,10 @@ export default function DomainsPage() {
         <AddRoleDialog
           onClose={() => {
             setIsRoleDialogOpen(false);
-            setEditingItem(null);
+            // setEditingItem(null);
           }}
-          onAddRole={handleAddRole}
-          onEditRole={handleUpdateRole}
+          // onAddRole={handleAddRole}
+          // onEditRole={handleUpdateRole}
           // editingRole={editingItem?.type === "role" ? editingItem : null}
         />
       )}
@@ -102,10 +77,10 @@ export default function DomainsPage() {
         <AddDomainGroupDialog
           onClose={() => {
             setIsDomainGroupDialogOpen(false);
-            setEditingItem(null);
+            // setEditingItem(null);
           }}
-          onAddDomainGroup={handleAddDomainGroup}
-          onEditDomainGroup={handleUpdateDomainGroup}
+          // onAddDomainGroup={handleAddDomainGroup}
+          // onEditDomainGroup={handleUpdateDomainGroup}
           // editingGroup={editingItem?.type === "domainGroup" ? editingItem : null}
         />
       )}

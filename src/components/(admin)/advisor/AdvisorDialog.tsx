@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { handle } from "hono/vercel";
 
 // Advisor validation schema
 const advisorSchema = z.object({
@@ -82,7 +83,9 @@ export default function AdvisorDialog({
     onSubmit(memberData);
     onClose();
   };
+  const handleChange = () => {
 
+  }
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent>
@@ -94,18 +97,15 @@ export default function AdvisorDialog({
             <FormField
               control={form.control}
               name="photo"
-              render={({ field: { onChange, _value, ...field } }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Upload Photo</FormLabel>
                   <FormControl>
-                    <Input
+                    {/* <Input
                       type="file"
-                      onChange={(_) => {
-                        const file = _.target.files?.[0] || null;
-                        onChange(file);
-                      }}
+                      onChange={handleChange}
                       {...field}
-                    />
+                    /> */}
                   </FormControl>
                   <FormMessage />
                 </FormItem>

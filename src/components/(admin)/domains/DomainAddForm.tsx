@@ -18,12 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { toast } from "@/hooks/use-toast";
+import {  useQueryClient } from "@tanstack/react-query";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { useGetDomainGroup } from "@/hooks/api/domainDetails/useGetDomainGroup";
 import { useAddDomainDetails } from "@/hooks/api/domainDetails/useAddDomainDetails";
 

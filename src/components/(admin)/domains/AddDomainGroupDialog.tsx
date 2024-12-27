@@ -13,15 +13,15 @@ import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { domainGroupSchema } from "./schemas";
-import { DomainGroup } from "./type";
+// import { DomainGroup } from "./type";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 interface AddDomainGroupDialogProps {
   onClose: () => void;
-  onAddDomainGroup?: (group: DomainGroup) => void;
-  editingGroup?: DomainGroup | null;
-  onEditDomainGroup?: (group: DomainGroup) => void;
+  onAddDomainGroup?: (group: any) => void;
+  editingGroup?: any | null;
+  onEditDomainGroup?: (group: any) => void;
   selectedEditRoleId?: string | null;
   selectedEditRoleTitle?: string | null;
 }

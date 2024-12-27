@@ -12,7 +12,7 @@ import {
   DialogContent,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Testimonial, TestimonialDialogProps } from "./type";
+// import { Testimonial, TestimonialDialogProps } from "./type";
 import { z } from "zod";
 
 // Add validation schema
@@ -36,7 +36,12 @@ export default function TestimonialDialog({
   onAddTestimonial,
   onEditTestimonial,
   editingTestimonial,
-}: TestimonialDialogProps) {
+}: {
+  onClose: () => void;
+  onAddTestimonial: (testimonial: any) => void;
+  onEditTestimonial: (testimonial: any) => void;
+  editingTestimonial: any | null;
+}) {
   const [name, setName] = useState<string>("");
   const [position, setPosition] = useState<string>("");
   const [opinion, setOpinion] = useState<string>("");
@@ -79,7 +84,7 @@ export default function TestimonialDialog({
   const handleSubmit = () => {
     if (!validateForm()) return;
 
-    const testimonialData: Testimonial = {
+    const testimonialData: any = {
       id: editingTestimonial?.id || Date.now(),
       name,
       position,

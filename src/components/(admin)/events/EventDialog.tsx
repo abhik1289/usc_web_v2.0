@@ -33,13 +33,7 @@ const eventSchema = z.object({
       if (!date) return true; // Allow empty if not multiple dates
       return Date.parse(date) >= Date.now() - 86400000;
     }, "Start date must not be in the past"),
-  endDate: z.string().optional()
-    .refine((date, ctx) => {
-      if (!date) return true;
-      const startDate = ctx.parent.startDate;
-      if (!startDate) return true;
-      return Date.parse(date) >= Date.parse(startDate);
-    }, "End date must be after start date"),
+  endDate: z.string().optional(),
   socials: z.string().optional(),
   image: z.instanceof(File).nullable(),
 });
@@ -76,11 +70,11 @@ interface EventDialogProps {
   editingEvent?: Event | null;
 }
 
-export default function EventDialog({ 
-  onClose, 
-  onAddEvent, 
+export default function EventDialog({
+  onClose,
+  onAddEvent,
   onEditEvent,
-  editingEvent 
+  editingEvent
 }: EventDialogProps) {
   const [mounted, setMounted] = useState(false);
   const [title, setTitle] = useState('');
@@ -182,7 +176,7 @@ export default function EventDialog({
           <Input
             type="file"
             title="Upload Image"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setImage(e.target.files ? e.target.files[0] : null)
             }
             className="w-full mb-2"
@@ -223,9 +217,9 @@ export default function EventDialog({
         </div>
 
         <div className="mb-2">
-          <RadioGroup 
-            value={dateType} 
-            onValueChange={setDateType} 
+          <RadioGroup
+            value={dateType}
+            onValueChange={setDateType}
             className="flex gap-4"
           >
             <div className="flex items-center space-x-2">

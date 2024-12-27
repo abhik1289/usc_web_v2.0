@@ -33,6 +33,7 @@ model User {
   Roles              Roles[]
   DomainDetails      DomainDetails[]
   Leads              Leads[]
+  Teachers           Teachers[]
 
   @@map("users")
 }
@@ -110,6 +111,7 @@ model Roles {
   Leads        Leads[]
   Testimonials Testimonials[]
   Champions    Champions[]
+  Teachers     Teachers[]
 }
 
 model Main {
@@ -179,4 +181,25 @@ model Social {
   email        String
   portfolioUrl String?
   linkedinUrl  String?
+}
+
+model Teachers {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullName       String
+  school         String
+  profilePhoto   String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  createdBy      User     @relation(fields: [userId], references: [id])
+  userId         String   @db.ObjectId
+  Roles          Roles?   @relation(fields: [rolesId], references: [id])
+  rolesId        String?  @db.ObjectId
+  index          Int
+  customPosition String?
+  memberType     MType
+}
+
+enum MType {
+  Mentor
+  Advisor
 }

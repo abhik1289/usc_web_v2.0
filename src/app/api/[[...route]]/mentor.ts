@@ -117,5 +117,32 @@ const mentor = new Hono()
         } catch (error) {
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
+    })
+    .post("/update/:id", zValidator("json", TeachersSchema), async (c) => {
+        try {
+            const token = getCookie(c, "token");
+            if (!token) {
+                return c.json({ success: false, error: "Token not found" }, 401);
+            } else {
+                const { fullName, school, profilePhoto, rolesId, customPosition, memberType, index } = c.req.valid("json");
+                const mentor = await db.teachers.update({
+                    where: {
+                        id: c.req.param("id"),
+                    },
+                    data: {
+                        fullName,
+                        school,
+                        profilePhoto,
+                        rolesId,
+                        customPosition,
+                        memberType,
+                        index
+                    },
+                });
+                return c.json({ success: true, mentor }, 200);
+            }
+        } catch (error) {
+            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+        }
     });
 export default mentor;

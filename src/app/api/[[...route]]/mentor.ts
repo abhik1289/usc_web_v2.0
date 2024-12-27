@@ -70,5 +70,28 @@ const mentor = new Hono()
         } catch (error) {
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
+    }).get("/:id", async (c) => {
+        try {
+            const mentor = await db.teachers.findFirst({
+                where: {
+                    id: c.req.param("id"),
+                },
+                include: {
+                    createdBy: {
+                        select: {
+                            firstName: true,
+                        }
+                    },
+                    Roles: {
+                        select: {
+                            title: true
+                        }
+                    }
+                }
+            });
+            return c.json({ success: true, mentor }, 200);
+        } catch (error) {
+            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+        }
     });
 export default mentor;

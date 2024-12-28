@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-import TestimonialDialog from "@/components/(admin)/testimonials/TestimonialDialog";
-// import { Testimonial } from "@/components/(admin)/testimonials/type";
+import React from "react";
 
 import { Button } from "@/components/ui/button";
 // import TestimonialsCard from "@/components/(admin)/testimonials/testimonials-box";

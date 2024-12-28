@@ -8,7 +8,7 @@ import {
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { getCookie } from "hono/cookie";
-import { z } from "zod";
+
 
 const domain = new Hono()
   .post(
@@ -293,7 +293,7 @@ const domain = new Hono()
   )
   .get("/get-domains", async (c) => {
     try {
-      const id = c.req.param("id");
+ 
       const domainsDetails = await db.domainDetails.findMany({
         include: {
           domainGroup: {

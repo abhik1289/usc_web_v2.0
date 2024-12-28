@@ -402,6 +402,7 @@ export const user = new Hono<{ Variables: Variables }>()
         }
       }
     } catch (e) {
+      console.log(e)
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
         500
@@ -476,6 +477,7 @@ export const user = new Hono<{ Variables: Variables }>()
         }
       }
     } catch (e) {
+      console.log(e)
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
         500

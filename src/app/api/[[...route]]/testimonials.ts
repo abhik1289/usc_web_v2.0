@@ -4,8 +4,7 @@ import { testimonialSchema } from "@/schemas/testimonials/testimonials.shema";
 import { getCookie } from "hono/cookie";
 import { db } from "@/lib/db/db";
 import { decodeSignInToken } from "@/lib/authentication/token";
-import { request } from "node_modules/axios/index.cjs";
-import { z } from "zod";
+
 const testimonials = new Hono()
   .post("/add", zValidator("json", testimonialSchema), async (c) => {
     try {

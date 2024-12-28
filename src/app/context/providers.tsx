@@ -7,13 +7,13 @@ export function NextThemeProviders({
   children: React.ReactNode;
 }) {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const {  setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
     setTheme("dark");
   }, []);
-  console.log(theme)
+
   if (!mounted) return null;
   return <NextThemesProvider
     defaultTheme="dark"

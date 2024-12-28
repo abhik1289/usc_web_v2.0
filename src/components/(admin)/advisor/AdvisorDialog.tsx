@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { handle } from "hono/vercel";
+
 
 // Advisor validation schema
 const advisorSchema = z.object({

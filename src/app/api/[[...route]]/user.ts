@@ -22,6 +22,7 @@ import { getUserByEmail } from "@/lib/helper/userHelper";
 import axios from "axios";
 // import { jwt } from "hono/jwt";
 import type { JwtVariables } from "hono/jwt";
+import { z } from "zod";
 // import { JWTPayload } from "hono/utils/jwt/types";
 type Variables = JwtVariables;
 
@@ -33,7 +34,6 @@ export const user = new Hono<{ Variables: Variables }>()
       // console.log(email, password)
       // Check if the user exists in the database
       const existingUser: User | null = await getUserByEmail(email);
-      console.log(existingUser);
       if (!existingUser) {
         return c.json(
           { success: false, error: "Invalid email or password." },
@@ -47,6 +47,11 @@ export const user = new Hono<{ Variables: Variables }>()
           { success: false, error: "Invalid email or password." },
           401
         );
+      }
+      if (existingUser.isBan) {
+        return c.json(
+          { success: false, error: "Your account has been banned" },
+          401);
       }
       const isPasswordValid = await bcrypt.compare(
         password,
@@ -431,6 +436,46 @@ export const user = new Hono<{ Variables: Variables }>()
     } catch (error) {
       console.log(error);
 
+      return c.json(
+        { error: "An unexpected error occurred. Please try again." },
+        500
+      );
+    }
+  })
+  .post("/update-user/:id", zValidator("json", z.object({
+    role: z.enum(["ADMIN", "SUPERADMIN", "MODERATOR"]),
+    isBan: z.boolean()
+  })), async (c) => {
+    try {
+      const token = getCookie(c, "token");
+      if (!token) {
+        return c.json(
+          {
+            error: "token not found",
+            success: false,
+          },
+          401
+        );
+      } else {
+        const user: SignInTokenPayload = decodeSignInToken(token);
+        const role = user.payload.role!;
+        if (role != "SUPERADMIN") {
+          return c.json({ error: "You must be a super admin" }, 401);
+        } else {
+          const { role, isBan } = c.req.valid("json");
+          await db.user.update({
+            where: {
+              id: c.req.param("id"),
+            },
+            data: {
+              isBan,
+              role
+            },
+          });
+          return c.json({ success: true, message: "Updated account" });
+        }
+      }
+    } catch (e) {
       return c.json(
         { error: "An unexpected error occurred. Please try again." },
         500

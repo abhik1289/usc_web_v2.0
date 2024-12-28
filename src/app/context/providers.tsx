@@ -1,9 +1,5 @@
-// app/providers.tsx
 "use client";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-// ("use client");
-
-// import { useTheme } from "next-themes";
+import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 export function NextThemeProviders({
   children,
@@ -11,11 +7,19 @@ export function NextThemeProviders({
   children: React.ReactNode;
 }) {
   const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
+    setTheme("dark");
   }, []);
-
+  console.log(theme)
   if (!mounted) return null;
-  return <NextThemesProvider defaultTheme="dark" attribute={"class"}>{children}</NextThemesProvider>;
+  return <NextThemesProvider
+    defaultTheme="dark"
+    // enableSystem={true}
+    attribute={"class"}
+    >
+    {children}
+  </NextThemesProvider>;
 }

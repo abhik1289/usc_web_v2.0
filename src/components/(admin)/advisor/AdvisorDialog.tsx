@@ -83,9 +83,7 @@ export default function AdvisorDialog({
     onSubmit(memberData);
     onClose();
   };
-  const handleChange = () => {
-
-  }
+  
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent>
@@ -94,23 +92,19 @@ export default function AdvisorDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            <FormField
+            {/* <FormField
               control={form.control}
               name="photo"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Upload Photo</FormLabel>
                   <FormControl>
-                    {/* <Input
-                      type="file"
-                      onChange={handleChange}
-                      {...field}
-                    /> */}
+                 
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             <FormField
               control={form.control}

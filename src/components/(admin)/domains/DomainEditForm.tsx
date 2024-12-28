@@ -49,11 +49,12 @@ interface DomainAccountFormInterface {
     bannerUrl: string;
   };
   id: string;
+  disabled?: boolean;
 }
 
 export const DomainEditForm = ({
   defaultValues,
-  id,
+  id,disabled
 }: DomainAccountFormInterface) => {
 
   const router = useRouter();
@@ -89,7 +90,7 @@ export const DomainEditForm = ({
               <FormLabel>Title</FormLabel>
               <FormControl>
                 <Input
-                  disabled={modifyMutation.isLoading}
+                  disabled={modifyMutation.isLoading ||disabled}
                 
                 placeholder="Enter domain title" {...field} />
               </FormControl>
@@ -107,7 +108,7 @@ export const DomainEditForm = ({
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
-                  disabled={modifyMutation.isLoading}
+                   disabled={modifyMutation.isLoading ||disabled}
                   placeholder="Enter description"
                   {...field}
                 />
@@ -126,7 +127,7 @@ export const DomainEditForm = ({
               <FormLabel>Resources URL</FormLabel>
               <FormControl>
                 <Input
-                  disabled={modifyMutation.isLoading}
+                    disabled={modifyMutation.isLoading ||disabled}
                   placeholder="https://example.com"
                   {...field}
                 />
@@ -145,7 +146,7 @@ export const DomainEditForm = ({
               <FormLabel>Domain Group</FormLabel>
               <FormControl>
                 <Select
-                  disabled={modifyMutation.isLoading}
+                   disabled={modifyMutation.isLoading ||disabled}
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
@@ -188,7 +189,7 @@ export const DomainEditForm = ({
               <FormLabel>Banner URL</FormLabel>
               <FormControl>
                 <Input
-                  disabled={modifyMutation.isLoading}
+                   disabled={modifyMutation.isLoading ||disabled}
 
                   placeholder="https://example.com/banner.jpg"
                   {...field}
@@ -202,10 +203,10 @@ export const DomainEditForm = ({
         {/* Submit Button */}
         <Button
           type="submit"
-          disabled={modifyMutation.isLoading}
+          disabled={modifyMutation.isLoading ||disabled}
           className="w-full"
         >
-          {modifyMutation.isLoading ? "Submitting..." : "Modify"}
+          {modifyMutation.isLoading ||disabled ? "Submitting..." : "Modify"}
         </Button>
       </form>
     </Form>

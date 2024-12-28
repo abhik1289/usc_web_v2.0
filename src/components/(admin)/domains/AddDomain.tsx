@@ -24,7 +24,6 @@ function AddDomain() {
   const {
     isLoading: domainLoading,
     data: domainData,
-    error: domainError,
   } = useQuery({
     queryKey: ["domainDetails", id],
     queryFn: async () => {
@@ -52,6 +51,7 @@ function AddDomain() {
         <CardContent>
           {domainData && id ? (
             <DomainEditForm
+              disabled={domainLoading}
               id={id}
               defaultValues={{
                 title: domainData.title,

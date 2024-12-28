@@ -34,7 +34,7 @@ const event = new Hono()
         const id = new mongoose.Types.ObjectId(userId);
         console.log("User ID:", userId);
         console.log(id);
-        const user = db.user.findUnique({
+        db.user.findUnique({
           where: { email: userData.payload.email },
         });
         await db.event.create({

@@ -18,6 +18,7 @@ import { useGetUsers } from "@/hooks/api/user/useGetUsers";
 import AlertDialogBox from "../AlertDialog.tsx/AlertDialog";
 import { useDeleteUser } from "@/hooks/api/user/useDeleteUser";
 import useAuthStore from "@/store/Auth";
+import { useGetUserByIdMutation } from "@/hooks/api/user/useGetUserById";
 
 interface UserData {
   id: string;
@@ -33,11 +34,13 @@ export function UserTable() {
   const [editId, setEditId] = useState<string>("");
   const [deleteId, setDeleteId] = useState<string>("");
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string>("");
 
   const users = useGetUsers();
   const deleteUserMutation = useDeleteUser(deleteId);
+  const getUser = useGetUserByIdMutation();
   const { role } = useAuthStore();
-  
+
 
   const deleteUser = async (id: string) => {
     setDeleteId(id);
@@ -49,8 +52,10 @@ export function UserTable() {
     setOpen(true);
     setEditId(userId);
     setRole(role);
+    setUserId(userId);
+    getUser.mutate({ id: userId });
   };
-
+  console.log(getUser.data?.user)
   const handleDeleteConfirm = () => {
     if (deleteId) {
       deleteUserMutation.mutate(deleteId);
@@ -128,13 +133,17 @@ export function UserTable() {
           </TableRow>
         </TableFooter>
       </Table >
-      <ChangeRoleDialog
-        defaultValues={{ role:userRole }}
-        editId={editId}
-        // role={role}
-        open={open}
-        setOpen={setOpen}
-      />
+      {getUser.data &&
+        <ChangeRoleDialog
+          defaultValues={getUser.data?.user && {
+            isBan: getUser.data?.user.isBan,
+            role: getUser.data?.user.role,
+          }}
+          editId={editId}
+          // role={role}
+          open={open}
+          setOpen={setOpen}
+        />}
       < AlertDialogBox
         title="Delete User Confirmation"
         description="Are you sure you want to delete this user? This action cannot be undone."

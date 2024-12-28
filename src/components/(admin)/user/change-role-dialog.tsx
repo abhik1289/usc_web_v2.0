@@ -37,6 +37,7 @@ interface ChangeRoleDialogInterface {
   editId: string;
   defaultValues: {
     role: Roles;
+    isBan: boolean;
   }
 }
 

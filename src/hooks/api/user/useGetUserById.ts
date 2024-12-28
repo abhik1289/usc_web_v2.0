@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 export default function useGetUserById(id: string) {
@@ -11,4 +12,30 @@ export default function useGetUserById(id: string) {
     },
   });
   return query;
+}
+
+
+
+
+export function useGetUserByIdMutation() {
+  const deleteUser = useMutation({
+
+    mutationFn: async (data: { id: string }) => {
+      const { id } = data;
+      const url = `/api/user/${id}`;
+
+      const res = await axios.get(url);
+      return res.data;
+    },
+    onSuccess: () => {
+
+    },
+    onError: (error: any) => {
+      toast({
+        description: error.response?.data?.error || "An error occurred",
+        variant: "destructive",
+      });
+    },
+  });
+  return deleteUser;
 }

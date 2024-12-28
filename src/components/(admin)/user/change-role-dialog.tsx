@@ -77,8 +77,10 @@ export function ChangeRoleDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Change Role</DialogTitle>
-          <DialogDescription>Select a new role for the user.</DialogDescription>
+          <DialogTitle>Modify User Permissions</DialogTitle>
+          <DialogDescription>
+            Update the user's role and toggle their access to the admin panel.
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

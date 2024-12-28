@@ -59,7 +59,7 @@ export default function SignInForm() {
   const onSubmit: SubmitHandler<SignInFormValues> = async (values) => {
     try {
       // Send the sign-in request with the form values
-      const response = await axios.post("/api/user/sign-in", values);
+      const response: any = await axios.post("/api/user/sign-in", values);
 
       // Handle the response on success
       if (response.data.success) {
@@ -82,12 +82,12 @@ export default function SignInForm() {
           description: response.data.error && response.data.error,
         });
       }
-    } catch (error: Error | unknown) {
-      const err = error as SignInError;
+    } catch (err: any) {
+
       // Handle errors that occur during the API call (network errors, etc.)
-      console.error("Error during sign-in:", err);
+      const msg = err?.response.data.error
       toast({
-        description: err.message || "An unexpected error occurred",
+        description: msg || "An unexpected error occurred",
       });
     }
   };

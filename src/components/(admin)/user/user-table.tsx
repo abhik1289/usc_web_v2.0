@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import {
   Table,
   TableBody,
@@ -11,8 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import axios from "axios";
-import { useToast } from "@/hooks/use-toast";
+
 import { ChangeRoleDialog, Roles } from "./change-role-dialog";
 import { useGetUsers } from "@/hooks/api/user/useGetUsers";
 import AlertDialogBox from "../AlertDialog.tsx/AlertDialog";
@@ -20,16 +19,10 @@ import { useDeleteUser } from "@/hooks/api/user/useDeleteUser";
 import useAuthStore from "@/store/Auth";
 import { useGetUserByIdMutation } from "@/hooks/api/user/useGetUserById";
 import { CheckCircle, XCircle } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
 import CustomToolTip from "../CustomToolTip/CustomToolTip";
 
-interface UserData {
-  id: string;
-  firstName: string;
-  email: string;
-  role: string;
-  isActive: boolean;
-}
+
 
 export function UserTable() {
   const [open, setOpen] = useState<boolean>(false);

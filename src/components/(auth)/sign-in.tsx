@@ -34,10 +34,7 @@ const signInSchema = z.object({
 
 type SignInFormValues = z.infer<typeof signInSchema>;
 
-interface SignInError {
-  message: string;
-  code?: string;
-}
+
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);

@@ -28,9 +28,6 @@ interface AddDomainGroupDialogProps {
 
 export default function AddDomainGroupDialog({
   onClose,
-  onAddDomainGroup,
-  editingGroup,
-  onEditDomainGroup,
   selectedEditRoleId,
   selectedEditRoleTitle,
 }: AddDomainGroupDialogProps) {

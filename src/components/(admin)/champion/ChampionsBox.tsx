@@ -1,7 +1,6 @@
-import { Card, CardFooter } from '@/components/ui/card';
+
 import { useGetChampions } from '@/hooks/api/champions/useGetChampions'
 import React from 'react'
-import Image from 'next/image'
 import { ChampionCardSkeleton } from './ChampionCardSkeleton';
 import ChampionCard, { CahmpionCardInterface } from './ChampionCard';
 

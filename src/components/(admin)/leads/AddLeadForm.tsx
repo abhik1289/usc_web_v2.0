@@ -17,6 +17,7 @@ import { useGetDomainGroup } from '@/hooks/api/domainDetails/useGetDomainGroup';
 import { useGetDomainDetails } from '@/hooks/api/domainDetails/useGetDomainDetails';
 import SwitchFiled from '../InputFields/SwitchFiled';
 import { useAddLead } from '@/hooks/api/leads/useAddLead';
+import ImageUpload from '../ImageUpload/ImageUpload';
 export interface AddLeadFormProps {
     defaultValues: {
         fullName: string,
@@ -61,6 +62,7 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="flex flex-wrap gap-4 w-full">
+                        <ImageUpload />
                         <div className="flex w-full gap-4">
                             <InputFiled
                                 disabled={insertMutation.isLoading}

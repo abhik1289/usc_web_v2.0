@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import React from "react";
+
 import {
   Card,
   CardContent,
@@ -15,7 +15,6 @@ import { EditTestimonialsForm } from "./EditTestimonialsForm";
 
 export const AddTestimonials = () => {
   const param = useSearchParams();
-  const [data, setData] = useState();
   const id = param.get("id") || "";
   const testimonials = useGetTestimonial(id);
 

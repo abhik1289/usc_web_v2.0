@@ -70,6 +70,7 @@ export const decodeSignInToken = (token: string): SignInTokenPayload => {
       process.env.SIGNIN_TOKEN_KEY
     ) as SignInTokenPayload;
   } catch (error) {
+    console.log(error)
     throw new Error("Invalid or expired token");
   }
 };

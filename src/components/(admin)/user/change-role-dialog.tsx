@@ -47,8 +47,6 @@ export function ChangeRoleDialog({
   editId,
   defaultValues
 }: ChangeRoleDialogInterface) {
-  const userInfo = useGetUserById(editId);
-  console.log("Here", defaultValues)
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof changeRole>>({
     resolver: zodResolver(changeRole),
@@ -59,19 +57,7 @@ export function ChangeRoleDialog({
   });
 
   const onSubmit = async (data: z.infer<typeof changeRole>) => {
-    setLoading(true);
-    try {
-      // Simulate API call or logic to change the role
-      console.log(data);
-      // On success, reset the form and close the dialog
-      form.reset();
-      setOpen(false);
-    } catch (error) {
-      console.error("Error occurred:", error);
-      // Handle the error appropriately (toast, alert, etc.)
-    } finally {
-      setLoading(false);
-    }
+    console.log(data)
   };
 
   return (

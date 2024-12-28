@@ -15,12 +15,7 @@ export default function ChampionPage() {
 
   
 
- 
-  // const filteredChampions = champions.filter(champion => {
-  //   if (selectedType === "all") return true;
-  //   // Add your filtering logic here based on champion types
-  //   return true;
-  // });
+
 
   return (
     <div className="p-6 space-y-6">

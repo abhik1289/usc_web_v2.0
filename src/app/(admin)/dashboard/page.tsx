@@ -2,12 +2,12 @@
 
 import React from "react";
 import { dashboardCArdList } from "@/app/context/dashBoardLayout";
-import { useTheme } from "next-themes";
+
 import useAuthStore from "@/store/Auth";
 
 function HomePage() {
 
-  const { theme, setTheme } = useTheme();
+
 
 
   const { isSignedIn, role, email, name } = useAuthStore();

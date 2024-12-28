@@ -29,6 +29,7 @@ import { changeRole, ROLES } from "@/schemas/auth/user.schema";
 import { useState } from "react";
 import useGetUserById from "@/hooks/api/user/useGetUserById";
 import SwitchFiled from "../InputFields/SwitchFiled";
+import { useUpdateUser } from "@/hooks/api/user/useUpdateUser";
 
 export type Roles = "ADMIN" | "SUPERADMIN" | "MODERATOR";
 interface ChangeRoleDialogInterface {
@@ -48,16 +49,25 @@ export function ChangeRoleDialog({
   defaultValues
 }: ChangeRoleDialogInterface) {
   const [loading, setLoading] = useState(false);
+  const updateUser = useUpdateUser();
+
+
+
+
   const form = useForm<z.infer<typeof changeRole>>({
     resolver: zodResolver(changeRole),
     defaultValues: {
       role: defaultValues.role,
-      isBan: false,
+      isBan: defaultValues.isBan,
     },
   });
 
   const onSubmit = async (data: z.infer<typeof changeRole>) => {
-    console.log(data)
+    updateUser.mutate({ id: editId, isBan: data.isBan, role: data.role }, {
+      onSuccess: () => {
+        setOpen(false);
+      }
+    });
   };
 
   return (
@@ -82,7 +92,7 @@ export function ChangeRoleDialog({
                     <Select
                       defaultValue={defaultValues.role}
                       onValueChange={field.onChange}
-                      disabled={loading}
+                      disabled={updateUser.isLoading}
                       {...field}
                     >
                       <SelectTrigger className="w-full">
@@ -103,6 +113,7 @@ export function ChangeRoleDialog({
               )}
             />
             <SwitchFiled
+              disabled={updateUser.isLoading}
               control={form.control}
               title="Ban User"
               description="Toggle to ban this user. If banned, he/she will not have access to the admin panel."
@@ -110,8 +121,8 @@ export function ChangeRoleDialog({
             />
             {/* Footer with Submit Button */}
             <DialogFooter>
-              <Button disabled={loading} className="w-full" type="submit">
-                {loading ? "Changing..." : "Save Changes"}
+              <Button disabled={updateUser.isLoading} className="w-full" type="submit">
+                {updateUser.isLoading ? "Changing..." : "Save Changes"}
               </Button>
             </DialogFooter>
           </form>

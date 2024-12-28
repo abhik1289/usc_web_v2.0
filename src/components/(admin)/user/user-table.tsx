@@ -48,7 +48,6 @@ export function UserTable() {
   };
 
   const handleChangeRole = (userId: string, role: Roles) => {
-    console.log("Role is", role);
     setOpen(true);
     setEditId(userId);
     setRole(role);

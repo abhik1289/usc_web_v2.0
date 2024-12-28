@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import AddRoleDialog from "@/components/(admin)/domains/AddRoleDialog";
 import AddDomainGroupDialog from "@/components/(admin)/domains/AddDomainGroupDialog";
-import AddDomainDialog from "@/components/(admin)/domains/AddDomain";
+
 // import {
 //   Role,
 //   DomainGroup,
@@ -12,8 +12,6 @@ import AddDomainDialog from "@/components/(admin)/domains/AddDomain";
 // } from "@/components/(admin)/domains/type";
 import { Button } from "@/components/ui/button";
 
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import RoleTable from "@/components/(admin)/domains/role-table";
 import { DomainGroupTable } from "@/components/(admin)/domains/domainGroup-table";
 import { useRouter } from "next/navigation";

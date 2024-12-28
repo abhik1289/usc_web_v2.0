@@ -5,8 +5,9 @@ import axios from "axios";
 export function useDeleteUser(id: string) {
   const queryClient = useQueryClient();
   const deleteUser = useMutation({
-    
-    mutationFn: async () => {
+
+    mutationFn: async (data: any) => {
+      console.log(data)
       const url = `/api/user/delete-user/${id}`;
 
       const res = await axios.get(url);

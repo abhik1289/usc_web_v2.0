@@ -3,9 +3,8 @@ import { db } from "@/lib/db/db";
 import { zValidator } from "@hono/zod-validator";
 import { eventSchema } from "@/schemas/events/event.shema";
 import { getCookie } from "hono/cookie";
-import { Event } from "@prisma/client";
 import { decodeSignInToken } from "@/lib/authentication/token";
-import mongoose, { ObjectId } from "mongoose";
+import mongoose from "mongoose";
 
 const event = new Hono()
   .post("/add-event", zValidator("json", eventSchema), async (c) => {

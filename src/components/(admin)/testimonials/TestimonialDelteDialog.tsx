@@ -12,7 +12,6 @@ import {
   DialogContent,
   DialogFooter,
 } from "@/components/ui/dialog";
-// import { Testimonial, TestimonialDialogProps } from "./type";
 import { z } from "zod";
 
 // Add validation schema

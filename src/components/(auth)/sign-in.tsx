@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 // import { useSignInAccount } from "@/hooks/auth/add-user";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
+import useAuthStore from "@/store/Auth";
 
 // Define schema using Zod
 const signInSchema = z.object({
@@ -42,7 +43,7 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-
+  const { signIn } = useAuthStore();
   // React Hook Form integration with Zod
   const {
     register,
@@ -63,6 +64,8 @@ export default function SignInForm() {
       // Handle the response on success
       if (response.data.success) {
         // Successful sign-in logic (e.g., store the token, redirect the user)
+        const user = response.data.user;
+        signIn(user.email, user.role, user.name);
         toast({
           description: "Sign-in successful",
         });

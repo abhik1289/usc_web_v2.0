@@ -6,7 +6,7 @@ import axios from "axios";
 export default function useDeleteRole(id: string) {
     const queryClient = useQueryClient();
     const modifyMutation = useMutation({
-        mutationFn: async () => {
+        mutationFn: async (data:any) => {
             const url = `/api/domain/delete-role/${id}`;
 
             const res = await axios.get(url);

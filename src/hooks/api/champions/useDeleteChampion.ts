@@ -6,7 +6,7 @@ import axios from "axios";
 export default function useDeleteChampion(id:string) {
     const queryClient = useQueryClient();
     const modifyMutation = useMutation({
-      mutationFn: async () => {
+      mutationFn: async (data:any) => {
         const url = `/api/champions/delete/${id}`;
   
         const res = await axios.get(url);

@@ -3,11 +3,16 @@
 import React from "react";
 import { dashboardCArdList } from "@/app/context/dashBoardLayout";
 import { useTheme } from "next-themes";
+import useAuthStore from "@/store/Auth";
 
 function HomePage() {
- 
+
   const { theme, setTheme } = useTheme();
-  console.log(theme)
+
+
+  const { isSignedIn, role, email, name } = useAuthStore();
+
+  console.log(isSignedIn, role, email, name )
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       <div className="flex w-full flex-wrap gap-2">

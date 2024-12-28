@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/select";
 import { changeRole, ROLES } from "@/schemas/auth/user.schema";
 import { useState } from "react";
-import useGetUserById from "@/hooks/api/user/useGetUserById";
 import SwitchFiled from "../InputFields/SwitchFiled";
 import { useUpdateUser } from "@/hooks/api/user/useUpdateUser";
 

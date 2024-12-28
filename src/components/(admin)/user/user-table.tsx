@@ -19,6 +19,8 @@ import AlertDialogBox from "../AlertDialog.tsx/AlertDialog";
 import { useDeleteUser } from "@/hooks/api/user/useDeleteUser";
 import useAuthStore from "@/store/Auth";
 import { useGetUserByIdMutation } from "@/hooks/api/user/useGetUserById";
+import { CheckCircle, XCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface UserData {
   id: string;
@@ -71,13 +73,14 @@ export function UserTable() {
             <TableHead>Email</TableHead>
             <TableHead>Active</TableHead>
             <TableHead>Role</TableHead>
+            <TableHead>Ban</TableHead>
             {role === "SUPERADMIN" && <TableHead className="text-right">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         {users.isError ? (
           <TableBody>
             <TableRow>
-              <TableCell colSpan={5} className="text-center">
+              <TableCell colSpan={6} className="text-center">
                 Error Occurs
               </TableCell>
             </TableRow>
@@ -85,7 +88,7 @@ export function UserTable() {
         ) : users.isLoading ? (
           <TableBody>
             <TableRow>
-              <TableCell colSpan={5} className="text-center">
+              <TableCell colSpan={6} className="text-center">
                 Loading...
               </TableCell>
             </TableRow>
@@ -93,7 +96,7 @@ export function UserTable() {
         ) : users.data && users?.data.length === 0 ? (
           <TableBody>
             <TableRow>
-              <TableCell colSpan={5} className="text-center">
+              <TableCell colSpan={6} className="text-center">
                 No users found.
               </TableCell>
             </TableRow>
@@ -106,6 +109,36 @@ export function UserTable() {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.isActive ? "Active" : "Inactive"}</TableCell>
                 <TableCell>{user.role}</TableCell>
+                <TableCell>
+                  {user.isBan ? (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipContent>
+                          <p> This user has access to the admin panel.</p>
+                        </TooltipContent>
+                        <TooltipTrigger asChild>
+                          <span className="flex items-center text-red-600">
+                            <XCircle className="mr-2" /> Banned
+                          </span>
+                        </TooltipTrigger>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ) : (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipContent>
+                          <p> This user has access to the admin panel.</p>
+                        </TooltipContent>
+                        <TooltipTrigger asChild>
+                          <span className="flex items-center text-green-600">
+                            <CheckCircle className="mr-2" /> Active
+                          </span>
+                        </TooltipTrigger>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </TableCell>
+
                 {role === "SUPERADMIN" && < TableCell className="text-right space-x-2">
                   <button
                     disabled={user.email === email}
@@ -128,13 +161,14 @@ export function UserTable() {
         ) : null}
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={5} className="text-right">
+            <TableCell colSpan={6} className="text-right">
               Total Users: {users?.data && users.data.length}
             </TableCell>
           </TableRow>
         </TableFooter>
       </Table >
-      {getUser.data &&
+      {
+        getUser.data &&
         <ChangeRoleDialog
           defaultValues={getUser.data?.user && {
             isBan: getUser.data?.user.isBan,
@@ -144,7 +178,8 @@ export function UserTable() {
           // role={role}
           open={open}
           setOpen={setOpen}
-        />}
+        />
+      }
       < AlertDialogBox
         title="Delete User Confirmation"
         description="Are you sure you want to delete this user? This action cannot be undone."

@@ -112,7 +112,7 @@ function LeadsTable() {
                                             }
                                         </TableCell>
                                         <TableCell>
-                                            {lead.isCoreMember !== null ? lead.coreMemberPosition?.title : 'No'}
+                                            {lead.isCoreMember  ? lead.coreMemberPosition?.title : 'No'}
                                         </TableCell>
                                         {/* {lead.domainGroup.title} */}
                                         <TableCell>

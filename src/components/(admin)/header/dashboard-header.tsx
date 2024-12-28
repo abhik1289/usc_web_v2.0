@@ -31,9 +31,9 @@ export default function DashBoardHeader() {
         </Breadcrumb>
       </div>
       <div className="right_side flex gap-4 items-center">
-        <div className="user_info">
-          <div className="name text-lg">{name}</div>
-          <div className="role text-sm text-slate-400">{role[0] + role.substring(1).toLowerCase()}</div>
+        <div className="user_info text-right">
+          <div className="name text-lg ">{name}</div>
+          <div className="role text-sm text-slate-400 italic">{role[0] + role.substring(1).toLowerCase()}</div>
         </div>
         <div onClick={() => router.push("/profile")} className="profile w-[40px] h-[40px] cursor-pointer bg-[#636e72] rounded-full relative">
           <Avatar>

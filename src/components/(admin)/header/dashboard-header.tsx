@@ -3,8 +3,6 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@radix-ui/react-separator'
 import React from 'react'
-import { IoIosLogOut } from 'react-icons/io'
-import Image from "next/image";
 import { useRouter } from 'next/navigation'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import useAuthStore from '@/store/Auth'

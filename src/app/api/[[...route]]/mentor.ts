@@ -48,6 +48,7 @@ const mentor = new Hono()
                 return c.json({ success: true, mentor }, 201);
             }
         } catch (error) {
+            console.log(error);
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
     })
@@ -69,6 +70,8 @@ const mentor = new Hono()
             });
             return c.json({ success: true, mentors }, 200);
         } catch (error) {
+            console.log(error);
+
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
     })
@@ -98,6 +101,8 @@ const mentor = new Hono()
                 return c.json({ success: true, mentor }, 200);
             }
         } catch (error) {
+            console.log(error);
+
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
     })
@@ -115,6 +120,8 @@ const mentor = new Hono()
                 return c.json({ success: true, mentor }, 200);
             }
         } catch (error) {
+            console.log(error);
+
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
     })
@@ -142,6 +149,8 @@ const mentor = new Hono()
                 return c.json({ success: true, mentor }, 200);
             }
         } catch (error) {
+            console.log(error);
+
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
     });

@@ -7,29 +7,40 @@ import { Button } from "@/components/ui/button";
 import useSWR from "swr";
 import axios from "axios";
 import SkeletonLoading from "@/components/(admin)/profile/skeleton-loading";
+import AlertDialogBox from "@/components/(admin)/AlertDialog.tsx/AlertDialog";
+import useLogout from "@/hooks/api/profile/useLogout";
+import { useRouter } from "next/navigation";
 // import { LogoutResponse, logOutUser } from "@/actions/user/logoutUser";
 // import { useRouter } from "next/navigation";
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 function ProfilePage() {
-  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  const [showDialog, setShowDialog] = useState(false);
   const { data, error, isLoading } = useSWR("/api/user/get-user", fetcher);
+
+
+  const logout = useLogout();
+
+  const handleConfirmLogout = () => {
+    logout.mutate(undefined, {
+      onSuccess: () => {
+        // Redirect to the sign-in page after successful logout
+        router.push("/sign-in");
+        setShowDialog(false);
+      },
+      onError: (error) => {
+        // Handle any errors that occur during logout
+        console.error("Logout failed:", error);
+      }
+    });
+  };
+
   // const router = useRouter();
   const handleLogout = async () => {
-    try {
-      setLoading(true);
-      // const res: LogoutResponse = await logOutUser(); // Assuming logOutUser is defined elsewhere
-
-      // if (res.success) {
-      //   router.push("/sign-in");
-      // } else {
-      //   console.error("Logout failed" + res.error);
-      // }
-      setLoading(false);
-    } catch (error) {
-      console.error("Error during logout:", error);
-      setLoading(false);
-    }
+    setShowDialog(true);
   };
 
   const user = data?.infos || {
@@ -64,14 +75,20 @@ function ProfilePage() {
         <PasswordChange />
         <div className="mt-6">
           <Button
-            disabled={loading}
+            disabled={logout.isLoading}
             onClick={handleLogout}
             variant="destructive"
           >
-            {loading ? "Logout.." : "Logout"}
+            {logout.isLoading ? "Logout.." : "Logout"}
           </Button>
         </div>
       </div>
+      <AlertDialogBox
+        show={showDialog}
+        title="Confirm Logout"
+        description="Are you sure you want to log out? Any unsaved changes may be lost." onConfirm={handleConfirmLogout}
+        setShow={() => setShowDialog(false)}
+      />
     </div>
   );
 }

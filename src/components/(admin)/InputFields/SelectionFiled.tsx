@@ -19,7 +19,7 @@ interface SelectionFiledProps {
     defualtValue?: string;
 }
 
-export default function SelectionFiled({ control, name, placeholder, label, infos, notFound, defaultText, filterdata, disabled, defualtValue }: SelectionFiledProps) {
+export default function SelectionFiled({ control, name, placeholder, label, infos, notFound, defaultText, filterdata, disabled }: SelectionFiledProps) {
     // console.log(field.name)
     return (
         <FormField

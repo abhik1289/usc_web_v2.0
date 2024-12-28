@@ -11,7 +11,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+
 import {
   Form,
   FormControl,
@@ -45,10 +45,7 @@ const formSchema = z.object({
 
 export default function AddRoleDialog({
   onClose,
-  onAddRole,
   editingRole,
-  onEditRole,
-  showEditDialog,
   selectedEditRoleTitle,
   selectedEditRoleId,
 }: AddRoleDialogProps) {

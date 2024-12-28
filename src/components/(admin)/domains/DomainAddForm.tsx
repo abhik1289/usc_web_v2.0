@@ -65,8 +65,7 @@ export const DomainAddForm = ({
     defaultValues,
   });
 
-  // const [loading, setLoading] = useState(false);
-  const queryClient = useQueryClient();
+
 
   const insertMutation = useAddDomainDetails();
   const onSubmit = (values: z.infer<typeof formSchema>) => {

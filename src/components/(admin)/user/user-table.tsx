@@ -17,6 +17,7 @@ import { ChangeRoleDialog, Roles } from "./change-role-dialog";
 import { useGetUsers } from "@/hooks/api/user/useGetUsers";
 import AlertDialogBox from "../AlertDialog.tsx/AlertDialog";
 import { useDeleteUser } from "@/hooks/api/user/useDeleteUser";
+import useAuthStore from "@/store/Auth";
 
 interface UserData {
   id: string;
@@ -28,20 +29,23 @@ interface UserData {
 
 export function UserTable() {
   const [open, setOpen] = useState<boolean>(false);
-  const [role, setRole] = useState<Roles>("MODERATOR");
+  const [userRole, setRole] = useState<Roles | "">("");
   const [editId, setEditId] = useState<string>("");
   const [deleteId, setDeleteId] = useState<string>("");
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
   const users = useGetUsers();
   const deleteUserMutation = useDeleteUser(deleteId);
+  const { role } = useAuthStore();
+  
+
   const deleteUser = async (id: string) => {
     setDeleteId(id);
     setShowDialog(true);
   };
 
   const handleChangeRole = (userId: string, role: Roles) => {
-    console.log("Role is",role);
+    console.log("Role is", role);
     setOpen(true);
     setEditId(userId);
     setRole(role);
@@ -63,7 +67,7 @@ export function UserTable() {
             <TableHead>Email</TableHead>
             <TableHead>Active</TableHead>
             <TableHead>Role</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            {role === "SUPERADMIN" && <TableHead className="text-right">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         {users.isError ? (
@@ -98,7 +102,7 @@ export function UserTable() {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.isActive ? "Active" : "Inactive"}</TableCell>
                 <TableCell>{user.role}</TableCell>
-                <TableCell className="text-right space-x-2">
+                {role === "SUPERADMIN" && < TableCell className="text-right space-x-2">
                   <button
                     onClick={() => handleChangeRole(user.id, user.role)}
                     className="text-blue-500 hover:underline"
@@ -111,7 +115,7 @@ export function UserTable() {
                   >
                     Delete
                   </button>
-                </TableCell>
+                </TableCell>}
               </TableRow>
             ))}
           </TableBody>
@@ -123,20 +127,21 @@ export function UserTable() {
             </TableCell>
           </TableRow>
         </TableFooter>
-      </Table>
-      <ChangeRoleDialog
+      </Table >
+      {/* <ChangeRoleDialog
         defaultValues={{ role }}
         editId={editId}
         // role={role}
         open={open}
         setOpen={setOpen}
-      />
-      <AlertDialogBox
+      /> */}
+      < AlertDialogBox
         title="Delete User Confirmation"
         description="Are you sure you want to delete this user? This action cannot be undone."
         show={showDialog}
         onConfirm={handleDeleteConfirm}
-        setShow={() => setShowDialog(false)}
+        setShow={() => setShowDialog(false)
+        }
       />
     </>
   );

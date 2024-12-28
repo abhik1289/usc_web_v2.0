@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { IoIosSearch } from "react-icons/io";
 import AddUserDialog from "./add-user-dialog";
+import useAuthStore from "@/store/Auth";
 
 function UserHeader() {
   const [open, setOpen] = useState(false);
-  
+  const { role } = useAuthStore();
   const handleOpenDialog = () => {
     setOpen(true);
   };
@@ -16,20 +17,15 @@ function UserHeader() {
   return (
     <div className="flex justify-between items-center py-4 px-6">
       <div className="relative w-[400px]">
-        <IoIosSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
-        <Input
-          type="text"
-          placeholder="Search"
-          className="pl-10"
-        />
+        
       </div>
-      <Button
+      {role === "SUPERADMIN" && <Button
         onClick={handleOpenDialog}
         variant="default"
         className="w-[140px] h-[40px]"
       >
         Add User
-      </Button>
+      </Button>}
       <AddUserDialog open={open} setOpen={setOpen} />
     </div>
   );

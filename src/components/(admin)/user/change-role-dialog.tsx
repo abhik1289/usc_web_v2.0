@@ -47,7 +47,6 @@ export function ChangeRoleDialog({
   editId,
   defaultValues
 }: ChangeRoleDialogInterface) {
-  const [loading, setLoading] = useState(false);
   const updateUser = useUpdateUser();
 
 

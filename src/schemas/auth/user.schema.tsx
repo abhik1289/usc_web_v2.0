@@ -56,6 +56,7 @@ export const addUser = z.object({
 });
 export const changeRole = z.object({
   role: Property,
+  isBan: z.boolean(),
 });
 export const changePWD = z.object({
   oldPassword: z.string(),

@@ -28,6 +28,7 @@ import {
 import { changeRole, ROLES } from "@/schemas/auth/user.schema";
 import { useState } from "react";
 import useGetUserById from "@/hooks/api/user/useGetUserById";
+import SwitchFiled from "../InputFields/SwitchFiled";
 
 export type Roles = "ADMIN" | "SUPERADMIN" | "MODERATOR";
 interface ChangeRoleDialogInterface {
@@ -51,7 +52,8 @@ export function ChangeRoleDialog({
   const form = useForm<z.infer<typeof changeRole>>({
     resolver: zodResolver(changeRole),
     defaultValues: {
-      role: defaultValues.role
+      role: defaultValues.role,
+      isBan: false,
     },
   });
 
@@ -105,10 +107,17 @@ export function ChangeRoleDialog({
                         ))}
                       </SelectContent>
                     </Select>
+
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
+            />
+            <SwitchFiled
+              control={form.control}
+              title="Ban User"
+              description="Toggle to ban this user. If banned, he/she will not have access to the admin panel."
+              name="isBan"
             />
             {/* Footer with Submit Button */}
             <DialogFooter>

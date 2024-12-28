@@ -29,7 +29,7 @@ interface UserData {
 
 export function UserTable() {
   const [open, setOpen] = useState<boolean>(false);
-  const [userRole, setRole] = useState<Roles | "">("");
+  const [userRole, setRole] = useState<Roles>("MODERATOR");
   const [editId, setEditId] = useState<string>("");
   const [deleteId, setDeleteId] = useState<string>("");
   const [showDialog, setShowDialog] = useState<boolean>(false);
@@ -128,13 +128,13 @@ export function UserTable() {
           </TableRow>
         </TableFooter>
       </Table >
-      {/* <ChangeRoleDialog
-        defaultValues={{ role }}
+      <ChangeRoleDialog
+        defaultValues={{ role:userRole }}
         editId={editId}
         // role={role}
         open={open}
         setOpen={setOpen}
-      /> */}
+      />
       < AlertDialogBox
         title="Delete User Confirmation"
         description="Are you sure you want to delete this user? This action cannot be undone."

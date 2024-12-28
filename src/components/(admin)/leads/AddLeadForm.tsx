@@ -47,7 +47,6 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
     const insertMutation = useAddLead();
 
     function onSubmit(values: z.infer<typeof LeadsSchema>) {
-        // console.log(values)
         insertMutation.mutate(values);
         form.reset();
     }

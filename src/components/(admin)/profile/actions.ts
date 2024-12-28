@@ -3,7 +3,6 @@ import axios from "axios";
 
 export async function changePassword(oldPassword: string, newPassword: string) {
   try {
-    console.log("------------------------------->",oldPassword, newPassword);
     const response = await axios({
       url: "/api/auth/update-password",
       method: "PUT",

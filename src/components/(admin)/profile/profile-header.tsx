@@ -29,9 +29,9 @@ export default function ProfileHeader({
 
   return (
     <div className="relative bg-muted/50 text-card-foreground rounded-lg shadow-lg p-6 flex items-center space-x-6">
-      <div className="editButton w-[45px] h-[45px] absolute bottom-4 right-4 bg-blue-600 rounded-full flex justify-center items-center cursor-pointer">
+      {/* <div className="editButton w-[45px] h-[45px] absolute bottom-4 right-4 bg-blue-600 rounded-full flex justify-center items-center cursor-pointer">
         <MdModeEdit />
-      </div>
+      </div> */}
       <Avatar className="w-24 h-24">
         <AvatarImage src={user.profilePhoto} alt={user.name} />
         <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>

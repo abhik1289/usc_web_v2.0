@@ -6,7 +6,7 @@ export function useDeleteUser(id: string) {
   const queryClient = useQueryClient();
   const deleteUser = useMutation({
     
-    mutationFn: async (data: any) => {
+    mutationFn: async () => {
       const url = `/api/user/delete-user/${id}`;
 
       const res = await axios.get(url);

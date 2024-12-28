@@ -42,7 +42,8 @@ export function UserTable() {
   const deleteUserMutation = useDeleteUser(deleteId);
   const getUser = useGetUserByIdMutation();
   const { role, email } = useAuthStore();
-
+  const isSuperAdmin = role === "SUPERADMIN";
+  const colSpan = isSuperAdmin ? 6 : 5;
 
   const deleteUser = async (id: string) => {
     setDeleteId(id);
@@ -80,7 +81,7 @@ export function UserTable() {
         {users.isError ? (
           <TableBody>
             <TableRow>
-              <TableCell colSpan={6} className="text-center">
+              <TableCell colSpan={colSpan} className="text-center">
                 Error Occurs
               </TableCell>
             </TableRow>
@@ -88,7 +89,7 @@ export function UserTable() {
         ) : users.isLoading ? (
           <TableBody>
             <TableRow>
-              <TableCell colSpan={6} className="text-center">
+              <TableCell colSpan={colSpan} className="text-center">
                 Loading...
               </TableCell>
             </TableRow>
@@ -96,7 +97,7 @@ export function UserTable() {
         ) : users.data && users?.data.length === 0 ? (
           <TableBody>
             <TableRow>
-              <TableCell colSpan={6} className="text-center">
+              <TableCell colSpan={colSpan} className="text-center">
                 No users found.
               </TableCell>
             </TableRow>
@@ -161,7 +162,7 @@ export function UserTable() {
         ) : null}
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={6} className="text-right">
+            <TableCell colSpan={colSpan} className="text-right">
               Total Users: {users?.data && users.data.length}
             </TableCell>
           </TableRow>

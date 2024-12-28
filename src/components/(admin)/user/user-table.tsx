@@ -21,6 +21,7 @@ import useAuthStore from "@/store/Auth";
 import { useGetUserByIdMutation } from "@/hooks/api/user/useGetUserById";
 import { CheckCircle, XCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import CustomToolTip from "../CustomToolTip/CustomToolTip";
 
 interface UserData {
   id: string;
@@ -112,32 +113,27 @@ export function UserTable() {
                 <TableCell>{user.role}</TableCell>
                 <TableCell>
                   {user.isBan ? (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipContent>
-                          <p> This user has access to the admin panel.</p>
-                        </TooltipContent>
-                        <TooltipTrigger asChild>
-                          <span className="flex items-center text-red-600">
-                            <XCircle className="mr-2" /> Banned
-                          </span>
-                        </TooltipTrigger>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <CustomToolTip
+                      elment={
+                        <span className="flex items-center text-red-600">
+                          <XCircle className="mr-2" /> Banned
+                        </span>
+                      }
+                      content="This user has access to the admin panel."
+                    />
+
                   ) : (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipContent>
-                          <p> This user has access to the admin panel.</p>
-                        </TooltipContent>
-                        <TooltipTrigger asChild>
-                          <span className="flex items-center text-green-600">
-                            <CheckCircle className="mr-2" /> Active
-                          </span>
-                        </TooltipTrigger>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <CustomToolTip
+                      elment={
+                        <span className="flex items-center text-green-600">
+                          <CheckCircle className="mr-2" /> Active
+                        </span>
+                      }
+                      content="his user has access to the admin panel."
+                    />
                   )}
+
+
                 </TableCell>
 
                 {role === "SUPERADMIN" && < TableCell className="text-right space-x-2">

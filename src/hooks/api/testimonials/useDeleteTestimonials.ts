@@ -5,7 +5,7 @@ import axios from "axios";
 export const useDeleteTestimonials = (id: string) => {
   const queryClient = useQueryClient();
   const modifyMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async () => {
       const url = `/api/testimonials/delete/${id}`;
 
       const res = await axios.get(url);

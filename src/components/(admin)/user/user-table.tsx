@@ -39,7 +39,7 @@ export function UserTable() {
   const users = useGetUsers();
   const deleteUserMutation = useDeleteUser(deleteId);
   const getUser = useGetUserByIdMutation();
-  const { role } = useAuthStore();
+  const { role, email } = useAuthStore();
 
 
   const deleteUser = async (id: string) => {
@@ -109,14 +109,16 @@ export function UserTable() {
                 <TableCell>{user.role}</TableCell>
                 {role === "SUPERADMIN" && < TableCell className="text-right space-x-2">
                   <button
+                    disabled={user.email === email}
                     onClick={() => handleChangeRole(user.id, user.role)}
-                    className="text-blue-500 hover:underline"
+                    className="text-blue-500 hover:underline disabled:opacity-50 disabled:hober:cursor-not-allowed disabled:hover:no-underline"
                   >
                     Edit
                   </button>
                   <button
+                    disabled={user.email === email}
                     onClick={() => deleteUser(user.id)}
-                    className="text-red-500 hover:underline"
+                    className="text-red-500 hover:underline disabled:opacity-50 disabled:hober:cursor-not-allowed disabled:hover:no-underline"
                   >
                     Delete
                   </button>

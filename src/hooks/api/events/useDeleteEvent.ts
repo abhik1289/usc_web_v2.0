@@ -6,7 +6,7 @@ import axios from "axios";
 export default function useDeleteEvent(id:string) {
     const queryClient = useQueryClient();
     const deleteMutation = useMutation({
-      mutationFn: async () => {
+      mutationFn: async (data:any) => {
         const url = `/api/event/delete-event/${id}`;
   
         const res = await axios.get(url);

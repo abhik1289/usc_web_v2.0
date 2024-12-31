@@ -93,6 +93,7 @@ model Testimonials {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   fullName  String
   photoUrl  String
+  publicId  String
   position  Roles    @relation(fields: [rolesId], references: [id])
   createdBy User     @relation(fields: [userId], references: [id])
   text      String

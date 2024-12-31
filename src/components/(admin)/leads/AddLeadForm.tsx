@@ -17,7 +17,7 @@ import { useGetDomainGroup } from '@/hooks/api/domainDetails/useGetDomainGroup';
 import { useGetDomainDetails } from '@/hooks/api/domainDetails/useGetDomainDetails';
 import SwitchFiled from '../InputFields/SwitchFiled';
 import { useAddLead } from '@/hooks/api/leads/useAddLead';
-import ImageUpload from '../ImageUpload/ImageUpload';
+// import ImageUpload from '../ImageUpload/ImageUpload';
 export interface AddLeadFormProps {
     defaultValues: {
         fullName: string,

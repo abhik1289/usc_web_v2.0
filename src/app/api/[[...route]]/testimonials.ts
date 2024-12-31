@@ -25,7 +25,7 @@ const testimonials = new Hono()
           index = testimonials[testimonials.length - 1].index + 1;
         }
         await db.testimonials.create({
-          data: { fullName, photoUrl, rolesId, text, index, userId: id },
+          data: { fullName, photoUrl, rolesId, text, index, userId: id, publicId: "" },
         });
         return c.json(
           {

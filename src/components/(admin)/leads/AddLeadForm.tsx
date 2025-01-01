@@ -61,7 +61,7 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="flex flex-wrap gap-4 w-full">
-                        {/* <ImageUpload /> */}
+                        
                         <div className="flex w-full gap-4">
                             <InputFiled
                                 disabled={insertMutation.isLoading}

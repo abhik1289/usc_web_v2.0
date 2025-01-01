@@ -6,6 +6,8 @@ import { db } from "@/lib/db/db";
 import { decodeSignInToken } from "@/lib/authentication/token";
 import { uploadToCloudinary } from "@/lib/uploadCloudnary";
 import { v4 as uuidv4 } from 'uuid';
+import { cloudinary } from "@/lib/configCloudnary";
+import { deleteImage } from "@/lib/deleteImage";
 const testimonials = new Hono()
   .post("/add", zValidator("json", testimonialSchema), async (c) => {
     try {
@@ -205,7 +207,7 @@ const testimonials = new Hono()
         //convert into string
         const indexStr = index.toString();
         const fullNameStr = fullName.toString();
-        const photoUrlStr = photoUrl.toString();
+
         const rolesIdStr = rolesId.toString();
         const textStr = text.toString();
         //convert into integer
@@ -215,6 +217,7 @@ const testimonials = new Hono()
 
         //if profile image is not updated
         if (!files || (Array.isArray(files) && files.length === 0)) {
+          const photoUrlStr = photoUrl.toString();
           await db.testimonials.update({
             where: { id: Tid }, data: {
               fullName: fullNameStr, photoUrl: photoUrlStr, rolesId: rolesIdStr, text: textStr, index: sequence, userId: id
@@ -232,8 +235,8 @@ const testimonials = new Hono()
 
           // if files is not an array, convert it to an array
           const fileArray = Array.isArray(files) ? files : [files];
-
-          const processedFiles = await Promise.all(
+        
+          await Promise.all(
             fileArray.map(async (file) => {
               if (!(file instanceof File)) {
                 return c.json(
@@ -245,7 +248,7 @@ const testimonials = new Hono()
                   400
                 );
               }
-
+              //for file upload
               const buffer = await file.arrayBuffer();
               const mimeType = file.type;
               const encoding = "base64";
@@ -253,18 +256,44 @@ const testimonials = new Hono()
               const randomId = uuidv4();
               const fileUri = "data:" + randomId + mimeType + ";" + encoding + "," + base64Data;
               // load into a buffer for later use
-              const res = await uploadToCloudinary(fileUri, file.name, "post-images");
+              const res = await uploadToCloudinary(fileUri, file.name, "testimonial");
               if (res.success && res.result) {
-                const { secure_url, public_id } = res.result;
 
-                const newPost = await db.testimonials.update({
+
+                //delete previous image from cloudinary
+                const testimonial = await db.testimonials.findFirst({
+                  where: { id: Tid },
+                });
+                if (!testimonial) {
+                  return c.json({ message: "Testimonial not found" }, 404);
+                }
+                //delete image from cloudinary
+                const publicId = testimonial.publicId;
+                const { error } = await deleteImage(publicId!);
+                //if error occurs while deleting image
+                if (error) {
+                  return c.json({ message: "Image not deleted" }, 404);
+                }
+                //upload new image urls
+                const { secure_url, public_id } = res.result;
+                //update testimonial
+                await db.testimonials.update({
                   where: { id: Tid },
                   data: {
-                    fullName: fullNameStr, photoUrl: secure_url, rolesId: rolesIdStr, text: textStr, index: sequence, userId: id, publicId: public_id
+                    fullName: fullNameStr,
+                    photoUrl: secure_url,
+                    rolesId: rolesIdStr,
+                    text: textStr,
+                    index: sequence,
+                    userId: id,
+                    publicId: public_id
                   }
                 });
+                console.log("This is called", secure_url, public_id);
                 return c.json({ message: "successfully updated" }, 200);
               } else {
+                console.log("This is error called");
+
                 return c.json({ message: "File Upload Failed" }, 401);
               }
             })

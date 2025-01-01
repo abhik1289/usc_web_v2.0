@@ -107,6 +107,8 @@ export const EditTestimonialsForm = ({
     formData.append('rolesId', values.rolesId);
     formData.append('index', values.index!);
     formData.append('text', values.text);
+    formData.append('photoUrl', values.photoUrl);
+
     // console.log(values);
     editTestimonialMutation.mutate(formData);
     // router.push("/testimonials");

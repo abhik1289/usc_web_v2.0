@@ -28,21 +28,10 @@ import {
 } from "@/components/ui/select";
 import { useGetRoles } from "@/hooks/api/roles/useGetRoles";
 import useEditTestimonial from "@/hooks/api/testimonials/useEditTestimonials";
-import { useRouter } from "next/navigation";
-import Cropper from 'react-easy-crop';
 import { useRef, useState } from 'react';
 import { Edit2Icon, ImageIcon } from "lucide-react";
 import Image from "next/image";
-import getCroppedImg from "@/lib/ImageCrop";
 import { Role } from "@prisma/client";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 interface AddTestimonialsFormInterface {
   defaultValues: {
     fullName: string;
@@ -77,7 +66,7 @@ export const EditTestimonialsForm = ({
   });
 
   const editTestimonialMutation = useEditTestimonial(editId);
-  const router = useRouter();
+
 
   // Handle form submission
 

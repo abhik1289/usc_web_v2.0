@@ -148,11 +148,11 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
 
                                 control={form.control}
                                 name="coreMemberPositionId"
-                                defaultText='Select a role'
+                                defaultText=''
                                 // placeholder='Select a role'
                                 infos={roles}
                                 notFound='No role found'
-                                placeholder='Select a role'
+                               placeholder='Select a Role'
                                 label='Role'
                             />
                         </div>}

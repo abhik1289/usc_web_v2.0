@@ -37,14 +37,14 @@ export default function SelectionFiled({ control, name, placeholder, label, info
                             {...field}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Select a fruit" />
+                                <SelectValue placeholder={placeholder} />
                             </SelectTrigger>
                             <SelectContent>
                                 {infos.data && infos.data.length === 0 ? (
                                     <p>{notFound}</p>
                                 ) : (
                                     <SelectGroup>
-                                        <SelectLabel>Fruits</SelectLabel>
+                                        <SelectLabel>{placeholder}</SelectLabel>
                                         {
                                             filterdata ? (filterdata &&
                                                 filterdata.map((item: any, i: number) => (

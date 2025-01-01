@@ -4,6 +4,7 @@ import React from "react";
 
 import LeadsTable from "@/components/(admin)/leads/LeadsTable";
 import LeadsFilterBox from "@/components/(admin)/leads/LeadsFilterBox";
+import Head from "next/head";
 
 
 

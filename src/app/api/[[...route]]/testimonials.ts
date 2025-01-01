@@ -152,22 +152,36 @@ const testimonials = new Hono()
         const Tid = c.req.param("id");
         const body = await c.req.parseBody();
         const { fullName, photoUrl, rolesId, text, index } = body;
+        //convert into string
+        const indexStr = index.toString();
+        const fullNameStr = fullName.toString();
+        const photoUrlStr = photoUrl.toString();
+        const rolesIdStr = rolesId.toString();
+        const textStr = text.toString();
+        //convert into integer
+        const sequence = parseInt(indexStr || '0');
+        //for file upload
         const files = body.file;
-        console.log(fullName, rolesId, rolesId, index, files);
-        // const sequence = parseInt(index || '0');
-        // await db.testimonials.update({
-        //   where: {
-        //     id: Tid,
-        //   },
-        //   data: { fullName, photoUrl, rolesId, text, userId: id, index: sequence },
-        // });
-        return c.json(
-          {
-            success: true,
-            message: "updated successfully",
-          },
-          200
-        );
+
+        //if profile image is not updated
+        if (!files || (Array.isArray(files) && files.length === 0)) {
+          await db.testimonials.update({
+            where: { id: Tid }, data: {
+              fullName: fullNameStr, photoUrl: photoUrlStr, rolesId: rolesIdStr, text: textStr, index: sequence, userId: id
+            }
+          });
+          return c.json(
+            {
+              success: true,
+              message: "updated successfully",
+            },
+            200
+          );
+        } else {
+
+        }
+        
+
       }
     } catch (error) {
       console.error("Sign-in error:", error);

@@ -108,7 +108,7 @@ export const EditTestimonialsForm = ({
     formData.append('index', values.index!);
     formData.append('text', values.text);
     // console.log(values);
-    editTestimonialMutation.mutate(values);
+    editTestimonialMutation.mutate(formData);
     // router.push("/testimonials");
   };
   return (

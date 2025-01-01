@@ -9,8 +9,10 @@ export default function useEditTestimonial(id: string) {
       const formData = data;
       const url = `/api/testimonials/update/${id}`;
 
-      const res = await axios.post(url, {
-        formData
+      const res = await axios.post(url, formData, {
+
+        headers: { "Content-Type": "multipart/form-data" },
+
       });
       return res.data;
     },

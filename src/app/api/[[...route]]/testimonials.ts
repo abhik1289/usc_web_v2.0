@@ -4,7 +4,8 @@ import { testimonialSchema } from "@/schemas/testimonials/testimonials.shema";
 import { getCookie } from "hono/cookie";
 import { db } from "@/lib/db/db";
 import { decodeSignInToken } from "@/lib/authentication/token";
-
+import { uploadToCloudinary } from "@/lib/uploadCloudnary";
+import { v4 as uuidv4 } from 'uuid';
 const testimonials = new Hono()
   .post("/add", zValidator("json", testimonialSchema), async (c) => {
     try {
@@ -178,10 +179,57 @@ const testimonials = new Hono()
             200
           );
         } else {
+          //if photo is updated
+
+          // if files is not an array, convert it to an array
+          const fileArray = Array.isArray(files) ? files : [files];
+
+          const processedFiles = await Promise.all(
+            fileArray.map(async (file) => {
+              if (!(file instanceof File)) {
+                return c.json(
+                  {
+                    message: "Invalid file type",
+                    error: "Expected a file upload but received something else",
+                    received: typeof file,
+                  },
+                  400
+                );
+              }
+
+              const buffer = await file.arrayBuffer();
+              const mimeType = file.type;
+              const encoding = "base64";
+              const base64Data = Buffer.from(buffer).toString("base64");
+              const randomId = uuidv4();
+              const fileUri = "data:" + randomId + mimeType + ";" + encoding + "," + base64Data;
+              // load into a buffer for later use
+              const res = await uploadToCloudinary(fileUri, file.name, "post-images");
+              if (res.success && res.result) {
+                const { secure_url, public_id } = res.result;
+
+                const newPost = await db.testimonials.update({
+                  where: { id: Tid },
+                  data: {
+                    fullName: fullNameStr, photoUrl: secure_url, rolesId: rolesIdStr, text: textStr, index: sequence, userId: id, publicId: public_id
+                  }
+                });
+                return c.json({ message: "S", post: newPost }, 201);
+              } else {
+                return c.json({ message: "File Upload Failed" }, 401);
+              }
+            })
+          );
+
+
+
+
+
+
+
+
 
         }
-        
-
       }
     } catch (error) {
       console.error("Sign-in error:", error);

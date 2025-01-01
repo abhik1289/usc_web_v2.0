@@ -43,7 +43,7 @@ const leads = new Hono()
         if (leads.length === 0) {
           index = 0;
         } else {
-          index = leads[leads.length - 1].index + 1;
+          index = leads.length + 1;
         }
         const lead = await db.leads.create({
           data: {

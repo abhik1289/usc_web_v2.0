@@ -214,7 +214,7 @@ const testimonials = new Hono()
                     fullName: fullNameStr, photoUrl: secure_url, rolesId: rolesIdStr, text: textStr, index: sequence, userId: id, publicId: public_id
                   }
                 });
-                return c.json({ message: "S", post: newPost }, 201);
+                return c.json({ message: "successfully updated" }, 201);
               } else {
                 return c.json({ message: "File Upload Failed" }, 401);
               }

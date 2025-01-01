@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef, useState } from "react";
 
 import {
   Card,
@@ -14,11 +14,12 @@ import useGetTestimonial from "@/hooks/api/testimonials/useGetTestimonial";
 import { EditTestimonialsForm } from "./EditTestimonialsForm";
 
 export const AddTestimonials = () => {
+ 
   const param = useSearchParams();
   const id = param.get("id") || "";
   const testimonials = useGetTestimonial(id);
+ 
 
-  console.log(testimonials.data);
   return (
     <div className="p-4">
       <Card className="">

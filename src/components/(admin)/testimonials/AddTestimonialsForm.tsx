@@ -27,6 +27,9 @@ import {
 } from "@/components/ui/select";
 import { useGetRoles } from "@/hooks/api/roles/useGetRoles";
 import useInsertTestimonial from "@/hooks/api/testimonials/useInsertTestimonials";
+import { Image as ImageIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import Image from "next/image";
 interface AddTestimonialsFormInterface {
   defaultValues: {
     fullName: string;
@@ -42,6 +45,23 @@ export const AddTestimonialsForm = ({
   defaultValues,
   isEdit,
 }: AddTestimonialsFormInterface) => {
+
+
+  const [image, setImage] = useState<string | null>(null);
+  const [file, setFile] = useState<string | null>(null);
+  const uploadImgRef = useRef<HTMLInputElement>(null);
+  const handleButtonClick = () => {
+    uploadImgRef.current?.click();
+  }
+  const handleFileChange = (event: any) => {
+    const file = event.target.files[0];
+    setFile(file);
+    if (file) {
+      const reader: any = new FileReader();
+      reader.onload = () => setImage(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
   const roles = useGetRoles();
 
   // 1. Define your form.
@@ -61,6 +81,14 @@ export const AddTestimonialsForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {image ? <Image
+          alt=""
+          width={100}
+          height={100}
+          src={image}
+        /> : <Button>
+          <ImageIcon /> Upload Image
+        </Button>}
         <FormField
           control={form.control}
           name="fullName"

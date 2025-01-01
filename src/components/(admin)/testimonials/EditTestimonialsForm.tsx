@@ -48,7 +48,7 @@ interface AddTestimonialsFormInterface {
     fullName: string;
     text: string;
     rolesId: string;
-    index?: string;
+    index: string;
     photoUrl: string;
   };
   isEdit: boolean;
@@ -63,16 +63,8 @@ export const EditTestimonialsForm = ({
   editId,
 }: AddTestimonialsFormInterface) => {
 
-
-
-  // State management for image cropping
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
-  const [croppedImage, setCroppedImage] = useState<string | null>(null);
-  const [rotation, setRotation] = useState(0);
-  const [editDialog, setEditDialog] = useState(false);
-
+  const [image, setImage] = useState<string | null>(null);
+  const [file, setFile] = useState<string | null>(null);
 
   const uploadImgRef = useRef<HTMLInputElement>(null);
 
@@ -88,80 +80,60 @@ export const EditTestimonialsForm = ({
   const router = useRouter();
 
   // Handle form submission
-  const onSubmit = async (values: z.infer<typeof testimonialSchema>) => {
-    console.log(values);
-    await editTestimonialMutation.mutateAsync(values);
-    router.push("/testimonials");
-  };
 
-  // Handle crop completion
-  const onCropComplete = (croppedArea: any, croppedAreaPixel: any) => {
-    setCroppedAreaPixels(croppedAreaPixel);
-  };
 
-  // Show cropped image
-  const showCroppedImage = async () => {
-    try {
-      const croppedImg = await getCroppedImg(
-        defaultValues.photoUrl,
-        croppedAreaPixels,
-        rotation
-      );
-      setCroppedImage(croppedImg);
-      console.log(croppedImg);
-    } catch (error) {
-      console.error(error);
+
+
+  const handleButtonClick = () => {
+    uploadImgRef.current?.click();
+  }
+  const handleFileChange = (event: any) => {
+    const file = event.target.files[0];
+    setFile(file);
+    if (file) {
+      const reader: any = new FileReader();
+      reader.onload = () => setImage(reader.result);
+      reader.readAsDataURL(file);
     }
   };
-
+  const onSubmit = async (values: z.infer<typeof testimonialSchema>) => {
+    // console.log(values, file);
+    const formData = new FormData();
+    if (file !== null) {
+      formData.append('file', file);
+    }
+    formData.append('fullName', values.fullName);
+    formData.append('text', values.text);
+    formData.append('rolesId', values.rolesId);
+    formData.append('index', values.index!);
+    formData.append('text', values.text);
+    // console.log(values);
+    editTestimonialMutation.mutate(values);
+    // router.push("/testimonials");
+  };
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <button type="button" onClick={showCroppedImage}>Done</button>
 
-        {/* Image Cropper */}
-        {/* <div className="crop_box w-[400px] h-[400px] overflow-hidden bg-red-50 absolute">
-          {/* <Cropper
-            image={defaultValues.photoUrl}
-            crop={crop}
-            zoom={zoom}
-            cropShape="round"
-            aspect={4 / 3}
-            onCropChange={setCrop}
-            onCropComplete={onCropComplete}
-            onZoomChange={setZoom}
-          /> */}
-        {/* </div>  */}
-
-        {/* Display Cropped Image or Default Image */}
         {defaultValues.photoUrl && (
           <div className="flex flex-col">
             <div className="image w-[70px] h-[70px] rounded-full relative">
               <Image
                 width={100}
                 height={100}
+                className="rounded-full"
                 alt={defaultValues.fullName}
-                src={croppedImage ? croppedImage : defaultValues.photoUrl}
+                src={image ? image : defaultValues.photoUrl}
               />
             </div>
             <div className="edit_btn mt-2">
-              <Button onClick={() => setEditDialog(true)} type="button" className="w-[70px]">
+              <Button
+                onClick={handleButtonClick}
+                type="button"
+                className="w-[70px]"
+              >
                 <Edit2Icon size={20} />
                 Edit
-              </Button>
-            </div>
-          </div>
-        )}
-        {editDialog && <Dialog open={editDialog}>
-
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Upload & Crop Image</DialogTitle>
-            </DialogHeader>
-            <div className="image_upload_controller h-[300px] flex justify-center items-center">
-              <Button onClick={() => uploadImgRef.current?.click()} type="button">
-                <ImageIcon size={20} />
-                Upload Image
               </Button>
               <div className="img_upload_ip">
                 <FormField
@@ -170,14 +142,22 @@ export const EditTestimonialsForm = ({
                   name="photoUrl"
                   render={({ field }) => (
 
-                    <input name={'photoUrl'} ref={uploadImgRef} hidden type="file" />
+                    <input
+                      accept="image/*"
+                      name={'photoUrl'}
+                      onChange={handleFileChange}
+                      ref={uploadImgRef}
+                      hidden
+                      type="file"
+                    />
 
                   )}
                 />
               </div>
             </div>
-          </DialogContent>
-        </Dialog>}
+          </div>
+        )}
+
         {/* Full Name Field */}
         <FormField
           control={form.control}

@@ -42,7 +42,7 @@ export const AddTestimonials = () => {
                 fullName: testimonials.data && testimonials.data.fullName,
                 rolesId: testimonials.data && testimonials.data.rolesId,
                 text: testimonials.data && testimonials.data.text,
-                index: testimonials.data && testimonials.data.index,
+                index: testimonials.data && testimonials.data.index.toString(),
                 photoUrl: testimonials.data && testimonials.data.photoUrl,
               }}
             />

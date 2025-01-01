@@ -6,15 +6,11 @@ export default function useEditTestimonial(id: string) {
   const queryClient = useQueryClient();
   const insertMutation = useMutation({
     mutationFn: async (data: any) => {
-      const { fullName, photoUrl, rolesId, text, index } = data;
+      const formData = data;
       const url = `/api/testimonials/update/${id}`;
 
       const res = await axios.post(url, {
-        fullName,
-        photoUrl,
-        rolesId,
-        text,
-        index,
+        formData
       });
       return res.data;
     },

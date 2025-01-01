@@ -141,7 +141,7 @@ const testimonials = new Hono()
       );
     }
   })
-  .post("/update/:id", zValidator("json", testimonialSchema), async (c) => {
+  .post("/update/:id", async (c) => {
     try {
       const token = getCookie(c, "token");
       if (!token) {
@@ -150,15 +150,17 @@ const testimonials = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
         const Tid = c.req.param("id");
-        const { fullName, photoUrl, rolesId, text, index } =
-          c.req.valid("json");
-        const sequence = parseInt(index || '0');
-        await db.testimonials.update({
-          where: {
-            id: Tid,
-          },
-          data: { fullName, photoUrl, rolesId, text, userId: id, index: sequence },
-        });
+        const body = await c.req.parseBody();
+        const { fullName, photoUrl, rolesId, text, index } = body;
+        const files = body.file;
+        console.log(fullName, rolesId, rolesId, index, files);
+        // const sequence = parseInt(index || '0');
+        // await db.testimonials.update({
+        //   where: {
+        //     id: Tid,
+        //   },
+        //   data: { fullName, photoUrl, rolesId, text, userId: id, index: sequence },
+        // });
         return c.json(
           {
             success: true,

@@ -38,6 +38,10 @@ export interface AddLeadFormProps {
 
 
 export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
+
+
+    console.log("first")
+
     const form = useForm<z.infer<typeof LeadsSchema>>({
         resolver: zodResolver(LeadsSchema),
         defaultValues
@@ -54,8 +58,8 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
     const domainGropus = useGetDomainGroup();
     const domainDetails = useGetDomainDetails();
 
-    const filteredDomainDetails = domainDetails.data?.filter((item: any) => item.domainGroupId === form.trigger("domainGroupId"));
-
+    const filteredDomainDetails = domainDetails.data?.filter((item: any) => item.domainGroupId === form.watch("domainGroupId"));
+// console.log(form.watch("domainGroupId"))
     return (
         <CardContent>
             <Form {...form}>

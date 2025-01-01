@@ -7,16 +7,15 @@ export const useAddLead = () => {
     const queryClient = useQueryClient();
     const insertMutation = useMutation({
         mutationFn: async (data: any) => {
-            const { fullName, isCoreMember, isCurrent, profilePhoto, domainGroupId, domainNameId, Social } =
-                data;
+            const formData = data;
 
             const url = `/api/leads/add-lead`;
 
-            const res = await axios.post(url, {
-                fullName, isCoreMember, isCurrent, profilePhoto, domainGroupId, domainNameId,
-                Social
+            const res = await fetch(url, {
+                method: "POST",
+                body: formData,
             });
-            return res.data;
+            return res;
         },
         onSuccess: () => {
             toast({

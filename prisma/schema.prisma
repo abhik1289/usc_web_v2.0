@@ -172,6 +172,7 @@ model Leads {
   index                Int
   coreMemberPositionId String?       @db.ObjectId
   Social               Social?
+  publicId             String?
 }
 
 model Social {

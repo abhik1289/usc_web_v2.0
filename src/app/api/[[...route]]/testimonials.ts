@@ -195,11 +195,7 @@ const testimonials = new Hono()
       );
     }
   })
-  .post("/update/:id", zValidator("form", testimonialSchema.extend({
-    file: z.instanceof(File).refine((file) => file.size < 1024 * 1024 * 2, {
-      message: "File size should not be more than 2MB",
-    }).refine((file) => ["image/jpge", "image/png", "image/jpg"].includes(file.type), { message: "Invalid file type" }),
-  })), async (c) => {
+  .post("/update/:id", async (c) => {
     try {
       const token = getCookie(c, "token");
       if (!token) {
@@ -208,8 +204,8 @@ const testimonials = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
         const Tid = c.req.param("id");
-        const body = c.req.valid("form");
-
+        const body = await c.req.parseBody();
+        
         const { fullName, photoUrl, rolesId, text, index } = body;
         //convert into string
         const indexStr = index!.toString();

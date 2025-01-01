@@ -9,10 +9,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { cloudinary } from "@/lib/configCloudnary";
 import { deleteImage } from "@/lib/deleteImage";
 const testimonials = new Hono()
-  .post("/add", zValidator("json", testimonialSchema), async (c) => {
+  .post("/add", async (c) => {
     try {
       const body = await c.req.parseBody();
-      const { fullName, photoUrl, rolesId, text } = body;
+      console.log("--------------->",body)
+      const { fullName, rolesId, text } = body;
 
       const token = getCookie(c, "token");
       if (!token) {
@@ -21,12 +22,12 @@ const testimonials = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
         const testimonials = await db.testimonials.findMany();
-        // console.log("-------------->", testimonials);
+        console.log("-------------->", testimonials);
         let index;
         if (testimonials.length === 0) {
-          index = 0;
+          index = 1;
         } else {
-          index = testimonials[testimonials.length - 1].index + 1;
+          index = testimonials.length + 1;
         }
         //convert into string
         const fullNameStr = fullName.toString();
@@ -44,7 +45,7 @@ const testimonials = new Hono()
         // if files is not an array, convert it to an array
         const fileArray = Array.isArray(files) ? files : [files];
 
-        const processedFiles = await Promise.all(
+        await Promise.all(
           fileArray.map(async (file) => {
             if (!(file instanceof File)) {
               return c.json(
@@ -235,7 +236,7 @@ const testimonials = new Hono()
 
           // if files is not an array, convert it to an array
           const fileArray = Array.isArray(files) ? files : [files];
-        
+
           await Promise.all(
             fileArray.map(async (file) => {
               if (!(file instanceof File)) {

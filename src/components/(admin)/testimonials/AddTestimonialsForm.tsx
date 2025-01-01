@@ -30,6 +30,7 @@ import useInsertTestimonial from "@/hooks/api/testimonials/useInsertTestimonials
 import { Image as ImageIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import Image from "next/image";
+import { useToast } from "@/hooks/use-toast";
 interface AddTestimonialsFormInterface {
   defaultValues: {
     fullName: string;
@@ -50,6 +51,8 @@ export const AddTestimonialsForm = ({
   const [image, setImage] = useState<string | null>(null);
   const [file, setFile] = useState<string | null>(null);
   const uploadImgRef = useRef<HTMLInputElement>(null);
+  const roles = useGetRoles();
+  const { toast } = useToast();
   const handleButtonClick = () => {
     uploadImgRef.current?.click();
   }
@@ -62,7 +65,6 @@ export const AddTestimonialsForm = ({
       reader.readAsDataURL(file);
     }
   };
-  const roles = useGetRoles();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof testimonialSchema>>({
@@ -74,21 +76,68 @@ export const AddTestimonialsForm = ({
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof testimonialSchema>) {
-    InsertTestimonial.mutate(values);
-    form.reset();
+    if (!file) {
+      toast({
+        description: "Please upload an image",
+        variant: "destructive",
+      })
+    } else {
+      const formData = new FormData();
+      formData.append('fullName', values.fullName);
+      formData.append('text', values.text);
+      formData.append('rolesId', values.rolesId);
+      // formData.append('index', values.index!);
+      formData.append('text', values.text);
+      formData.append('file', file);
+      InsertTestimonial.mutate(formData, {
+        onSuccess: () => {
+          form.reset();
+        }
+      });
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {image ? <Image
-          alt=""
-          width={100}
-          height={100}
-          src={image}
-        /> : <Button>
+        {image ? <div className="img_preview_container">
+          <div className="img_preview  w-[60px] h-[60px] rounded-full overflow-hidden">
+            <Image
+              alt=""
+              width={100}
+              height={100}
+              src={image}
+            />
+          </div>
+
+
+          <Button type="button" className="mt-2" onClick={handleButtonClick}>
+            <ImageIcon /> Change Image
+          </Button>
+
+        </div> : <Button type="button" onClick={handleButtonClick}>
           <ImageIcon /> Upload Image
+
         </Button>}
+        <div className="img_upload_ip">
+          <FormField
+
+            control={form.control}
+            name="photoUrl"
+            render={({ field }) => (
+
+              <input
+                accept="image/*"
+                name={'photoUrl'}
+                onChange={handleFileChange}
+                ref={uploadImgRef}
+                hidden
+                type="file"
+              />
+
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="fullName"

@@ -6,16 +6,15 @@ export default function useInsertTestimonial() {
   const queryClient = useQueryClient();
   const insertMutation = useMutation({
     mutationFn: async (data: any) => {
-      const { fullName, photoUrl, rolesId, text } = data;
+      const formData = data;
+      // console.log(formData)
       const url = `/api/testimonials/add`;
 
-      const res = await axios.post(url, {
-        fullName,
-        photoUrl,
-        rolesId,
-        text,
-      });
-      return res.data;
+      const res = await fetch(url, {
+        method: 'POST',
+        body: formData
+      })
+      return res;
     },
     onSuccess: () => {
       toast({

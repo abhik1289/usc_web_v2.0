@@ -19,7 +19,7 @@ const _routePath = app
   .route("/domain", domain)
   .route("/leads", leads)
   .route("/mentor", mentor);
-
+  // /api/testimonials/add
 export const GET = handle(app);
 export const POST = handle(app);
 

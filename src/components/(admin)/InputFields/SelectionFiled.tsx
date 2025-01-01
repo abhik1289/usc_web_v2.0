@@ -30,20 +30,21 @@ export default function SelectionFiled({ control, name, placeholder, label, info
                     <FormLabel>{label}</FormLabel>
                     <FormControl>
                         <Select
+                        
                             onValueChange={field.onChange}
                             disabled={infos.isLoading || disabled}
                             defaultValue={field.name}
                             {...field}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder={placeholder} />
+                                <SelectValue placeholder="Select a fruit" />
                             </SelectTrigger>
                             <SelectContent>
                                 {infos.data && infos.data.length === 0 ? (
                                     <p>{notFound}</p>
                                 ) : (
                                     <SelectGroup>
-                                        <SelectLabel>{defaultText}</SelectLabel>
+                                        <SelectLabel>Fruits</SelectLabel>
                                         {
                                             filterdata ? (filterdata &&
                                                 filterdata.map((item: any, i: number) => (

@@ -54,7 +54,7 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
     const domainGropus = useGetDomainGroup();
     const domainDetails = useGetDomainDetails();
 
-    const filteredDomainDetails = domainDetails.data?.filter((item: any) => item.domainGroupId === form.getValues("domainGroupId"));
+    const filteredDomainDetails = domainDetails.data?.filter((item: any) => item.domainGroupId === form.trigger("domainGroupId"));
 
     return (
         <CardContent>
@@ -144,7 +144,8 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
 
                                 control={form.control}
                                 name="coreMemberPositionId"
-                                defaultText=''
+                                defaultText='Select a role'
+                                // placeholder='Select a role'
                                 infos={roles}
                                 notFound='No role found'
                                 placeholder='Select a role'
@@ -154,7 +155,7 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
                         <div className="flex w-full gap-4">
                             <SelectionFiled
                                 disabled={insertMutation.isLoading}
-
+                                
                                 control={form.control}
                                 name="domainGroupId"
                                 defaultText=''

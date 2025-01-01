@@ -8,11 +8,12 @@ import { uploadToCloudinary } from "@/lib/uploadCloudnary";
 import { v4 as uuidv4 } from 'uuid';
 import { cloudinary } from "@/lib/configCloudnary";
 import { deleteImage } from "@/lib/deleteImage";
+import { z } from "zod";
 const testimonials = new Hono()
   .post("/add", async (c) => {
     try {
       const body = await c.req.parseBody();
-      console.log("--------------->",body)
+      console.log("--------------->", body)
       const { fullName, rolesId, text } = body;
 
       const token = getCookie(c, "token");
@@ -194,7 +195,11 @@ const testimonials = new Hono()
       );
     }
   })
-  .post("/update/:id", async (c) => {
+  .post("/update/:id", zValidator("form", testimonialSchema.extend({
+    file: z.instanceof(File).refine((file) => file.size < 1024 * 1024 * 2, {
+      message: "File size should not be more than 2MB",
+    }).refine((file) => ["image/jpge", "image/png", "image/jpg"].includes(file.type), { message: "Invalid file type" }),
+  })), async (c) => {
     try {
       const token = getCookie(c, "token");
       if (!token) {
@@ -203,10 +208,11 @@ const testimonials = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
         const Tid = c.req.param("id");
-        const body = await c.req.parseBody();
+        const body = c.req.valid("form");
+
         const { fullName, photoUrl, rolesId, text, index } = body;
         //convert into string
-        const indexStr = index.toString();
+        const indexStr = index!.toString();
         const fullNameStr = fullName.toString();
 
         const rolesIdStr = rolesId.toString();

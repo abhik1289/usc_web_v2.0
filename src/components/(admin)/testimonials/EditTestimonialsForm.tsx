@@ -29,7 +29,7 @@ import {
 import { useGetRoles } from "@/hooks/api/roles/useGetRoles";
 import useEditTestimonial from "@/hooks/api/testimonials/useEditTestimonials";
 import { useRef, useState } from 'react';
-import { Edit2Icon, ImageIcon } from "lucide-react";
+import { Edit2Icon } from "lucide-react";
 import Image from "next/image";
 import { Role } from "@prisma/client";
 interface AddTestimonialsFormInterface {
@@ -98,9 +98,9 @@ export const EditTestimonialsForm = ({
     formData.append('text', values.text);
     formData.append('photoUrl', values.photoUrl);
 
-    // console.log(values);
+
     editTestimonialMutation.mutate(formData);
-    // router.push("/testimonials");
+  
   };
   return (
     <Form {...form}>

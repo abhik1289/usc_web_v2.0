@@ -198,7 +198,7 @@ export const EditTestimonialsForm = ({
                       ) : (
                         <SelectGroup>
                           <SelectLabel>Role</SelectLabel>
-                          {roles.data.map((item: any) => (
+                          {roles.data && roles.data.map((item: any) => (
                             <SelectItem key={item.id} value={item.id}>
                               {item.title}
                             </SelectItem>

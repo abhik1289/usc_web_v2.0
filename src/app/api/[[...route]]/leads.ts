@@ -32,39 +32,36 @@ const leads = new Hono()
           profilePhoto,
           domainGroupId,
           domainNameId,
-          githubUrl, instagramUrl, linkedinUrl, email, portfolioUrl,
+          githubUrl, instagramUrl, linkedinUrl, email,
         } = body;
-        console.log(fullName,
-          isCoreMember,
-          coreMemberPositionId,
-          isCurrent,
-          profilePhoto,
-          domainGroupId,
-          domainNameId,
-          githubUrl, instagramUrl, linkedinUrl, email, portfolioUrl)
-        const files = portfolioUrl;
+       
+// console.log(body)
+        const files = body.profilePhoto;
+      
         //if profile image is not updated
         if (!files || (Array.isArray(files) && files.length === 0)) {
           return c.json({ success: false, error: "Please upload a profile image" }, 400);
         } else {
-          //if photo is updated
+
 
 
           //convert to string
-          const fullName = cString(body.fullName);
-          const coreMemberPositionId = cString(body.coreMemberPositionId);
-          const domainGroupId = cString(body.domainGroupId);
-          const domainNameId = cString(body.domainNameId);
-          const githubUrl = cString(body.githubUrl);
-          const instagramUrl = cString(body.instagramUrl);
-          const linkedinUrl = cString(body.linkedinUrl);
-          const email = cString(body.email);
-          const portfolioUrl = cString(body.portfolioUrl);
-          const isCoreMember = cString(body.isCoreMember);
-          const isCurrent = Boolean(body.isCurrent);
-          const profilePhoto = cString(body.profilePhoto);
+          const fullNameStr = cString(body.fullName);
+          const coreMemberPositionIdStr = cString(body.coreMemberPositionId);
+          const domainGroupIdStr = cString(body.domainGroupId);
+          const domainNameIdStr = cString(body.domainNameId);
+          const githubUrlStr = cString(body.githubUrl);
+          const instagramUrlStr = cString(body.instagramUrl);
+          const linkedinUrlStr = cString(body.linkedinUrl);
+          const emailStr = cString(body.email);
+          const portfolioUrlStr = cString(body.portfolioUrl);
+          const isCoreMemberStr = Boolean(body.isCoreMember);
+          const isCurrentStr = Boolean(body.isCurrent);
+          const profilePhotoStr = cString(body.profilePhoto);
 
 
+
+          // console.log(fullNameStr, emailStr, githubUrlStr, instagramUrlStr, linkedinUrlStr, portfolioUrlStr, profilePhotoStr, isCoreMemberStr, isCurrentStr, coreMemberPositionIdStr, domainGroupIdStr, domainNameIdStr);
 
           // if files is not an array, convert it to an array
           const fileArray = Array.isArray(files) ? files : [files];
@@ -88,6 +85,7 @@ const leads = new Hono()
               const base64Data = Buffer.from(buffer).toString("base64");
               const randomId = uuidv4();
               const fileUri = "data:" + randomId + mimeType + ";" + encoding + "," + base64Data;
+              console.log("FILE URI IS",fileUri)
               // load into a buffer for later use
               const res = await uploadToCloudinary(fileUri, file.name, "testimonial");
               if (res.success && res.result) {
@@ -105,17 +103,17 @@ const leads = new Hono()
                 //upload new image urls
                 const { secure_url, public_id } = res.result;
 
-
+console.log( "==============>",secure_url, public_id)
 
                 const lead = await db.leads.create({
                   data: {
-                    fullName,
-                    isCoreMember: isCoreMember ? true : false,
-                    coreMemberPositionId,
-                    isCurrent,
+                    fullName: fullNameStr,
+                    isCoreMember: isCoreMemberStr ? true : false,
+                    coreMemberPositionId: coreMemberPositionIdStr,
+                    isCurrent: isCurrentStr ? true : false,
                     profilePhoto: secure_url,
-                    domainGroupId,
-                    domainNameId,
+                    domainGroupId: domainGroupIdStr,
+                    domainNameId: domainNameIdStr,
                     userId: id,
                     index,
                     publicId: public_id,
@@ -124,11 +122,11 @@ const leads = new Hono()
                 await db.social.create({
                   data: {
                     leadId: lead.id,
-                    githubUrl,
-                    instagramUrl,
-                    linkedinUrl,
-                    email,
-                    portfolioUrl,
+                    githubUrl: githubUrlStr,
+                    instagramUrl: instagramUrlStr,
+                    linkedinUrl: linkedinUrlStr,
+                    email: emailStr,
+                    portfolioUrl: portfolioUrlStr,
                   },
                 });
 

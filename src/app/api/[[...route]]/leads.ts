@@ -34,10 +34,10 @@ const leads = new Hono()
           domainNameId,
           githubUrl, instagramUrl, linkedinUrl, email,
         } = body;
-       
-// console.log(body)
+
+        // console.log(body)
         const files = body.profilePhoto;
-      
+
         //if profile image is not updated
         if (!files || (Array.isArray(files) && files.length === 0)) {
           return c.json({ success: false, error: "Please upload a profile image" }, 400);
@@ -60,7 +60,7 @@ const leads = new Hono()
 
 
 
-        
+
 
           // if files is not an array, convert it to an array
           const fileArray = Array.isArray(files) ? files : [files];
@@ -84,7 +84,7 @@ const leads = new Hono()
               const base64Data = Buffer.from(buffer).toString("base64");
               const randomId = uuidv4();
               const fileUri = "data:" + randomId + mimeType + ";" + encoding + "," + base64Data;
-              console.log("FILE URI IS",fileUri)
+              console.log("FILE URI IS", fileUri)
               // load into a buffer for later use
               const res = await uploadToCloudinary(fileUri, file.name, "testimonial");
               if (res.success && res.result) {
@@ -163,7 +163,7 @@ const leads = new Hono()
       );
     }
   })
-  .post("/update-lead/:id", zValidator("json", LeadsSchema), async (c) => {
+  .post("/update-lead/:id", async (c) => {
     try {
       const token = getCookie(c, "token");
       if (!token) {
@@ -172,6 +172,8 @@ const leads = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
         const leadId = c.req.param("id");
+        const body = await c.req.parseBody();
+
         const {
           fullName,
           isCoreMember,
@@ -180,42 +182,66 @@ const leads = new Hono()
           profilePhoto,
           domainGroupId,
           domainNameId,
-          index,
-          Social,
-        } = c.req.valid("json");
-        const { githubUrl, instagramUrl, linkedinUrl, email, portfolioUrl } =
-          Social;
-        const lead = await db.leads.update({
-          where: { id: leadId },
-          data: {
-            fullName,
-            isCoreMember,
-            coreMemberPositionId,
-            isCurrent,
-            profilePhoto,
-            domainGroupId,
-            domainNameId,
-            userId: id,
-            index: parseInt(index!),
-          },
-        });
-        await db.social.update({
-          where: { leadId: lead.id },
-          data: {
-            githubUrl,
-            instagramUrl,
-            linkedinUrl,
-            email,
-            portfolioUrl,
-          },
-        });
-        return c.json(
-          {
-            success: true,
-            message: "Leads Updates Success",
-          },
-          200
-        );
+          githubUrl, instagramUrl, linkedinUrl, email, index
+        } = body;
+
+
+        const files = body.image;
+
+
+        //convert to string
+        const fullNameStr = cString(body.fullName);
+        const coreMemberPositionIdStr = cString(body.coreMemberPositionId);
+        const domainGroupIdStr = cString(body.domainGroupId);
+        const domainNameIdStr = cString(body.domainNameId);
+        const githubUrlStr = cString(body.githubUrl);
+        const instagramUrlStr = cString(body.instagramUrl);
+        const linkedinUrlStr = cString(body.linkedinUrl);
+        const emailStr = cString(body.email);
+        const portfolioUrlStr = cString(body.portfolioUrl);
+        const isCoreMemberStr = Boolean(body.isCoreMember);
+        const isCurrentStr = Boolean(body.isCurrent);
+        const indexINT = parseInt(cString(body.index));
+        const profilePhotoStr = cString(body.profilePhoto);
+        //if profile image is not updated
+        if (!files || (Array.isArray(files) && files.length === 0)) {
+
+          //image is not updated
+          const lead = await db.leads.update({
+            where: { id: leadId },
+            data: {
+              fullName: fullNameStr,
+              isCoreMember: isCoreMemberStr ? true : false,
+              coreMemberPositionId: coreMemberPositionIdStr,
+              isCurrent: isCurrentStr ? true : false,
+              profilePhoto: profilePhotoStr,
+              domainGroupId: domainGroupIdStr,
+              domainNameId: domainNameIdStr,
+              userId: id,
+              index: indexINT,
+            },
+          });
+          await db.social.update({
+            where: { leadId: lead.id },
+            data: {
+              githubUrl: githubUrlStr,
+              instagramUrl: instagramUrlStr,
+              linkedinUrl: linkedinUrlStr,
+              email: emailStr,
+              portfolioUrl: portfolioUrlStr,
+            },
+          });
+          return c.json(
+            {
+              success: true,
+              message: "Leads Updates Success",
+            },
+            200
+          );
+        }else{
+
+        }
+    
       }
     } catch (error) {
       console.error("Sign-in error:", error);

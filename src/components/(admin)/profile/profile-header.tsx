@@ -71,12 +71,13 @@ export default function ProfileHeader({
           Joined on {new Date(user.joinDate).toLocaleDateString()}
         </p>
       </div>
-      <Button onClick={handleLogout} className="absolute top-6 right-6">
+      <Button variant={'destructive'} onClick={handleLogout} className="absolute top-6 right-6">
         Logout
       </Button>
       <AlertDialogBox
         title="Confirm Logout"
         description="Are you sure you want to log out? Any unsaved changes will be lost."
+        
         show={show}
         setShow={() => setShow(false)}
         onConfirm={handleLogoutConfirm}

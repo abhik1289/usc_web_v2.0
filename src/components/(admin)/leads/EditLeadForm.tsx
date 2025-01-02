@@ -84,12 +84,12 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
     const onSubmit = (values: z.infer<typeof LeadsSchema>) => {
 
 
-        if (!file) {
-            toast({
-                description: "Please upload an image",
-                variant: "destructive",
-            })
-        } else {
+        // if (!file) {
+        //     toast({
+        //         description: "Please upload an image",
+        //         variant: "destructive",
+        //     })
+        // } else {
             const formData = new FormData();
             formData.append('fullName', values.fullName);
             formData.append('email', values.Social.email);
@@ -102,18 +102,15 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
             formData.append('domainGroupId', values.domainGroupId);
             formData.append('domainNameId', values.domainNameId);
             values.coreMemberPositionId && formData.append('coreMemberPositionId', values.coreMemberPositionId);
-            formData.append('profilePhoto', file);
+            formData.append('profilePhoto', values.profilePhoto);
             editMutation.mutate(formData, {
                 onSuccess: () => {
                     router.push('/admin/leads');
                 }
             });
-        }
-
-
-
+        // }
     };
-    console.log(form.formState.errors);
+
     return (
         <CardContent>
             <Form {...form}>
@@ -134,10 +131,12 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
                             <ImageIcon /> Change Image
                         </Button>
 
-                    </div> : <Button type="button" onClick={handleButtonClick}>
-                        <ImageIcon /> Upload Image
-
-                    </Button>}
+                    </div> : <Image
+                        width={100}
+                        height={100}
+                        alt={defaultValues.fullName}
+                        src={defaultValues.profilePhoto}
+                    />}
 
                     <div className="flex flex-wrap gap-4 w-full">
                         <div className="flex w-full gap-4">

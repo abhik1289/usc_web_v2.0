@@ -18,6 +18,7 @@ import useEditLead from '@/hooks/api/leads/useEditLead';
 import { useRouter } from 'next/navigation';
 import { Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
+import { toast } from '@/hooks/use-toast';
 
 export interface EditLeadFormProps {
     id: string;
@@ -63,8 +64,6 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
         defaultValues,
     });
 
-
-
     const filteredDomainDetails = domainDetails.data?.filter(
         (item: any) => item.domainGroupId === form.getValues("domainGroupId")
     );
@@ -83,10 +82,36 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
     };
     console.log(filteredDomainDetails)
     const onSubmit = (values: z.infer<typeof LeadsSchema>) => {
-        // console.log("this is calling", values);
-        editMutation.mutate(values);
-        router.push("/leads");
-        // console.log("first")
+
+
+        if (!file) {
+            toast({
+                description: "Please upload an image",
+                variant: "destructive",
+            })
+        } else {
+            const formData = new FormData();
+            formData.append('fullName', values.fullName);
+            formData.append('email', values.Social.email);
+            values.Social.githubUrl && formData.append('githubUrl', values.Social.githubUrl);
+            values.Social.instagramUrl && formData.append('instagramUrl', values.Social.instagramUrl);
+            values.Social.linkedinUrl && formData.append('linkedinUrl', values.Social.linkedinUrl);
+            values.Social.portfolioUrl && formData.append('portfolioUrl', values.Social.portfolioUrl);
+            values.isCoreMember && formData.append('isCoreMember', values.isCoreMember.toString());
+            formData.append('isCurrent', values.isCurrent.toString());
+            formData.append('domainGroupId', values.domainGroupId);
+            formData.append('domainNameId', values.domainNameId);
+            values.coreMemberPositionId && formData.append('coreMemberPositionId', values.coreMemberPositionId);
+            formData.append('profilePhoto', file);
+            editMutation.mutate(formData, {
+                onSuccess: () => {
+                    router.push('/admin/leads');
+                }
+            });
+        }
+
+
+
     };
     console.log(form.formState.errors);
     return (

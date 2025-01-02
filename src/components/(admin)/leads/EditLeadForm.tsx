@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { CardContent } from "@/components/ui/card";
@@ -16,6 +16,9 @@ import { useGetDomainDetails } from '@/hooks/api/domainDetails/useGetDomainDetai
 import SwitchFiled from '../InputFields/SwitchFiled';
 import useEditLead from '@/hooks/api/leads/useEditLead';
 import { useRouter } from 'next/navigation';
+import { Image as ImageIcon } from 'lucide-react';
+import Image from 'next/image';
+
 export interface EditLeadFormProps {
     id: string;
     disabled: boolean;
@@ -41,21 +44,43 @@ export interface EditLeadFormProps {
 export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFormProps) {
 
 
+
+    //ALL STATES
+    const [image, setImage] = useState<string | null>(null);
+    const [file, setFile] = useState<string | null>(null);
+    const uploadImgRef = useRef<HTMLInputElement>(null);
+
+    //HOOKS
     const router = useRouter();
-
-    const form = useForm<z.infer<typeof LeadsSchema>>({
-        resolver: zodResolver(LeadsSchema),
-        defaultValues,
-    });
-
     const editMutation = useEditLead(id);
     const roles = useGetRoles();
     const domainGroups = useGetDomainGroup();
     const domainDetails = useGetDomainDetails();
 
+    //ALL FUNCTIONS
+    const form = useForm<z.infer<typeof LeadsSchema>>({
+        resolver: zodResolver(LeadsSchema),
+        defaultValues,
+    });
+
+
+
     const filteredDomainDetails = domainDetails.data?.filter(
         (item: any) => item.domainGroupId === form.getValues("domainGroupId")
     );
+
+    const handleButtonClick = () => {
+        uploadImgRef.current?.click();
+    }
+    const handleFileChange = (event: any) => {
+        const file = event.target.files[0];
+        setFile(file);
+        if (file) {
+            const reader: any = new FileReader();
+            reader.onload = () => setImage(reader.result);
+            reader.readAsDataURL(file);
+        }
+    };
     console.log(filteredDomainDetails)
     const onSubmit = (values: z.infer<typeof LeadsSchema>) => {
         // console.log("this is calling", values);
@@ -68,6 +93,27 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
         <CardContent>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+
+                    {image ? <div className="img_preview_container">
+                        <div className="img_preview  w-[60px] h-[60px] rounded-full overflow-hidden">
+                            <Image
+                                alt=""
+                                width={100}
+                                height={100}
+                                src={image}
+                            />
+                        </div>
+
+
+                        <Button type="button" className="mt-2" onClick={handleButtonClick}>
+                            <ImageIcon /> Change Image
+                        </Button>
+
+                    </div> : <Button type="button" onClick={handleButtonClick}>
+                        <ImageIcon /> Upload Image
+
+                    </Button>}
+
                     <div className="flex flex-wrap gap-4 w-full">
                         <div className="flex w-full gap-4">
                             <InputFiled

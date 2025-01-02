@@ -57,11 +57,10 @@ const leads = new Hono()
           const portfolioUrlStr = cString(body.portfolioUrl);
           const isCoreMemberStr = Boolean(body.isCoreMember);
           const isCurrentStr = Boolean(body.isCurrent);
-          const profilePhotoStr = cString(body.profilePhoto);
 
 
 
-          // console.log(fullNameStr, emailStr, githubUrlStr, instagramUrlStr, linkedinUrlStr, portfolioUrlStr, profilePhotoStr, isCoreMemberStr, isCurrentStr, coreMemberPositionIdStr, domainGroupIdStr, domainNameIdStr);
+        
 
           // if files is not an array, convert it to an array
           const fileArray = Array.isArray(files) ? files : [files];
@@ -103,7 +102,7 @@ const leads = new Hono()
                 //upload new image urls
                 const { secure_url, public_id } = res.result;
 
-console.log( "==============>",secure_url, public_id)
+
 
                 const lead = await db.leads.create({
                   data: {

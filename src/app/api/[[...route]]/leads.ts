@@ -61,7 +61,7 @@ const leads = new Hono()
           const email = cString(body.email);
           const portfolioUrl = cString(body.portfolioUrl);
           const isCoreMember = cString(body.isCoreMember);
-          // const isCurrent = cString(body.isCurrent);
+          const isCurrent = Boolean(body.isCurrent);
           const profilePhoto = cString(body.profilePhoto);
 
 

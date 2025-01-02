@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 
 interface ProfileData {
@@ -26,6 +27,11 @@ export default function ProfileHeader({
     joinDate: `${createdAt}`,
     profilePhoto: `${profile_photo}`,
   };
+  
+
+  const handleLogout =()=>{
+    console.log("Logout")
+  }
 
   return (
     <div className="relative bg-muted/50 text-card-foreground rounded-lg shadow-lg p-6 flex items-center space-x-6">
@@ -41,6 +47,9 @@ export default function ProfileHeader({
           Joined on {new Date(user.joinDate).toLocaleDateString()}
         </p>
       </div>
+      <Button onClick={handleLogout} className="absolute top-6 right-6">
+        Logout
+      </Button>
     </div>
   );
 }

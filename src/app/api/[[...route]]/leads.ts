@@ -277,13 +277,6 @@ const leads = new Hono()
               if (res.success && res.result) {
 
 
-                const leads = await db.leads.findMany();
-                let index;
-                if (leads.length === 0) {
-                  index = 0;
-                } else {
-                  index = leads.length + 1;
-                }
 
 
 
@@ -302,7 +295,7 @@ const leads = new Hono()
                     domainGroupId: domainGroupIdStr,
                     domainNameId: domainNameIdStr,
                     userId: id,
-                    index,
+                    index: indexINT,
                     publicId: public_id,
                   },
                 });

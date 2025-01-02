@@ -6,6 +6,7 @@ import { decodeSignInToken } from "@/lib/authentication/token";
 import { LeadsSchema } from "@/schemas/leads/leads.schema";
 import { v4 as uuidv4 } from 'uuid';
 import { uploadToCloudinary } from "@/lib/uploadCloudnary";
+import { deleteImage } from "@/lib/deleteImage";
 
 
 function cString(str: any) {
@@ -238,10 +239,106 @@ const leads = new Hono()
             },
             200
           );
-        }else{
+        } else {
+
+          //delete previous image
+          const lead = await db.leads.findFirst({ where: { id: leadId } });
+          if (!lead) {
+            return c.json({ success: false, error: "Lead not found" }, 404);
+          }
+          const { error } = await deleteImage(lead.publicId!);
+          if (error) {
+            return c.json({ success: false, error: "Image not deleted" }, 404);
+          }
+          // if files is not an array, convert it to an array
+          const fileArray = Array.isArray(files) ? files : [files];
+
+          await Promise.all(
+            fileArray.map(async (file) => {
+              if (!(file instanceof File)) {
+                return c.json(
+                  {
+                    message: "Invalid file type",
+                    error: "Expected a file upload but received something else",
+                    received: typeof file,
+                  },
+                  400
+                );
+              }
+              //for file upload
+              const buffer = await file.arrayBuffer();
+              const mimeType = file.type;
+              const encoding = "base64";
+              const base64Data = Buffer.from(buffer).toString("base64");
+              const randomId = uuidv4();
+              const fileUri = "data:" + randomId + mimeType + ";" + encoding + "," + base64Data;
+              // load into a buffer for later use
+              const res = await uploadToCloudinary(fileUri, file.name, "testimonial");
+              if (res.success && res.result) {
+
+
+                const leads = await db.leads.findMany();
+                let index;
+                if (leads.length === 0) {
+                  index = 0;
+                } else {
+                  index = leads.length + 1;
+                }
+
+
+
+                //upload new image urls
+                const { secure_url, public_id } = res.result;
+
+
+
+                const lead = await db.leads.create({
+                  data: {
+                    fullName: fullNameStr,
+                    isCoreMember: isCoreMemberStr ? true : false,
+                    coreMemberPositionId: coreMemberPositionIdStr,
+                    isCurrent: isCurrentStr ? true : false,
+                    profilePhoto: secure_url,
+                    domainGroupId: domainGroupIdStr,
+                    domainNameId: domainNameIdStr,
+                    userId: id,
+                    index,
+                    publicId: public_id,
+                  },
+                });
+                await db.social.create({
+                  data: {
+                    leadId: lead.id,
+                    githubUrl: githubUrlStr,
+                    instagramUrl: instagramUrlStr,
+                    linkedinUrl: linkedinUrlStr,
+                    email: emailStr,
+                    portfolioUrl: portfolioUrlStr,
+                  },
+                });
+
+                return c.json(
+                  {
+                    success: true,
+                    message: "Leads added ",
+                  },
+                  201
+                );
+              } else {
+                console.log("This is error called");
+
+                return c.json({ message: "File Upload Failed" }, 401);
+              }
+            })
+          );
+
+
+
+
+
 
         }
-    
+
       }
     } catch (error) {
       console.error("Sign-in error:", error);

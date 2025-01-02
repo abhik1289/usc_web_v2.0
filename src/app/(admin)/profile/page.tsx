@@ -74,21 +74,10 @@ function ProfilePage() {
         <h2 className="text-2xl font-bold mb-4">Account Settings</h2>
         <PasswordChange />
         <div className="mt-6">
-          <Button
-            disabled={logout.isLoading}
-            onClick={handleLogout}
-            variant="destructive"
-          >
-            {logout.isLoading ? "Logout.." : "Logout"}
-          </Button>
+         
         </div>
       </div>
-      <AlertDialogBox
-        show={showDialog}
-        title="Confirm Logout"
-        description="Are you sure you want to log out? Any unsaved changes may be lost." onConfirm={handleConfirmLogout}
-        setShow={() => setShowDialog(false)}
-      />
+      
     </div>
   );
 }

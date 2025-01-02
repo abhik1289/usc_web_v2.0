@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { uploadToCloudinary } from "@/lib/uploadCloudnary";
 
 
-function cString(str: string | File): string {
+function cString(str: any) {
   return str.toString();
 }
 
@@ -22,7 +22,7 @@ const leads = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
 
-
+        const body = await c.req.parseBody();
 
         const {
           fullName,
@@ -33,39 +33,38 @@ const leads = new Hono()
           domainGroupId,
           domainNameId,
           githubUrl, instagramUrl, linkedinUrl, email, portfolioUrl,
-        }: {
-          fullName: string,
-          isCoreMember: boolean,
-          coreMemberPositionId: string,
-          isCurrent: boolean,
-          profilePhoto: string,
-          domainGroupId: string,
-          domainNameId: string,
-          githubUrl: string,
-          instagramUrl: string,
-          linkedinUrl: string,
-          email: string,
-          portfolioUrl: string,
-        } = await c.req.parseBody() as unknown as {
-          fullName: string,
-          isCoreMember: boolean,
-          coreMemberPositionId: string,
-          isCurrent: boolean,
-          profilePhoto: string,
-          domainGroupId: string,
-          domainNameId: string,
-          githubUrl: string,
-          instagramUrl: string,
-          linkedinUrl: string,
-          email: string,
-          portfolioUrl: string,
-        };
+        } = body;
+        console.log(fullName,
+          isCoreMember,
+          coreMemberPositionId,
+          isCurrent,
+          profilePhoto,
+          domainGroupId,
+          domainNameId,
+          githubUrl, instagramUrl, linkedinUrl, email, portfolioUrl)
         const files = portfolioUrl;
         //if profile image is not updated
         if (!files || (Array.isArray(files) && files.length === 0)) {
           return c.json({ success: false, error: "Please upload a profile image" }, 400);
         } else {
           //if photo is updated
+
+
+          //convert to string
+          const fullName = cString(body.fullName);
+          const coreMemberPositionId = cString(body.coreMemberPositionId);
+          const domainGroupId = cString(body.domainGroupId);
+          const domainNameId = cString(body.domainNameId);
+          const githubUrl = cString(body.githubUrl);
+          const instagramUrl = cString(body.instagramUrl);
+          const linkedinUrl = cString(body.linkedinUrl);
+          const email = cString(body.email);
+          const portfolioUrl = cString(body.portfolioUrl);
+          const isCoreMember = cString(body.isCoreMember);
+          // const isCurrent = cString(body.isCurrent);
+          const profilePhoto = cString(body.profilePhoto);
+
+
 
           // if files is not an array, convert it to an array
           const fileArray = Array.isArray(files) ? files : [files];
@@ -154,7 +153,7 @@ const leads = new Hono()
 
 
 
-       
+
       }
     } catch (error) {
       console.error("Sign-in error:", error);

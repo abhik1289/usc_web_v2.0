@@ -1,10 +1,12 @@
 "use client"
-
+import { Image as ImageIcon } from "lucide-react";
+import { useRef, useState } from "react"
+import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { CardContent } from '@/components/ui/card'
-import { Form } from "@/components/ui/form"
+import { Form, FormField } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import InputFiled from "../InputFields/InputFiled"
 import MentorOrAdvisor from "./input/MentorSelction"
@@ -15,7 +17,9 @@ import useGetRoles from "@/hooks/api/role/useGetRoles"
 
 
 function AddForm() {
-
+  const [image, setImage] = useState<string | null>(null);
+  const [file, setFile] = useState<string | null>(null);
+  const uploadImgRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof TeachersSchema>>({
     resolver: zodResolver(TeachersSchema),
     defaultValues: {
@@ -30,12 +34,34 @@ function AddForm() {
   const isAdvisor = form.watch("memberType") === MType[1];
   const roles = useGetRoles();
 
-
+  const handleButtonClick = () => {
+    uploadImgRef.current?.click();
+  }
+  const handleFileChange = (event: any) => {
+    const file = event.target.files[0];
+    setFile(file);
+    if (file) {
+      const reader: any = new FileReader();
+      reader.onload = () => setImage(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
 
 
 
   function onSubmit(values: z.infer<typeof TeachersSchema>) {
-    console.log(values)
+    const formData = new FormData();
+    if (!file) {
+      return;
+    }
+    formData.append("fullName", values.fullName);
+    formData.append("school", values.school);
+    formData.append("memberType", values.memberType);
+    formData.append('file', file);
+    if (form.watch("memberType") === MType[0]) {
+      formData.append("rolesId", values.rolesId!);
+      formData.append("customPosition", values.customPosition!);
+    }
   }
 
 
@@ -45,6 +71,46 @@ function AddForm() {
     <CardContent>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {image ? <div className="img_preview_container">
+            <div className="img_preview  w-[100px] h-[100px]  overflow-hidden">
+              <Image
+                alt=""
+                width={100}
+                height={100}
+                src={image}
+              />
+            </div>
+            <Button
+              type="button"
+              className="mt-2"
+              onClick={handleButtonClick}
+            >
+              <ImageIcon /> Change Image
+            </Button>
+
+          </div> : <Button type="button" onClick={handleButtonClick}>
+            <ImageIcon /> Upload Image
+
+          </Button>}
+          <div className="img_upload_ip">
+            <FormField
+
+              control={form.control}
+              name="profilePhoto"
+              render={({ field }) => (
+
+                <input
+                  accept="image/*"
+                  name={'photoUrl'}
+                  onChange={handleFileChange}
+                  ref={uploadImgRef}
+                  hidden
+                  type="file"
+                />
+
+              )}
+            />
+          </div>
           <InputFiled
             control={form.control}
             name="fullName"

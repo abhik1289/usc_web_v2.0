@@ -148,49 +148,69 @@ const mentor: Hono = new Hono()
                 where: {
                     memberType: "Mentor"
                 },
-                    include: {
-                createdBy: {
-                    select: {
-                        firstName: true,
-                    }
-                },
-                Roles: {
-                    select: {
-                        title: true
+                include: {
+                    createdBy: {
+                        select: {
+                            firstName: true,
+                        }
+                    },
+                    Roles: {
+                        select: {
+                            title: true
+                        }
                     }
                 }
-            }
             });
-return c.json({ success: true, mentors }, 200);
+            return c.json({ success: true, mentors }, 200);
         } catch (error) {
-    console.log(error);
+            console.log(error);
 
-    return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
-}
-    }).get("/advisors", async (c) => {
-    try {
-        const advisors = await db.teachers.findMany({
-            where:{memberType: "Advisor"},
-            include: {
-                createdBy: {
-                    select: {
-                        firstName: true,
-                    }
-                },
-                Roles: {
-                    select: {
-                        title: true
+            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+        }
+    })
+    .get("/advisors", async (c) => {
+        try {
+            const advisors = await db.teachers.findMany({
+                where: { memberType: "Advisor" },
+                include: {
+                    createdBy: {
+                        select: {
+                            firstName: true,
+                        }
+                    },
+                    Roles: {
+                        select: {
+                            title: true
+                        }
                     }
                 }
-            }
-        });
-        return c.json({ success: true, advisors }, 200);
-    } catch (error) {
-        console.log(error);
+            });
+            return c.json({ success: true, advisors }, 200);
+        } catch (error) {
+            console.log(error);
 
-        return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
-    }
-})
+            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+        }
+    })
+    .get("/delete/:id", async (c) => {
+        try {
+            const token = getCookie(c, "token");
+            if (!token) {
+                return c.json({ success: false, error: "Token not found" }, 401);
+            } else {
+                await db.teachers.delete({
+                    where: {
+                        id: c.req.param("id"),
+                    },
+                });
+                return c.json({ success: true, message: "Successfully Delted" }, 200);
+            }
+        } catch (error) {
+            console.log(error);
+
+            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+        }
+    })
 
 export default mentor;
 
@@ -229,25 +249,7 @@ export default mentor;
 //         return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
 //     }
 // })
-// .get("/delete/:id", async (c) => {
-//     try {
-//         const token = getCookie(c, "token");
-//         if (!token) {
-//             return c.json({ success: false, error: "Token not found" }, 401);
-//         } else {
-//             const mentor = await db.teachers.delete({
-//                 where: {
-//                     id: c.req.param("id"),
-//                 },
-//             });
-//             return c.json({ success: true, mentor }, 200);
-//         }
-//     } catch (error) {
-//         console.log(error);
 
-//         return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
-//     }
-// })
 // .post("/update/:id", zValidator("json", TeachersSchema), async (c) => {
 //     try {
 //         const token = getCookie(c, "token");

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { TableCell, TableRow, TableBody } from '@/components/ui/table'
 import AdvisorTableBodyContent from './AdvisorTableBodyContent'
 import useGetAdvisor from '@/hooks/api/mentor/useGetAdvisor';
-import AlertDialogBox from '../AlertDialog.tsx/AlertDialog';
+import AlertDialogBox from '../../AlertDialog.tsx/AlertDialog';
 import useDeleteTeacher from '@/hooks/api/mentor/useDeleteTeacher';
 import { toast } from '@/hooks/use-toast';
 

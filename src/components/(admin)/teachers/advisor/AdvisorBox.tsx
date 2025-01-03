@@ -1,8 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import useGetAdvisor from '@/hooks/api/mentor/useGetAdvisor';
+import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import React from 'react'
-import AdvisorTableBodyContent from './AdvisorTableBodyContent';
 import AdvisoryTableBody from './AdvisoryTableBody';
 function AdvisorBox() {
 

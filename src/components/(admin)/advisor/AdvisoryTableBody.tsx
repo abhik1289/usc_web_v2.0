@@ -4,6 +4,8 @@ import { TableCell, TableRow, TableBody } from '@/components/ui/table'
 import AdvisorTableBodyContent from './AdvisorTableBodyContent'
 import useGetAdvisor from '@/hooks/api/mentor/useGetAdvisor';
 import AlertDialogBox from '../AlertDialog.tsx/AlertDialog';
+import useDeleteTeacher from '@/hooks/api/mentor/useDeleteTeacher';
+import { toast } from '@/hooks/use-toast';
 
 function AdvisoryTableBody() {
 
@@ -13,7 +15,7 @@ function AdvisoryTableBody() {
 
 
     const advisors = useGetAdvisor();
-
+    const deletTeacher = useDeleteTeacher({ mType: "advisor" });
     const onDelete = (id: string) => {
         setShowModal(true);
         setDeleteId(id);
@@ -21,7 +23,14 @@ function AdvisoryTableBody() {
 
     const handleDelteConfirm = () => {
         if (deleteId) {
-            console.log(deleteId);
+            deletTeacher.mutate({ id: deleteId }, {
+                onSuccess: () => {
+                    setShowModal(false);
+                    toast({
+                        description: "Mentor deleted successfully!",
+                    });
+                }
+            });
             // deleteEvent.mutate(deleteId);
         }
     }

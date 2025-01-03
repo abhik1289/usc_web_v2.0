@@ -15,11 +15,15 @@ function AdvisoryTableBody() {
     const advisors = useGetAdvisor();
 
     const onDelete = (id: string) => {
-        console.log(id);
+        setShowModal(true);
+        setDeleteId(id);
     }
 
     const handleDelteConfirm = () => {
-
+        if (deleteId) {
+            console.log(deleteId);
+            // deleteEvent.mutate(deleteId);
+        }
     }
 
     return (
@@ -45,7 +49,13 @@ function AdvisoryTableBody() {
                             onDelete={onDelete}
                         />)
             }
-            <AlertDialogBox title='' description='' show={showModal} setShow={() => setShowModal(false)} onConfirm={handleDelteConfirm} />
+            <AlertDialogBox
+                title="Delete Mentor"
+                description="Are you sure you want to delete this mentor? This action cannot be undone."
+                show={showModal}
+                setShow={() => setShowModal(false)}
+                onConfirm={handleDelteConfirm}
+            />
         </TableBody>
     )
 }

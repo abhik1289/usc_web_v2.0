@@ -5,7 +5,7 @@ import React from 'react'
 export default function useGetMentor() {
 
     const query = useQuery({
-        queryKey: ["leads"],
+        queryKey: ["mentor"],
         queryFn: async () => {
             const res = await axios.get("/api/mentor/mentors");
             return res.data.mentors;

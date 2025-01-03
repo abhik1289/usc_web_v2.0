@@ -15,7 +15,7 @@ import useGetRoles from "@/hooks/api/role/useGetRoles"
 
 
 function AddForm() {
-  // 1. Define your form.
+
   const form = useForm<z.infer<typeof TeachersSchema>>({
     resolver: zodResolver(TeachersSchema),
     defaultValues: {
@@ -25,19 +25,22 @@ function AddForm() {
       memberType: MType[0],
       rolesId: ""
     },
-  })
+  });
 
-  // 2. Define a submit handler.
+  const isAdvisor = form.watch("memberType") === MType[1];
+  const roles = useGetRoles();
+
+
+
+
+
   function onSubmit(values: z.infer<typeof TeachersSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values)
   }
 
 
 
-  const isAdvisor = form.watch("memberType") === MType[1];
-  const roles = useGetRoles()
+
   return (
     <CardContent>
       <Form {...form}>

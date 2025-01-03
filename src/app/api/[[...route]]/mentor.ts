@@ -64,7 +64,7 @@ const mentor = new Hono()
                         return c.json({ success: true, mentor }, 201);
                     });
                 } else {
-                    console.error("Upload failed:", message, error);
+                    return c.json({ success: false, error: message }, 500);
                 }
 
 

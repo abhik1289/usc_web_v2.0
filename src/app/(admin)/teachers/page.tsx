@@ -1,9 +1,9 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-import AdvisorBox from "@/components/(admin)/advisor/AdvisorBox";
-import AdvisorHeader from "@/components/(admin)/advisor/AdvisorHeader";
-import MentorBox from "@/components/(admin)/advisor/MentorBox";
+import AdvisorBox from "@/components/(admin)/teachers/AdvisorBox";
+import AdvisorHeader from "@/components/(admin)/teachers/AdvisorHeader";
+import MentorBox from "@/components/(admin)/teachers/MentorBox";
 export default function AdvisorPage() {
 
 

@@ -53,7 +53,7 @@ const data = {
         },
         {
           title: "Mentor and Advisor",
-          url: "/advisor",
+          url: "/teachers",
         },
         {
           title: "Testimonials",

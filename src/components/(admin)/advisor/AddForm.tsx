@@ -13,6 +13,7 @@ import MentorOrAdvisor from "./input/MentorSelction"
 import TeachersSchema, { MType } from "@/schemas/mentor/mentor.schema"
 import SelectionFiled from "../InputFields/SelectionFiled"
 import useGetRoles from "@/hooks/api/role/useGetRoles"
+import useAddmentor from "@/hooks/api/mentor/useAddmentor";
 
 
 
@@ -26,6 +27,7 @@ function AddForm() {
 
   //FORM && HOOKS
   const roles = useGetRoles();
+  const insertMentor = useAddmentor();
   const form = useForm<z.infer<typeof TeachersSchema>>({
     resolver: zodResolver(TeachersSchema),
     defaultValues: {
@@ -66,6 +68,13 @@ function AddForm() {
       formData.append("rolesId", values.rolesId!);
       formData.append("customPosition", values.customPosition!);
     }
+    insertMentor.mutate(formData, {
+      onSuccess: () => {
+        form.reset();
+        setImage(null);
+        setFile(null);
+      }
+    })
   }
 
   //LOGIC: if memberType is advisor then show only school field

@@ -1,6 +1,7 @@
 
 import { decodeSignInToken } from "@/lib/authentication/token";
 import { db } from "@/lib/db/db";
+import ImageUploadToDb from "@/lib/ImageUploadToDb";
 import TeachersSchema from "@/schemas/mentor/mentor.schema";
 import { zValidator } from "@hono/zod-validator";
 import { MType } from "@prisma/client";
@@ -41,6 +42,15 @@ const mentor = new Hono()
                     index = 0;
                 } else {
                     index = mentors[mentors.length - 1].index + 1;
+                }
+                const { success, uploads, message, error } = await ImageUploadToDb(c, body.file);
+
+                if (success) {
+                    uploads!.forEach(({ secure_url, public_id }) => {
+                        console.log("Uploaded file:", { secure_url, public_id });
+                    });
+                } else {
+                    console.error("Upload failed:", message, error);
                 }
 
                 const mentor = await db.teachers.create({

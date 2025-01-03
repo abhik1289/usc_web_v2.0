@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { CardContent } from '@/components/ui/card'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import InputFiled from "../InputFields/InputFiled"
 import MentorOrAdvisor from "./input/MentorSelction"
@@ -20,7 +20,7 @@ function AddForm() {
       fullName: "",
       school: "",
       customPosition: "",
-      memberType: MType.Enum.Mentor,
+      memberType: MType[0],
       rolesId: ""
     },
   })
@@ -34,7 +34,7 @@ function AddForm() {
 
 
 
-
+  const isAdvisor = form.watch("memberType") === MType[1];
 
   return (
     <CardContent>
@@ -52,20 +52,27 @@ function AddForm() {
             label="Select Member Type"
             placeholder="Select Member"
             name="memberType"
-            infos={memeberType}
+            infos={[MType[0], MType[1]]}
           />
-          <InputFiled
+          {isAdvisor ? <>
+            <InputFiled
+              control={form.control}
+              name="school"
+              placeholder="School of computer science"
+              label="School"
+            />
+          </> : <><InputFiled
             control={form.control}
             name="school"
             placeholder="School of computer science"
             label="School"
           />
-          <InputFiled
-            control={form.control}
-            name="additionalTitle"
-            placeholder="Professor & Dean (Industry Engagements)"
-            label="Additional Title"
-          />
+            <InputFiled
+              control={form.control}
+              name="additionalTitle"
+              placeholder="Professor & Dean (Industry Engagements)"
+              label="Additional Title"
+            /></>}
           <Button type="submit">Submit</Button>
         </form>
       </Form>

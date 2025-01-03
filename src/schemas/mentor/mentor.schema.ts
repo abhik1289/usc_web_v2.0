@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Enum for MType
-export const MType = z.enum(["Mentor", "Advisor"]);
+export const MType = ["Mentor", "Advisor"] as const;
 
 // Zod schema for Teachers
 const TeachersSchema = z.object({
@@ -11,7 +11,7 @@ const TeachersSchema = z.object({
     rolesId: z.string().nullable(),
     index: z.number().optional(),
     customPosition: z.string().nullable(),
-    memberType: MType,
+    memberType: z.enum(MType),
 });
 
 export default TeachersSchema;

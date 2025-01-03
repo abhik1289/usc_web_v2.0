@@ -23,7 +23,7 @@ interface MentorOrAdvisorProps {
   name: string;
   placeholder: string;
   label: string;
-  infos: any[];
+  infos: String[];
   notFound?: string;
   defaultText: string;
   filterdata?: any;

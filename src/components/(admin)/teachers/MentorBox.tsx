@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import React from 'react'
+import MentorTable from './mentor/MentorTable'
 
 function MentorBox() {
     return (
@@ -10,7 +11,7 @@ function MentorBox() {
                     This is the mentor table
                 </CardDescription>
             </CardHeader>
-            <CardContent></CardContent>
+            <MentorTable/>
         </Card>
     )
 }

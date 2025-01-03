@@ -13,7 +13,8 @@ import MentorOrAdvisor from "./input/MentorSelction"
 import TeachersSchema, { MType } from "@/schemas/mentor/mentor.schema"
 import SelectionFiled from "../InputFields/SelectionFiled"
 import useGetRoles from "@/hooks/api/role/useGetRoles"
-import useAddmentor from "@/hooks/api/mentor/useAddmentor";
+// import useAddmentor from "@/hooks/api/mentor/useAddTeacher";
+import useAddTeacher from "@/hooks/api/mentor/useAddTeacher";
 
 
 
@@ -27,7 +28,7 @@ function AddForm() {
 
   //FORM && HOOKS
   const roles = useGetRoles();
-  const insertMentor = useAddmentor();
+  const insertMentor = useAddTeacher();
   const form = useForm<z.infer<typeof TeachersSchema>>({
     resolver: zodResolver(TeachersSchema),
     defaultValues: {
@@ -53,7 +54,7 @@ function AddForm() {
     }
   };
 
-console.log(form.formState.errors)
+  console.log(form.formState.errors)
   //foRM SUBMIT
   function onSubmit(values: z.infer<typeof TeachersSchema>) {
     const formData = new FormData();
@@ -68,12 +69,12 @@ console.log(form.formState.errors)
       formData.append("rolesId", values.rolesId!);
       formData.append("customPosition", values.customPosition!);
     }
-    console.log("first")
+
     insertMentor.mutate(formData, {
       onSuccess: () => {
-        // form.reset();
-        // setImage(null);
-        // setFile(null);
+        form.reset();
+        setImage(null);
+        setFile(null);
       }
     })
   }
@@ -99,6 +100,7 @@ console.log(form.formState.errors)
               type="button"
               className="mt-2"
               onClick={handleButtonClick}
+              disabled={insertMentor.isLoading}
             >
               <ImageIcon /> Change Image
             </Button>
@@ -108,26 +110,30 @@ console.log(form.formState.errors)
 
           </Button>}
           <div className="img_upload_ip">
-           
 
-                <input
-                  accept="image/*"
-                  name={'photoUrl'}
-                  onChange={handleFileChange}
-                  ref={uploadImgRef}
-                  hidden
-                  type="file"
-                />
 
-             
+            <input
+              accept="image/*"
+              name={'photoUrl'}
+              onChange={handleFileChange}
+              ref={uploadImgRef}
+              hidden
+              type="file"
+            />
+
+
           </div>
           <InputFiled
+            disabled={insertMentor.isLoading}
+
             control={form.control}
             name="fullName"
             placeholder="Jhon Doe"
             label="Full Name"
           />
           <MentorOrAdvisor
+            disabled={insertMentor.isLoading}
+
             defaultText="Select Member Type"
             control={form.control}
             label="Select Member Type"
@@ -137,18 +143,24 @@ console.log(form.formState.errors)
           />
           {isAdvisor ? <>
             <InputFiled
+              disabled={insertMentor.isLoading}
+
               control={form.control}
               name="school"
               placeholder="School of computer science"
               label="School"
             />
           </> : <><InputFiled
+            disabled={insertMentor.isLoading}
+
             control={form.control}
             name="school"
             placeholder="School of computer science"
             label="School"
           />
             <SelectionFiled
+              disabled={insertMentor.isLoading}
+
               placeholder="Select Role"
               name="rolesId"
               control={form.control}
@@ -158,12 +170,19 @@ console.log(form.formState.errors)
 
             />
             <InputFiled
+              disabled={insertMentor.isLoading}
+
               control={form.control}
               name="customPosition"
               placeholder="Professor & Dean (Industry Engagements)"
               label="Additional Title"
             /></>}
-          <Button type="submit">Submit</Button>
+          <Button
+            disabled={insertMentor.isLoading}
+
+            type="submit">{
+              insertMentor.isLoading ? "Adding..." : "Add"
+            }</Button>
         </form>
       </Form>
     </CardContent>

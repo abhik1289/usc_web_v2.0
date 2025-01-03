@@ -1,11 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 // import TableBody from '../events/TableBody'
 import { TableCell, TableRow, TableBody } from '@/components/ui/table'
 import AdvisorTableBodyContent from './AdvisorTableBodyContent'
 import useGetAdvisor from '@/hooks/api/mentor/useGetAdvisor';
+import AlertDialogBox from '../AlertDialog.tsx/AlertDialog';
 
 function AdvisoryTableBody() {
+
+
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [deleteId, setDeleteId] = useState<string>('');
+
+
     const advisors = useGetAdvisor();
+
+    const onDelete = (id: string) => {
+        console.log(id);
+    }
+
+    const handleDelteConfirm = () => {
+
+    }
+
     return (
         <TableBody>
 
@@ -26,9 +42,10 @@ function AdvisoryTableBody() {
                             school={advisor.school}
                             profilePhoto={advisor.profilePhoto}
                             id={advisor.id}
+                            onDelete={onDelete}
                         />)
             }
-
+            <AlertDialogBox title='' description='' show={showModal} setShow={() => setShowModal(false)} onConfirm={handleDelteConfirm} />
         </TableBody>
     )
 }

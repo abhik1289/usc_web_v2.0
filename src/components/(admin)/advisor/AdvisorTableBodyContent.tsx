@@ -9,9 +9,10 @@ interface AdvisorTableBodyContentProps {
     school: string;
     profilePhoto: string;
     id: string;
+    onDelete: (id: string) => void;
 }
 
-function AdvisorTableBodyContent({ i, fullName, school, profilePhoto, id }: AdvisorTableBodyContentProps) {
+function AdvisorTableBodyContent({ i, fullName, school, profilePhoto, id, onDelete }: AdvisorTableBodyContentProps) {
     return (
         <TableRow key={i}>
             <TableCell>{i + 1}</TableCell>
@@ -23,8 +24,21 @@ function AdvisorTableBodyContent({ i, fullName, school, profilePhoto, id }: Advi
                 </div>
             </TableCell>
             <TableCell>
-                <Button className="bg-blue-500 text-white px-4 py-2 rounded-md">Edit</Button>
-                <Button className="bg-red-500 text-white px-4 py-2 rounded-md">Delete</Button>
+                <div className="flex space-x-3">
+                    <Button
+                        variant="link"
+                        // onClick={() => router.push(`/leads/add-lead?id=${lead.id}`)}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        variant="link"
+                        className="text-red-500"
+                        onClick={() => onDelete(id)}
+                    >
+                        Delete
+                    </Button>
+                </div>
             </TableCell>
         </TableRow>
     )

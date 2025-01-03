@@ -11,7 +11,7 @@ export default function useDeleteTeacher({ mType }: { mType: string }) {
             const url = `/api/mentor/delete/${id}`;
 
             const res = await axios.get(url);
-            return res;
+            return res.data;
         },
         onSuccess: () => {
             const isMentor = mType === "mentor";

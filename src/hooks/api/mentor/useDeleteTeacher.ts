@@ -3,19 +3,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 
-export default function useDeleteTeacher() {
+export default function useDeleteTeacher({ mType }: { mType: string }) {
     const queryClient = useQueryClient();
     const deleteMutation = useMutation({
         mutationFn: async (data: { id: string }) => {
             const { id } = data;
-            const url = `/api/event/delete-event/${id}`;
+            const url = `/api/mentor/delete/${id}`;
 
             const res = await axios.get(url);
             return res;
         },
         onSuccess: () => {
+            const isMentor = mType === "mentor";
             toast({
-                description: "Event Deleted successfully!",
+                description: `${isMentor ? "Mentor" : "Advisor"} deleted successfully!`,
             });
             queryClient.invalidateQueries(["mentor"]);
         },

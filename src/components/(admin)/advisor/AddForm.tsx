@@ -17,9 +17,15 @@ import useGetRoles from "@/hooks/api/role/useGetRoles"
 
 
 function AddForm() {
+
+
+  //STATES
   const [image, setImage] = useState<string | null>(null);
   const [file, setFile] = useState<string | null>(null);
   const uploadImgRef = useRef<HTMLInputElement>(null);
+
+  //FORM && HOOKS
+  const roles = useGetRoles();
   const form = useForm<z.infer<typeof TeachersSchema>>({
     resolver: zodResolver(TeachersSchema),
     defaultValues: {
@@ -31,9 +37,7 @@ function AddForm() {
     },
   });
 
-  const isAdvisor = form.watch("memberType") === MType[1];
-  const roles = useGetRoles();
-
+  //LOGIC: handle image upload
   const handleButtonClick = () => {
     uploadImgRef.current?.click();
   }
@@ -48,7 +52,7 @@ function AddForm() {
   };
 
 
-
+  //foRM SUBMIT
   function onSubmit(values: z.infer<typeof TeachersSchema>) {
     const formData = new FormData();
     if (!file) {
@@ -64,7 +68,8 @@ function AddForm() {
     }
   }
 
-
+  //LOGIC: if memberType is advisor then show only school field
+  const isAdvisor = form.watch("memberType") === MType[1];
 
 
   return (

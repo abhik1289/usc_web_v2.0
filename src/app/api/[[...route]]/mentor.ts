@@ -18,7 +18,7 @@ const mentor = new Hono()
             } else {
                 const userToken = decodeSignInToken(token);
                 const { id } = userToken.payload;
-
+// console.log("id is", id);
                 const body = await c.req.parseBody();
                 const { fullName, school, rolesId, customPosition, memberType } = body;
 

@@ -3,12 +3,13 @@ import { decodeSignInToken } from "@/lib/authentication/token";
 import { db } from "@/lib/db/db";
 import TeachersSchema from "@/schemas/mentor/mentor.schema";
 import { zValidator } from "@hono/zod-validator";
+import { MType } from "@prisma/client";
 import { Hono } from "hono";
 import { getCookie } from "hono/cookie";
 
 
 const mentor = new Hono()
-    .post("/add-member", zValidator("json", TeachersSchema), async (c) => {
+    .post("/add-member", async (c) => {
         try {
             const token = getCookie(c, "token");
             if (!token) {
@@ -16,16 +17,25 @@ const mentor = new Hono()
             } else {
                 const userToken = decodeSignInToken(token);
                 const { id } = userToken.payload;
-                const {
-                    fullName,
-                    school,
-                    profilePhoto,
-                    rolesId,
-                    customPosition,
-                    memberType,
-                } = c.req.valid("json");
 
-                const mentors = await db.teachers.findMany();
+                const body = await c.req.parseBody();
+                const { fullName, school, rolesId, customPosition, memberType } = body;
+
+                //Type convertion
+                let rolesIdString = "", customPositionString = "";
+                const fullNameString = fullName as string;
+                const schoolString = school as string;
+                if (memberType === "Mentor") {
+                    rolesIdString = rolesId as string;
+                    customPositionString = customPosition as string;
+                }
+                const memberTypeString = memberType as MType;
+
+                const mentors = await db.teachers.findMany({
+                    where: {
+                        memberType: memberTypeString
+                    }
+                });
                 let index;
                 if (mentors.length === 0) {
                     index = 0;
@@ -35,14 +45,15 @@ const mentor = new Hono()
 
                 const mentor = await db.teachers.create({
                     data: {
-                        fullName,
-                        school,
-                        profilePhoto,
-                        rolesId,
-                        customPosition,
+                        fullName: fullNameString,
+                        school: schoolString,
+                        rolesId: rolesIdString,
+                        customPosition: customPositionString,
                         index,
-                        memberType,
+                        memberType: memberTypeString,
                         userId: id,
+                        profilePhoto: "",
+                        publicId: ""
                     },
                 });
                 return c.json({ success: true, mentor }, 201);

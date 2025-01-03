@@ -191,6 +191,7 @@ model Teachers {
   fullName       String
   school         String
   profilePhoto   String
+  publicId       String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   createdBy      User     @relation(fields: [userId], references: [id])

@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import InputFiled from "../InputFields/InputFiled"
 import MentorOrAdvisor from "./input/MentorSelction"
 import TeachersSchema, { MType } from "@/schemas/mentor/mentor.schema"
+import SelectionFiled from "../InputFields/SelectionFiled"
+import useGetRoles from "@/hooks/api/role/useGetRoles"
 
 
 
@@ -35,7 +37,7 @@ function AddForm() {
 
 
   const isAdvisor = form.watch("memberType") === MType[1];
-
+  const roles = useGetRoles()
   return (
     <CardContent>
       <Form {...form}>
@@ -67,6 +69,15 @@ function AddForm() {
             placeholder="School of computer science"
             label="School"
           />
+            <SelectionFiled
+              placeholder="Select Role"
+              name="rolesId"
+              control={form.control}
+              label="Select Role"
+              infos={roles}
+              notFound="No roles found"
+
+            />
             <InputFiled
               control={form.control}
               name="additionalTitle"

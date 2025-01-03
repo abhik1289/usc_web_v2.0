@@ -13,7 +13,7 @@ interface SelectionFiledProps {
     label: string;
     infos: any;
     notFound: string;
-    defaultText: string;
+    defaultText?: string;
     filterdata?: any;
     disabled?: boolean;
     defualtValue?: string;
@@ -33,7 +33,7 @@ export default function SelectionFiled({ control, name, placeholder, label, info
                         
                             onValueChange={field.onChange}
                             disabled={infos.isLoading || disabled}
-                            defaultValue={field.name}
+                            // defaultValue={field.name}
                             {...field}
                         >
                             <SelectTrigger>

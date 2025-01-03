@@ -53,7 +53,7 @@ function AddForm() {
     }
   };
 
-
+console.log(form.formState.errors)
   //foRM SUBMIT
   function onSubmit(values: z.infer<typeof TeachersSchema>) {
     const formData = new FormData();
@@ -68,11 +68,12 @@ function AddForm() {
       formData.append("rolesId", values.rolesId!);
       formData.append("customPosition", values.customPosition!);
     }
+    console.log("first")
     insertMentor.mutate(formData, {
       onSuccess: () => {
-        form.reset();
-        setImage(null);
-        setFile(null);
+        // form.reset();
+        // setImage(null);
+        // setFile(null);
       }
     })
   }
@@ -107,11 +108,7 @@ function AddForm() {
 
           </Button>}
           <div className="img_upload_ip">
-            <FormField
-
-              control={form.control}
-              name="profilePhoto"
-              render={({ field }) => (
+           
 
                 <input
                   accept="image/*"
@@ -122,8 +119,7 @@ function AddForm() {
                   type="file"
                 />
 
-              )}
-            />
+             
           </div>
           <InputFiled
             control={form.control}
@@ -163,7 +159,7 @@ function AddForm() {
             />
             <InputFiled
               control={form.control}
-              name="additionalTitle"
+              name="customPosition"
               placeholder="Professor & Dean (Industry Engagements)"
               label="Additional Title"
             /></>}

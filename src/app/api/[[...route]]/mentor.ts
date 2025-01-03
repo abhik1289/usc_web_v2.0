@@ -46,133 +46,139 @@ const mentor = new Hono()
                 const { success, uploads, message, error } = await ImageUploadToDb(c, body.file);
 
                 if (success) {
-                    uploads!.forEach(({ secure_url, public_id }) => {
+                    uploads!.forEach(async ({ secure_url, public_id }) => {
                         console.log("Uploaded file:", { secure_url, public_id });
+                        const mentor = await db.teachers.create({
+                            data: {
+                                fullName: fullNameString,
+                                school: schoolString,
+                                rolesId: rolesIdString,
+                                customPosition: customPositionString,
+                                index,
+                                memberType: memberTypeString,
+                                userId: id,
+                                profilePhoto: secure_url,
+                                publicId: public_id
+                            },
+                        });
+                        return c.json({ success: true, mentor }, 201);
                     });
                 } else {
                     console.error("Upload failed:", message, error);
                 }
 
-                const mentor = await db.teachers.create({
-                    data: {
-                        fullName: fullNameString,
-                        school: schoolString,
-                        rolesId: rolesIdString,
-                        customPosition: customPositionString,
-                        index,
-                        memberType: memberTypeString,
-                        userId: id,
-                        profilePhoto: "",
-                        publicId: ""
-                    },
-                });
-                return c.json({ success: true, mentor }, 201);
+
             }
         } catch (error) {
             console.log(error);
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
     })
-    .get("/get-members", async (c) => {
-        try {
-            const mentors = await db.teachers.findMany({
-                include: {
-                    createdBy: {
-                        select: {
-                            firstName: true,
-                        }
-                    },
-                    Roles: {
-                        select: {
-                            title: true
-                        }
-                    }
-                }
-            });
-            return c.json({ success: true, mentors }, 200);
-        } catch (error) {
-            console.log(error);
-
-            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
-        }
-    })
-    .get("/:id", async (c) => {
-        try {
-            const token = getCookie(c, "token");
-            if (!token) {
-                return c.json({ success: false, error: "Token not found" }, 401);
-            } else {
-                const mentor = await db.teachers.findFirst({
-                    where: {
-                        id: c.req.param("id"),
-                    },
-                    include: {
-                        createdBy: {
-                            select: {
-                                firstName: true,
-                            }
-                        },
-                        Roles: {
-                            select: {
-                                title: true
-                            }
-                        }
-                    }
-                });
-                return c.json({ success: true, mentor }, 200);
-            }
-        } catch (error) {
-            console.log(error);
-
-            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
-        }
-    })
-    .get("/delete/:id", async (c) => {
-        try {
-            const token = getCookie(c, "token");
-            if (!token) {
-                return c.json({ success: false, error: "Token not found" }, 401);
-            } else {
-                const mentor = await db.teachers.delete({
-                    where: {
-                        id: c.req.param("id"),
-                    },
-                });
-                return c.json({ success: true, mentor }, 200);
-            }
-        } catch (error) {
-            console.log(error);
-
-            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
-        }
-    })
-    .post("/update/:id", zValidator("json", TeachersSchema), async (c) => {
-        try {
-            const token = getCookie(c, "token");
-            if (!token) {
-                return c.json({ success: false, error: "Token not found" }, 401);
-            } else {
-                const { fullName, school, profilePhoto, rolesId, customPosition, memberType, index } = c.req.valid("json");
-                const mentor = await db.teachers.update({
-                    where: {
-                        id: c.req.param("id"),
-                    },
-                    data: {
-                        fullName,
-                        school,
-                        profilePhoto,
-                        rolesId,
-                        customPosition,
-                        memberType,
-                        index
-                    },
-                });
-                return c.json({ success: true, mentor }, 200);
-            }
-        } catch (error) {
-            console.log(error);
-
-            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
-        }
-    });
+    
 export default mentor;
+
+
+
+
+// .get("/get-members", async (c) => {
+//     try {
+//         const mentors = await db.teachers.findMany({
+//             include: {
+//                 createdBy: {
+//                     select: {
+//                         firstName: true,
+//                     }
+//                 },
+//                 Roles: {
+//                     select: {
+//                         title: true
+//                     }
+//                 }
+//             }
+//         });
+//         return c.json({ success: true, mentors }, 200);
+//     } catch (error) {
+//         console.log(error);
+
+//         return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+//     }
+// })
+// .get("/:id", async (c) => {
+//     try {
+//         const token = getCookie(c, "token");
+//         if (!token) {
+//             return c.json({ success: false, error: "Token not found" }, 401);
+//         } else {
+//             const mentor = await db.teachers.findFirst({
+//                 where: {
+//                     id: c.req.param("id"),
+//                 },
+//                 include: {
+//                     createdBy: {
+//                         select: {
+//                             firstName: true,
+//                         }
+//                     },
+//                     Roles: {
+//                         select: {
+//                             title: true
+//                         }
+//                     }
+//                 }
+//             });
+//             return c.json({ success: true, mentor }, 200);
+//         }
+//     } catch (error) {
+//         console.log(error);
+
+//         return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+//     }
+// })
+// .get("/delete/:id", async (c) => {
+//     try {
+//         const token = getCookie(c, "token");
+//         if (!token) {
+//             return c.json({ success: false, error: "Token not found" }, 401);
+//         } else {
+//             const mentor = await db.teachers.delete({
+//                 where: {
+//                     id: c.req.param("id"),
+//                 },
+//             });
+//             return c.json({ success: true, mentor }, 200);
+//         }
+//     } catch (error) {
+//         console.log(error);
+
+//         return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+//     }
+// })
+// .post("/update/:id", zValidator("json", TeachersSchema), async (c) => {
+//     try {
+//         const token = getCookie(c, "token");
+//         if (!token) {
+//             return c.json({ success: false, error: "Token not found" }, 401);
+//         } else {
+//             const { fullName, school, rolesId, customPosition, memberType, index } = c.req.valid("json");
+//             // const mentor = await db.teachers.update({
+//             //     where: {
+//             //         id: c.req.param("id"),
+//             //     },
+//             //     data: {
+//             //         fullName,
+//             //         school,
+//             //         profilePhoto,
+//             //         rolesId,
+//             //         customPosition,
+//             //         memberType,
+//             //         index
+//             //     },
+//             // });
+//             return c.json({ success: true, mentor }, 200);
+//         }
+//     } catch (error) {
+//         console.log(error);
+
+//         return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+//     }
+// });

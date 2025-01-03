@@ -8,7 +8,7 @@ export default function useAddmentor() {
         mutationFn: async (data: any) => {
             const formData = data;
 
-            const url = `/api/mentpr/add-mentor`;
+            const url = `/api/mentor/add-member`;
 
             const res = await fetch(url, {
                 method: "POST",

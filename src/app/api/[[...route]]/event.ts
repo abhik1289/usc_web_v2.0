@@ -25,7 +25,6 @@ const event = new Hono()
           location,
           duration,
           startDate,
-          endDate,
           startTime,
           endTime,
           startTime1,
@@ -66,9 +65,8 @@ const event = new Hono()
         const displayTypeStr = isPublic as string;
         const linkedinUrlStr = linkedinUrl as string;
         const instagramUrlStr = instagramUrl as string;
-        const endDateStr = endDate as string;
         let socialMediaStr = [linkedinUrlStr, instagramUrlStr];
-        const files = body.bannerImg;
+        const files = body.profilePhoto;
         if (!files || (Array.isArray(files) && files.length === 0)) {
           return c.json({ messsage: "Please upload image" }, 401)
         }
@@ -118,7 +116,6 @@ const event = new Hono()
                   await db.eventDateSingle.create({
                     data: {
                       startDate: new Date(startDateStr),
-                      endDate: new Date(endDateStr),
                       startTime: startTimeStr,
                       endTime: endTimeStr,
                       eventId: event.id,

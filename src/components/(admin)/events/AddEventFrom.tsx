@@ -17,6 +17,7 @@ import RadioInput from './Inputs/RadioInput';
 import CalenderInput from './Inputs/CalenderInput';
 
 import SwitchFiled from '../InputFields/SwitchFiled';
+import SelectionFiled from '../InputFields/SelectionFiled';
 
 const formSchema = z.object({
     title: z.string().min(2, {
@@ -71,7 +72,14 @@ function AddEventFrom() {
         // ✅ This will be type-safe and validated.
         console.log(values)
     }
-console.log(form.getValues('duration'))
+
+    const durations = {
+        data: [
+            { id: 'SINGLE', title: 'Single Day' },
+            { id: 'MULTIPLE', title: 'Multiple Days' },
+        ]
+    };
+    console.log(form.watch('duration'))
     return (
         <CardContent>
             <Form {...form}>
@@ -105,14 +113,17 @@ console.log(form.getValues('duration'))
                         </div>
 
                         <div className="flex w-full gap-4">
-                            <RadioInput
+                            <SelectionFiled
                                 control={form.control}
                                 label='Event Duration'
                                 name='duration'
+                                infos={durations}
+                                placeholder=''
+                                notFound=''
                             />
 
                         </div>
-                        {form.getValues('duration') === 'SINGLE' ?
+                        {form.watch('duration') === 'SINGLE' ?
                             <div className="flex w-full gap-4 items-center">
                                 <CalenderInput
                                     name='startDate'

@@ -17,13 +17,13 @@ function RadioInput({ control, label, name }: RadioInputProps) {
                 <FormItem className="flex-1">
                     <FormLabel>{label}</FormLabel>
                     <FormControl>
-                        <RadioGroup defaultValue="SINGLE">
+                        <RadioGroup  >
                             <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="SINGLE" id="r1" />
+                                <RadioGroupItem {...field}  value="SINGLE" id="r1" />
                                 <Label htmlFor="r1">1 Day</Label>
                             </div>
                             <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="MULTIPLE" id="r2" />
+                                <RadioGroupItem  {...field} value="MULTIPLE" id="r2" />
                                 <Label htmlFor="r2">2 Day</Label>
                             </div>
                         </RadioGroup>

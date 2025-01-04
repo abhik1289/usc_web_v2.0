@@ -83,8 +83,16 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
             toast({
                 description: "Please upload an image",
                 variant: "destructive",
-            })
+            });
+            return;
         } else {
+            if (values.isCoreMember && !values.coreMemberPositionId) {
+                toast({
+                    description: "Please select a role",
+                    variant: "destructive",
+                });
+                return;
+            }
             const formData = new FormData();
             formData.append('fullName', values.fullName);
             formData.append('email', values.Social.email);

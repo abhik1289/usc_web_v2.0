@@ -8,15 +8,17 @@ function useEditLead(id: string) {
     const queryClient = useQueryClient();
     const modifyMutation = useMutation({
         mutationFn: async (data: any) => {
-            const { fullName, isCoreMember, isCurrent, profilePhoto, domainGroupId, domainNameId, Social,  index } =
-                data;
+
+            const formData = data;
             // const convertInt = parseInt(index)
             const url = `/api/leads/update-lead/${id}`;
 
-            const res = await axios.post(url, {
-                fullName, isCoreMember, isCurrent, profilePhoto, domainGroupId, domainNameId, Social, index
+            const res = await fetch(url, {
+                method: "POST",
+                body: formData
             });
-            return res.data;
+
+            return res;
         },
         onSuccess: () => {
             toast({

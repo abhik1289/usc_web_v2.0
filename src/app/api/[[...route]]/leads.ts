@@ -10,7 +10,7 @@ import { deleteImage } from "@/lib/deleteImage";
 
 
 function cString(str: any) {
-  return str.toString();
+  return str ? str.toString() : "";
 }
 
 const leads = new Hono()
@@ -189,21 +189,30 @@ const leads = new Hono()
 
         const files = body.image;
 
+        // console.log(fullName,
+        //   isCoreMember,
+        //   coreMemberPositionId,
+        //   isCurrent,
+        //   profilePhoto,
+        //   domainGroupId,
+        //   domainNameId,
+        //   githubUrl, instagramUrl, linkedinUrl, email, index)
 
-        //convert to string
-        const fullNameStr = cString(body.fullName);
-        const coreMemberPositionIdStr = cString(body.coreMemberPositionId);
-        const domainGroupIdStr = cString(body.domainGroupId);
-        const domainNameIdStr = cString(body.domainNameId);
-        const githubUrlStr = cString(body.githubUrl);
-        const instagramUrlStr = cString(body.instagramUrl);
-        const linkedinUrlStr = cString(body.linkedinUrl);
-        const emailStr = cString(body.email);
-        const portfolioUrlStr = cString(body.portfolioUrl);
-        const isCoreMemberStr = Boolean(body.isCoreMember);
-        const isCurrentStr = Boolean(body.isCurrent);
-        const indexINT = parseInt(cString(body.index));
-        const profilePhotoStr = cString(body.profilePhoto);
+        const fullNameStr = fullName as string;
+        const coreMemberPositionIdStr = coreMemberPositionId as string;
+        const domainGroupIdStr = domainGroupId as string;
+        const domainNameIdStr = domainNameId as string;
+        const githubUrlStr = githubUrl as string;
+        const instagramUrlStr = instagramUrl as string;
+        const linkedinUrlStr = linkedinUrl as string;
+        const emailStr = email as string;
+        const portfolioUrlStr = email as string;
+        const isCoreMemberStr = isCoreMember as string;
+        const isCurrentStr = isCurrent as string;
+        const indexINT = parseInt(index as string);
+        console.log("R1------->", isCoreMember, isCurrent)
+        console.log("R2------->", isCoreMemberStr, isCurrentStr)
+
         //if profile image is not updated
         if (!files || (Array.isArray(files) && files.length === 0)) {
 
@@ -212,10 +221,9 @@ const leads = new Hono()
             where: { id: leadId },
             data: {
               fullName: fullNameStr,
-              isCoreMember: isCoreMemberStr ? true : false,
+              isCoreMember: isCoreMemberStr === 'true' ? true : false,
               coreMemberPositionId: coreMemberPositionIdStr,
-              isCurrent: isCurrentStr ? true : false,
-              profilePhoto: profilePhotoStr,
+              isCurrent: isCurrentStr === 'true' ? true : false,
               domainGroupId: domainGroupIdStr,
               domainNameId: domainNameIdStr,
               userId: id,
@@ -241,15 +249,7 @@ const leads = new Hono()
           );
         } else {
 
-          //delete previous image
-          const lead = await db.leads.findFirst({ where: { id: leadId } });
-          if (!lead) {
-            return c.json({ success: false, error: "Lead not found" }, 404);
-          }
-          const { error } = await deleteImage(lead.publicId!);
-          if (error) {
-            return c.json({ success: false, error: "Image not deleted" }, 404);
-          }
+
           // if files is not an array, convert it to an array
           const fileArray = Array.isArray(files) ? files : [files];
 
@@ -278,7 +278,15 @@ const leads = new Hono()
 
 
 
-
+                //delete previous image
+                const leadInfo = await db.leads.findFirst({ where: { id: leadId } });
+                if (!leadInfo) {
+                  return c.json({ success: false, error: "Lead not found" }, 404);
+                }
+                const { error } = await deleteImage(leadInfo.publicId!);
+                if (error) {
+                  return c.json({ success: false, error: "Image not deleted" }, 404);
+                }
 
                 //upload new image urls
                 const { secure_url, public_id } = res.result;

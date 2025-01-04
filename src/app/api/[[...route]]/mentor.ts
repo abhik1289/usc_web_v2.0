@@ -254,8 +254,8 @@ const mentor: Hono = new Hono()
                 //if profile image is not updated
                 if (!files || (Array.isArray(files) && files.length === 0)) {
                     const teacher = await db.teachers.findFirst({ where: { id: updateId } });
-                    if (!mentor) {
-                        return c.json({ success: false, error: "Mentor not found" }, 404);
+                    if (!teacher) {
+                        return c.json({ success: false, error: "not found" }, 404);
                     } else {
                         //Type convertion
                         const fullNameString = fullName as string;
@@ -275,7 +275,8 @@ const mentor: Hono = new Hono()
                                 rolesId: rolesIdString,
                                 customPosition: customPositionString,
                                 memberType: memberTypeString,
-                                index: indexINT
+                                index: indexINT,
+                                userId: id
                             },
                         });
 

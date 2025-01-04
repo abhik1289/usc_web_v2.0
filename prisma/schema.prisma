@@ -77,7 +77,6 @@ enum E_Type {
 model eventDateSingle {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   startDate DateTime
-  endDate   DateTime
   startTime String
   endTime   String
   event     Event?   @relation(fields: [eventId], references: [id])

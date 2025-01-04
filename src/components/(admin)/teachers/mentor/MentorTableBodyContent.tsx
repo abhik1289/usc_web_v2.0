@@ -22,7 +22,7 @@ function MentorTableBodyContent({ id, onDelete, onEdit, school, fullName, custom
  
 
     return (
-        <TableBody>
+      
 
             <TableRow key={id}>
                 <TableCell>{index}</TableCell>
@@ -53,7 +53,7 @@ function MentorTableBodyContent({ id, onDelete, onEdit, school, fullName, custom
             </TableRow>
 
 
-        </TableBody>
+
     )
 }
 

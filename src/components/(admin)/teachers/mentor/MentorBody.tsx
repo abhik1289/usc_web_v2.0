@@ -1,6 +1,7 @@
 import useGetMentor from '@/hooks/api/mentor/useGetMentor';
 import React from 'react'
 import MentorTableBodyContent from './MentorTableBodyContent';
+import { TableCell, TableRow } from '@/components/ui/table';
 
 
 function MentorBody() {
@@ -11,13 +12,19 @@ function MentorBody() {
 
 
     if (isError) {
-        return <p>Error</p>
+        return <TableRow>
+            <TableCell colSpan={7}>Error</TableCell>
+        </TableRow>
     }
     if (isLoading) {
-        return <p>Loading...</p>
+        return <TableRow>
+            <TableCell colSpan={7}>
+                Loading...
+            </TableCell>
+        </TableRow>
     }
     if (MentorData && MentorData.length === 0) {
-        return <p>No data</p>
+        return <TableRow><TableCell colSpan={7}>No data</TableCell></TableRow>
     }
 
     return (
@@ -25,7 +32,7 @@ function MentorBody() {
             {
 
                 MentorData && MentorData.map((mentor: any, i: number) => <MentorTableBodyContent
-                    index={i+1}
+                    index={i + 1}
                     key={mentor.id}
                     id={mentor.id}
                     fullName={mentor.fullName}

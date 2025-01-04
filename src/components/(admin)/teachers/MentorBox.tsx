@@ -6,7 +6,7 @@ function MentorBox() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle> Mentot</CardTitle>
+                <CardTitle> Mentor</CardTitle>
                 <CardDescription>
                     This is the mentor table
                 </CardDescription>

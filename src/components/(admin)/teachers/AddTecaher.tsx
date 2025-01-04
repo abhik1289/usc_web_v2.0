@@ -1,17 +1,48 @@
+"use client";
+
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import React from 'react'
 import AddForm from './AddForm'
+import { useSearchParams } from 'next/navigation';
+import useGetAdvisorById from '@/hooks/api/mentor/useGetAdvisorById';
+import EditForm from './EditForm';
 
 function AddTeacher() {
+
+
+  const params = useSearchParams();
+  const id = params.get('id');
+  const advisoryData = useGetAdvisorById(id);
+
+  // define title and subtitle
+  const title = id ? 'Edit Mentor or Advisor' : 'Add Mentor or Advisor';
+  const subTitle = id ? 'Edit the mentor or advisor' : 'Add a new mentor or advisor';
+  console.log(advisoryData.data)
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Add Mentor or Advisor</CardTitle>
+        <CardTitle>{title}</CardTitle>
         <CardDescription>
-          This is the form to add a mentor or advisor
+          {subTitle}
         </CardDescription>
       </CardHeader>
-      <AddForm />
+      {id && advisoryData.data ? <EditForm
+        defaultValues={{
+          fullName: advisoryData.data.fullName,
+          school: advisoryData.data.school,
+          memberType: advisoryData.data.memberType,
+          rolesId: advisoryData.data.rolesId,
+          customPosition: advisoryData.data.customPosition,
+        }}
+        imageUrl={advisoryData.data.profilePhoto}
+      /> : <AddForm
+        defaultValues={{
+          fullName: '',
+          school: '',
+          memberType: 'Mentor',
+          rolesId: '',
+          customPosition: '',
+        }} />}
     </Card>
   )
 }

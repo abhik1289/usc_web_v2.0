@@ -16,11 +16,12 @@ import useGetRoles from "@/hooks/api/role/useGetRoles"
 // import useAddmentor from "@/hooks/api/mentor/useAddTeacher";
 import useAddTeacher from "@/hooks/api/mentor/useAddTeacher";
 
-interface AddFormProps {
-  defaultValues: z.infer<typeof TeachersSchema>
+interface EditFormProps {
+  defaultValues: z.infer<typeof TeachersSchema>,
+  imageUrl: string
 }
 
-function AddForm({ defaultValues }: AddFormProps) {
+function EditForm({ defaultValues, imageUrl }: EditFormProps) {
 
 
   //STATES
@@ -101,10 +102,7 @@ function AddForm({ defaultValues }: AddFormProps) {
               <ImageIcon /> Change Image
             </Button>
 
-          </div> : <Button type="button" onClick={handleButtonClick}>
-            <ImageIcon /> Upload Image
-
-          </Button>}
+          </div> : <Image src={imageUrl} width={100} height={100} alt={defaultValues.fullName} />}
           <div className="img_upload_ip">
 
 
@@ -185,4 +183,4 @@ function AddForm({ defaultValues }: AddFormProps) {
   )
 }
 
-export default AddForm
+export default EditForm

@@ -231,12 +231,12 @@ const mentor: Hono = new Hono()
             if (!token) {
                 return c.json({ success: false, error: "Token not found" }, 401);
             } else {
-                const mentor = await db.teachers.findFirst({
+                const advisor = await db.teachers.findFirst({
                     where: {
                         id: c.req.param("id"),
                     },
                 });
-                return c.json({ success: true, mentor }, 200);
+                return c.json({ success: true, advisor }, 200);
             }
         } catch (error) {
             console.log(error);

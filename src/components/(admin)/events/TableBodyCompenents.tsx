@@ -3,24 +3,9 @@ import {
     TableCell,
     TableRow,
 } from "@/components/ui/table";
-
+import Image from "next/image";
 interface Event {
-    data: [
-        {
-            id: any;
-            title: string;
-            location: string;
-            date: any;
-            displayType: boolean;
-            eventType: string;
-            startTime1: string;
-            startTime2?: string;
-            endTime1: string;
-            endTime2?: string;
-            startDate: string;
-            endDate?: any;
-        }
-    ];
+    data: any
     onDelete: (id: string) => void;
 }
 
@@ -51,7 +36,7 @@ export const ZeroDataTable: React.FC = () => (
 export const TableView = ({ data, onDelete }: Event) => {
     return (
         <>
-            {data.map((event, i) => (
+            {data.map((event: any, i: number) => (
                 <TableRow key={event.id || i}>
                     <TableCell>{i + 1}</TableCell>
                     <TableCell>{event.title}</TableCell>
@@ -61,15 +46,14 @@ export const TableView = ({ data, onDelete }: Event) => {
                             }-${event.endTime1}]`
                         ) : (
                             <span>
-                                {new Date(event.startDate).toLocaleDateString()} [
-                                {event.startTime1}-{event.endTime1}] <br />
-                                {new Date(event.endDate).toLocaleDateString()} [
-                                {event.startTime2}-{event.endTime2}]
+
                             </span>
                         )}
                     </TableCell>
                     <TableCell>{event.location}</TableCell>
-
+                    <TableCell>
+                        <Image src={event.banner_url} width={100} height={100} alt={event.title} />
+                    </TableCell>
                     <TableCell>
                         <div className="flex space-x-2">
                             <Button

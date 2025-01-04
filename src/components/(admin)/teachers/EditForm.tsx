@@ -15,6 +15,7 @@ import SelectionFiled from "../InputFields/SelectionFiled"
 import useGetRoles from "@/hooks/api/role/useGetRoles"
 import { useRouter } from "next/navigation";
 import useEditAdvisor from "@/hooks/api/mentor/useEditAdvisor";
+import useEditMentor from "@/hooks/api/mentor/useEditMentor";
 
 interface EditFormProps {
   defaultValues: z.infer<typeof TeachersSchema>,
@@ -34,6 +35,7 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
   //FORM && HOOKS
   const roles = useGetRoles();
   const editTeacher = useEditAdvisor(editId);
+  const editMenotr = useEditMentor(editId);
   const router = useRouter();
   const form = useForm<z.infer<typeof TeachersSchema>>({
     resolver: zodResolver(TeachersSchema),
@@ -70,15 +72,23 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
       formData.append("customPosition", values.customPosition!);
     }
     formData.append("index", values.index!);
-
-    editTeacher.mutate(formData, {
-      onSuccess: () => {
-  
-        setImage(null);
-        setFile("");
-        router.back();
-      }
-    })
+    if (values.memberType === "Mentor") {
+      editMenotr.mutate(formData, {
+        onSuccess: () => {
+          setImage(null);
+          setFile("");
+          router.back();
+        }
+      })
+    } else {
+      editTeacher.mutate(formData, {
+        onSuccess: () => {
+          setImage(null);
+          setFile("");
+          router.back();
+        }
+      })
+    }
   }
 
   //LOGIC: if memberType is advisor then show only school field
@@ -102,7 +112,7 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
               type="button"
               className="mt-2"
               onClick={handleButtonClick}
-              disabled={editTeacher.isLoading || disabled}
+              disabled={editTeacher.isLoading || disabled || editMenotr.isLoading}
             >
               <ImageIcon /> Change Image
             </Button>
@@ -113,7 +123,7 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
               type="button"
               className="mt-2"
               onClick={handleButtonClick}
-              disabled={editTeacher.isLoading || disabled}
+              disabled={editTeacher.isLoading || disabled || editMenotr.isLoading}
             >
               <ImageIcon /> Change Image
             </Button>
@@ -133,7 +143,7 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
 
           </div>
           <InputFiled
-            disabled={editTeacher.isLoading || disabled}
+            disabled={editTeacher.isLoading || disabled || editMenotr.isLoading}
 
             control={form.control}
             name="fullName"
@@ -142,7 +152,7 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
           />
           <div className="flex gap-3">
             <MentorOrAdvisor
-              disabled={editTeacher.isLoading || disabled || true}
+              disabled={editTeacher.isLoading || disabled || true || editMenotr.isLoading}
               defaultText="Select Member Type"
               control={form.control}
               label="Select Member Type"
@@ -151,7 +161,7 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
               infos={[MType[0], MType[1]]}
             />
             <InputFiled
-              disabled={editTeacher.isLoading || disabled}
+              disabled={editTeacher.isLoading || disabled || editMenotr.isLoading}
               placeholder="1"
               name="index"
               control={form.control}
@@ -160,7 +170,7 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
           </div>
           {isAdvisor ? <>
             <InputFiled
-              disabled={editTeacher.isLoading || disabled}
+              disabled={editTeacher.isLoading || disabled || editMenotr.isLoading}
 
 
               control={form.control}
@@ -169,7 +179,7 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
               label="School"
             />
           </> : <><InputFiled
-            disabled={editTeacher.isLoading || disabled}
+            disabled={editTeacher.isLoading || disabled || editMenotr.isLoading}
 
 
             control={form.control}
@@ -178,7 +188,7 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
             label="School"
           />
             <SelectionFiled
-              disabled={editTeacher.isLoading || disabled}
+              disabled={editTeacher.isLoading || disabled || editMenotr.isLoading}
               placeholder="Select Role"
               name="rolesId"
               control={form.control}
@@ -188,18 +198,18 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
             />
 
             <InputFiled
-              disabled={editTeacher.isLoading || disabled}
+              disabled={editTeacher.isLoading || disabled || editMenotr.isLoading}
               control={form.control}
               name="customPosition"
               placeholder="Professor & Dean (Industry Engagements)"
               label="Additional Title"
             /></>}
           <Button
-            disabled={editTeacher.isLoading || disabled}
+            disabled={editTeacher.isLoading || disabled || editMenotr.isLoading}
 
 
             type="submit">{
-              editTeacher.isLoading ? "Editing..." : "Edit"
+              (editTeacher.isLoading || editMenotr.isLoading) ? "Editing..." : "Edit"
             }</Button>
         </form>
       </Form>

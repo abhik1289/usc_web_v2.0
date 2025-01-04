@@ -18,7 +18,6 @@ const mentor: Hono = new Hono()
             } else {
                 const userToken = decodeSignInToken(token);
                 const { id } = userToken.payload;
-                // console.log("id is", id);
                 const body = await c.req.parseBody();
                 const { fullName, school, rolesId, customPosition, memberType } = body;
 
@@ -143,7 +142,6 @@ const mentor: Hono = new Hono()
                     }
                 }
             });
-            console.log(mentors)
             return c.json({ success: true, mentors }, 200);
         } catch (error) {
             console.log(error);
@@ -159,7 +157,6 @@ const mentor: Hono = new Hono()
 
                 }
             });
-            console.log(advisors)
             return c.json({ success: true, advisors }, 200);
         } catch (error) {
             console.log(error);
@@ -202,9 +199,11 @@ const mentor: Hono = new Hono()
             if (!token) {
                 return c.json({ success: false, error: "Token not found" }, 401);
             } else {
+                const mId = c.req.param("id");
+
                 const mentor = await db.teachers.findFirst({
                     where: {
-                        id: c.req.param("id"),
+                        id: mId,
                     },
                     include: {
                         Roles: {
@@ -214,7 +213,11 @@ const mentor: Hono = new Hono()
                         }
                     }
                 });
-                return c.json({ success: true, mentor }, 200);
+                if (mentor) {
+                    return c.json({ success: true, mentor }, 200);
+                } else {
+                    return c.json({ success: false, error: "not found" }, 404);
+                }
             }
         } catch (error) {
             console.log(error);
@@ -233,7 +236,8 @@ const mentor: Hono = new Hono()
                         id: c.req.param("id"),
                     },
                 });
-                return c.json({ success: true, advisor }, 200);
+                if (advisor) { return c.json({ success: true, advisor }, 200); }
+                else { return c.json({ success: false, error: "not found" }, 404); }
             }
         } catch (error) {
             console.log(error);
@@ -362,6 +366,133 @@ const mentor: Hono = new Hono()
 
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
+    })
+    .post("/update-mentor/:id", async (c) => {
+        try {
+            const token = getCookie(c, "token");
+            if (!token) {
+                return c.json({ success: false, error: "Token not found" }, 401);
+            } else {
+                const userToken = decodeSignInToken(token);
+                const { id } = userToken.payload;
+                const body = await c.req.parseBody();
+                const updateId = c.req.param("id");
+                const { fullName, school, memberType, index, rolesId, customPosition } = body;
+
+                const files = body.file;
+
+                //if profile image is not updated
+                if (!files || (Array.isArray(files) && files.length === 0)) {
+                    const teacher = await db.teachers.findFirst({ where: { id: updateId } });
+                    if (!teacher) {
+                        return c.json({ success: false, error: "not found" }, 404);
+                    } else {
+                        //Type convertion
+                        const fullNameString = fullName as string;
+                        const schoolString = school as string;
+                        const memberTypeString = memberType as MType;
+                        const indexINT = parseInt(index as string);
+                        const rolesIdString = rolesId as string;
+                        const customPositionString = customPosition as string;
+                        const updatedMentor = await db.teachers.update({
+                            where: {
+                                id: updateId,
+                            },
+                            data: {
+                                fullName: fullNameString,
+                                school: schoolString,
+                                memberType: memberTypeString,
+                                index: indexINT,
+                                userId: id,
+                                rolesId: rolesIdString,
+                                customPosition: customPositionString
+                            },
+                        });
+
+                        return c.json({ success: true, updatedMentor }, 200);
+                    }
+
+
+                } else {
+                    // if files is not an array, convert it to an array
+                    const fileArray = Array.isArray(files) ? files : [files];
+
+                    await Promise.all(
+                        fileArray.map(async (file) => {
+                            if (!(file instanceof File)) {
+                                return c.json(
+                                    {
+                                        message: "Invalid file type",
+                                        error: "Expected a file upload but received something else",
+                                        received: typeof file,
+                                    },
+                                    400
+                                );
+                            }
+
+                            const buffer = await file.arrayBuffer();
+                            const mimeType = file.type;
+                            const encoding = "base64";
+                            const base64Data = Buffer.from(buffer).toString("base64");
+                            const randomId = uuidv4();
+                            const fileUri = "data:" + randomId + mimeType + ";" + encoding + "," + base64Data;
+                            // load into a buffer for later use
+                            const res = await uploadToCloudinary(fileUri, file.name, "post-images");
+                            if (res.success && res.result) {
+                                const { secure_url, public_id } = res.result;
+                                const teacher = await db.teachers.findFirst({ where: { id: updateId } });
+                                if (!teacher) {
+                                    return c.json({ success: false, error: "not found" }, 404);
+                                } else {
+
+                                    //delete previous image
+                                    const { error } = await deleteImage(teacher.publicId!);
+                                    if (error) {
+                                        return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+                                    }
+
+                                    //Type convertion
+                                    const fullNameString = fullName as string;
+                                    const schoolString = school as string;
+                                    const memberTypeString = memberType as MType;
+                                    const indexINT = parseInt(index as string);
+                                    const rolesIdString = rolesId as string;
+                                    const customPositionString = customPosition as string;
+                                    const updatedMentor = await db.teachers.update({
+                                        where: {
+                                            id: updateId,
+                                        },
+                                        data: {
+                                            fullName: fullNameString,
+                                            school: schoolString,
+                                            memberType: memberTypeString,
+                                            index: indexINT,
+                                            profilePhoto: secure_url,
+                                            publicId: public_id,
+                                            userId: id,
+                                            rolesId: rolesIdString,
+                                            customPosition: customPositionString
+                                        },
+                                    });
+
+                                    return c.json({ success: true, updatedMentor }, 200);
+                                }
+
+                            } else {
+                                return c.json({ message: "File Upload Failed" }, 401);
+                            }
+                        })
+                    );
+
+                    return c.json({ success: true, mentor }, 201);
+                }
+
+
+            }
+        } catch (error) {
+
+            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+        }
     });
 
 export default mentor;
@@ -370,34 +501,3 @@ export default mentor;
 
 
 
-
-
-// .post("/update/:id", zValidator("json", TeachersSchema), async (c) => {
-//     try {
-//         const token = getCookie(c, "token");
-//         if (!token) {
-//             return c.json({ success: false, error: "Token not found" }, 401);
-//         } else {
-//             const { fullName, school, rolesId, customPosition, memberType, index } = c.req.valid("json");
-//             // const mentor = await db.teachers.update({
-//             //     where: {
-//             //         id: c.req.param("id"),
-//             //     },
-//             //     data: {
-//             //         fullName,
-//             //         school,
-//             //         profilePhoto,
-//             //         rolesId,
-//             //         customPosition,
-//             //         memberType,
-//             //         index
-//             //     },
-//             // });
-//             return c.json({ success: true, mentor }, 200);
-//         }
-//     } catch (error) {
-//         console.log(error);
-
-//
-//     }
-// });

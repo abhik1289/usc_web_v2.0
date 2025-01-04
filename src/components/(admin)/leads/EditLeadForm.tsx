@@ -104,9 +104,10 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
         formData.append('coreMemberPositionId', values.coreMemberPositionId!);
         formData.append('profilePhoto', file!);
         formData.append('index', values.index!);
+        formData.append('image', file!);
         editMutation.mutate(formData, {
             onSuccess: () => {
-                // router.push('/admin/leads');
+                router.back();
             }
         });
         // }
@@ -132,13 +133,25 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
                             <ImageIcon /> Change Image
                         </Button>
 
-                    </div> : <Image
-                        width={100}
-                        height={100}
-                        alt={defaultValues.fullName}
-                        src={defaultValues.profilePhoto}
-                    />}
-
+                    </div> : <>
+                        <Image
+                            width={100}
+                            height={100}
+                            alt={defaultValues.fullName}
+                            src={defaultValues.profilePhoto}
+                        />
+                        <Button type="button" className="mt-2" onClick={handleButtonClick}>
+                            <ImageIcon /> Change Image
+                        </Button>
+                    </>}
+                    <input
+                        accept="image/*"
+                        name={'profilePhoto'}
+                        onChange={handleFileChange}
+                        ref={uploadImgRef}
+                        hidden
+                        type="file"
+                    />
                     <div className="flex flex-wrap gap-4 w-full">
                         <div className="flex w-full gap-4">
                             <InputFiled

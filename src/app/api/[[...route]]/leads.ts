@@ -56,8 +56,8 @@ const leads = new Hono()
           const linkedinUrlStr = cString(body.linkedinUrl);
           const emailStr = cString(body.email);
           const portfolioUrlStr = cString(body.portfolioUrl);
-          const isCoreMemberStr = Boolean(body.isCoreMember);
-          const isCurrentStr = Boolean(body.isCurrent);
+          const isCoreMemberStr = body.isCoreMember as string;
+          const isCurrentStr = body.isCurrent as string;
 
 
 
@@ -108,9 +108,9 @@ const leads = new Hono()
                 const lead = await db.leads.create({
                   data: {
                     fullName: fullNameStr,
-                    isCoreMember: isCoreMemberStr ? true : false,
+                    isCoreMember: isCoreMemberStr === 'true' ? true : false,
                     coreMemberPositionId: coreMemberPositionIdStr,
-                    isCurrent: isCurrentStr ? true : false,
+                    isCurrent: isCurrentStr === 'true' ? true : false,
                     profilePhoto: secure_url,
                     domainGroupId: domainGroupIdStr,
                     domainNameId: domainNameIdStr,
@@ -210,8 +210,7 @@ const leads = new Hono()
         const isCoreMemberStr = isCoreMember as string;
         const isCurrentStr = isCurrent as string;
         const indexINT = parseInt(index as string);
-        console.log("R1------->", isCoreMember, isCurrent)
-        console.log("R2------->", isCoreMemberStr, isCurrentStr)
+
 
         //if profile image is not updated
         if (!files || (Array.isArray(files) && files.length === 0)) {
@@ -293,12 +292,13 @@ const leads = new Hono()
 
 
 
-                const lead = await db.leads.create({
+                const lead = await db.leads.update({
+                  where: { id: leadId },
                   data: {
                     fullName: fullNameStr,
-                    isCoreMember: isCoreMemberStr ? true : false,
+                    isCoreMember: isCoreMemberStr === 'true' ? true : false,
                     coreMemberPositionId: coreMemberPositionIdStr,
-                    isCurrent: isCurrentStr ? true : false,
+                    isCurrent: isCurrentStr === 'true' ? true : false,
                     profilePhoto: secure_url,
                     domainGroupId: domainGroupIdStr,
                     domainNameId: domainNameIdStr,
@@ -307,7 +307,8 @@ const leads = new Hono()
                     publicId: public_id,
                   },
                 });
-                await db.social.create({
+                await db.social.update({
+                  where: { leadId: lead.id },
                   data: {
                     leadId: lead.id,
                     githubUrl: githubUrlStr,

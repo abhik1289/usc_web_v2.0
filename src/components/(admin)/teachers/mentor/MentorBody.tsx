@@ -1,7 +1,7 @@
 import useGetMentor from '@/hooks/api/mentor/useGetMentor';
 import React from 'react'
 import MentorTableBodyContent from './MentorTableBodyContent';
-import { TableCell, TableRow } from '@/components/ui/table';
+
 
 function MentorBody() {
 

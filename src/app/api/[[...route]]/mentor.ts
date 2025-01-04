@@ -248,6 +248,11 @@ const mentor: Hono = new Hono()
                 const body = await c.req.parseBody();
                 const updateId = c.req.param("id");
                 const { fullName, school, rolesId, customPosition, memberType, index } = body;
+                // console.log(fullName, school, rolesId, customPosition, memberType, index)
+
+
+
+
 
                 const files = body.file;
 
@@ -258,24 +263,27 @@ const mentor: Hono = new Hono()
                         return c.json({ success: false, error: "not found" }, 404);
                     } else {
                         //Type convertion
+                        let rolesIdString = "", customPositionString = "";
                         const fullNameString = fullName as string;
                         const schoolString = school as string;
-                        const rolesIdString = rolesId ? rolesId as string : "";
-                        const customPositionString = customPosition ? customPosition as string : '';
-                        const indexINT = parseInt(index as string);
                         const memberTypeString = memberType as MType;
+                        if (memberTypeString === "Mentor") {
+                            customPositionString = customPosition as string;
+                            rolesIdString = rolesId as string;
+                        }
+                        const indexINT = parseInt(index as string);
 
                         const updatedMentor = await db.teachers.update({
                             where: {
                                 id: updateId,
                             },
                             data: {
-                                fullName: fullNameString,
-                                school: schoolString,
-                                rolesId: rolesIdString,
-                                customPosition: customPositionString,
-                                memberType: memberTypeString,
-                                index: indexINT,
+                                fullName: "",
+                                school: "",
+                                rolesId: "",
+                                customPosition: "",
+                                memberType: "Mentor",
+                                index: 8,
                                 userId: id
                             },
                         });
@@ -289,6 +297,7 @@ const mentor: Hono = new Hono()
 
             }
         } catch (error) {
+
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
     });

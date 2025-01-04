@@ -9,7 +9,7 @@ const TeachersSchema = z.object({
     school: z.string(),
     // profilePhoto: z.string(),
     rolesId: z.string().nullable(),
-    index: z.number().optional(),
+    index: z.string().optional(),
     customPosition: z.string().nullable(),
     memberType: z.enum(MType),
 })

@@ -13,8 +13,6 @@ import MentorOrAdvisor from "./input/MentorSelction"
 import TeachersSchema, { MType } from "@/schemas/mentor/mentor.schema"
 import SelectionFiled from "../InputFields/SelectionFiled"
 import useGetRoles from "@/hooks/api/role/useGetRoles"
-// import useAddmentor from "@/hooks/api/mentor/useAddTeacher";
-import useAddTeacher from "@/hooks/api/mentor/useAddTeacher";
 import useEditTeacher from "@/hooks/api/mentor/useEditTeacher";
 
 interface EditFormProps {
@@ -29,7 +27,7 @@ function EditForm({ defaultValues, imageUrl, disabled,editId }: EditFormProps) {
 
   //STATES
   const [image, setImage] = useState<string | null>(null);
-  const [file, setFile] = useState<string | null>(null);
+  const [file, setFile] = useState<string>("");
   const uploadImgRef = useRef<HTMLInputElement>(null);
 
   //FORM && HOOKS
@@ -54,7 +52,7 @@ function EditForm({ defaultValues, imageUrl, disabled,editId }: EditFormProps) {
     }
   };
 
-  console.log(form.formState.errors)
+
   //foRM SUBMIT
   function onSubmit(values: z.infer<typeof TeachersSchema>) {
     const formData = new FormData();
@@ -64,17 +62,18 @@ function EditForm({ defaultValues, imageUrl, disabled,editId }: EditFormProps) {
     formData.append("fullName", values.fullName);
     formData.append("school", values.school);
     formData.append("memberType", values.memberType);
-    // formData.append('file', file);
+    formData.append('file', file);
     if (form.watch("memberType") === "Mentor") {
       formData.append("rolesId", values.rolesId!);
       formData.append("customPosition", values.customPosition!);
     }
+    formData.append("index", values.index!);
 
     editTeacher.mutate(formData, {
       onSuccess: () => {
         form.reset();
         setImage(null);
-        setFile(null);
+        setFile("");
       }
     })
   }

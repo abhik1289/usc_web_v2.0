@@ -30,6 +30,7 @@ function AddTeacher() {
         </CardDescription>
       </CardHeader>
       {id && advisoryData.data ? <EditForm
+        editId={id}
         defaultValues={{
           fullName: advisoryData.data.fullName,
           school: advisoryData.data.school,

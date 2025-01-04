@@ -6,6 +6,8 @@ import { getCookie } from "hono/cookie";
 import { decodeSignInToken } from "@/lib/authentication/token";
 import mongoose from "mongoose";
 import { E_Type } from "@prisma/client";
+import { uploadToCloudinary } from "@/lib/uploadCloudnary";
+import { v4 as uuidv4 } from 'uuid';
 
 const event = new Hono()
   .post("/add-event", async (c) => {
@@ -14,71 +16,166 @@ const event = new Hono()
       if (!token) {
         return c.json({ success: false, error: "Token not found" }, 401);
       } else {
-
-
+        const decodeToken = decodeSignInToken(token);
+        const { id } = decodeToken.payload;
         const body = await c.req.parseBody();
-
         const {
           title,
           description,
           location,
-          banner_url,
-          eventType,
+          duration,
           startDate,
           endDate,
+          startTime,
+          endTime,
           startTime1,
           endTime1,
           startTime2,
           endTime2,
-          displayType,
+          startDate1,
+          endDate1,
+          startDate2,
+          endDate2,
           instagramUrl,
-          linkedinUrl
+          linkedinUrl,
+          isPublic,
         } = body;
-        const userData = decodeSignInToken(token);
+     
+       
 
-        const userId = userData.payload.id!;
-        const id = new mongoose.Types.ObjectId(userId);
-
-        db.user.findUnique({
-          where: { email: userData.payload.email },
-        });
-
-
+        let startTime1Str = "", endTime1Str = "", startTime2Str = "", endTime2Str = "", startDate1Str = "", endDate1Str = "", startDate2Str = "", endDate2Str = "";
         const titleStr = title as string;
         const descriptionStr = description as string;
         const locationStr = location as string;
-        const banner_urlStr = banner_url as string;
-        const eventTypeStr = eventType as E_Type;
+        const eventTypeStr = duration as E_Type;
+        if (eventTypeStr === "MULTIPLE") {
+          startTime1Str = startTime1 as string;
+          endTime1Str = endTime1 as string;
+          startTime2Str = startTime2 as string;
+          endTime2Str = endTime2 as string;
+          startDate1Str = startDate1 as string
+          endDate1Str = endDate1 as string
+          startDate2Str = startDate2 as string;
+          endDate2Str = endDate2 as string;
+        }
         const startDateStr = startDate as string;
-        const endDateStr = endDate as string;
-        const startTime1Str = startTime1 as string;
-        const endTime1Str = endTime1 as string;
-        const startTime2Str = startTime2 as string;
-        const endTime2Str = endTime2 as string;
-        const displayTypeStr = displayType as string;
+        const startTimeStr = startTime as string;
+        const endTimeStr = endTime as string;
+
+
+        const displayTypeStr = isPublic as string;
         const linkedinUrlStr = linkedinUrl as string;
         const instagramUrlStr = instagramUrl as string;
+        const endDateStr = endDate as string;
         let socialMediaStr = [linkedinUrlStr, instagramUrlStr];
-       
+        const files = body.bannerImg;
+        if (!files || (Array.isArray(files) && files.length === 0)) {
+          return c.json({ messsage: "Please upload image" }, 401)
+        }
+        else {
+          // if files is not an array, convert it to an array
+          const fileArray = Array.isArray(files) ? files : [files];
+
+          await Promise.all(
+            fileArray.map(async (file) => {
+              if (!(file instanceof File)) {
+                return c.json(
+                  {
+                    message: "Invalid file type",
+                    error: "Expected a file upload but received something else",
+                    received: typeof file,
+                  },
+                  400
+                );
+              }
+              //for file upload
+              const buffer = await file.arrayBuffer();
+              const mimeType = file.type;
+              const encoding = "base64";
+              const base64Data = Buffer.from(buffer).toString("base64");
+              const randomId = uuidv4();
+              const fileUri = "data:" + randomId + mimeType + ";" + encoding + "," + base64Data;
+              // load into a buffer for later use
+              const res = await uploadToCloudinary(fileUri, file.name, "testimonial");
+              if (res.success && res.result) {
+                //upload new image urls
+                const { secure_url, public_id } = res.result;
+                const event = await db.event.create({
+                  data: {
+                    title: titleStr,
+                    description: descriptionStr,
+                    location: locationStr,
+                    banner_url: secure_url,
+                    publicId: public_id,
+                    eventType: eventTypeStr,
+                    displayType: displayTypeStr === 'true' ? "PUBLIC" : "PRIVATE",
+                    socialMedia: socialMediaStr,
+                    userId: id,
+                  },
+                });
+
+                if (eventTypeStr === "SINGLE") {
+                  await db.eventDateSingle.create({
+                    data: {
+                      startDate: new Date(startDateStr),
+                      endDate: new Date(endDateStr),
+                      startTime: startTimeStr,
+                      endTime: endTimeStr,
+                      eventId: event.id,
+                    }
+                  })
+                } else {
+                  await db.eventDateMultitle.create({
+                    data: {
+                      startDate1: new Date(startDate1Str),
+                      startDate2: new Date(startDate2Str),
+                      endDate1: new Date(endDate1Str),
+                      endDate2: new Date(endDate2Str),
+                      startTime1: startTime1Str,
+                      startTime2: startTime2Str,
+                      endTime1: endTime1Str,
+                      endTime2: endTime2Str,
+                      eventId: event.id,
+                    }
+                  })
+                }
+
+                return c.json(
+                  {
+                    success: true,
+                    message: "Leads added ",
+                  },
+                  201
+                );
+              } else {
+                console.log("This is error called");
+
+                return c.json({ message: "File Upload Failed" }, 401);
+              }
+            })
+          );
 
 
-        await db.event.create({
-          data: {
-            title: titleStr,
-            description: descriptionStr,
-            location: locationStr,
-            banner_url: banner_urlStr,
-            eventType: eventTypeStr,
-            startDate: new Date(startDateStr),
-            endDate: endDate ? new Date(endDateStr) : null,
-            startTime1: startTime1Str,
-            endTime1: endTime1Str,
-            startTime2: startTime2Str,
-            endTime2: endTime2Str,
-            displayType: displayTypeStr === 'true' ? "PUBLIC" : "PRIVATE",
-            socialMedia: socialMediaStr,
-          },
-        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
       }
       return c.json(
         {
@@ -141,26 +238,26 @@ const event = new Hono()
           displayType,
           socialMedia,
         } = c.req.valid("json");
-        await db.event.update({
-          where: {
-            id: id,
-          },
-          data: {
-            title,
-            description,
-            location,
-            banner_url,
-            eventType,
-            startDate: new Date(startDate),
-            endDate: endDate ? new Date(endDate) : null,
-            startTime1,
-            endTime1,
-            startTime2,
-            endTime2,
-            displayType,
-            socialMedia,
-          },
-        });
+        // await db.event.update({
+        //   where: {
+        //     id: id,
+        //   },
+        //   data: {
+        //     title,
+        //     description,
+        //     location,
+        //     banner_url,
+        //     eventType,
+        //     startDate: new Date(startDate),
+        //     endDate: endDate ? new Date(endDate) : null,
+        //     startTime1,
+        //     endTime1,
+        //     startTime2,
+        //     endTime2,
+        //     displayType,
+        //     socialMedia,
+        //   },
+        // });
         return c.json(
           {
             success: true,

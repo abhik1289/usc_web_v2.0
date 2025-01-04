@@ -42,11 +42,17 @@ export const TableView = ({ data, onDelete }: Event) => {
                     <TableCell>{event.title}</TableCell>
                     <TableCell>
                         {event.eventType === "SINGLE" ? (
-                            `${new Date(event.startDate).toLocaleDateString()} [${event.startTime1
-                            }-${event.endTime1}]`
+                            `${new Date(event.eventDateSingle.startDate).toLocaleDateString()} [${event.eventDateSingle.startTime
+                            }-${event.eventDateSingle.endTime}]`
                         ) : (
                             <span>
-
+                                {
+                                    console.log(event.eventDateMultitle.startTime1)
+                                }
+                                {new Date(event.eventDateMultitle.startDate1).toLocaleDateString()} [
+                                {event.eventDateMultitle.startTime1}-{event.eventDateMultitle.endTime1}] <br />
+                                {new Date(event.eventDateMultitle.startDate2).toLocaleDateString()} [
+                                {event.eventDateMultitle.startTime2}-{event.eventDateMultitle.endTime2}]
                             </span>
                         )}
                     </TableCell>

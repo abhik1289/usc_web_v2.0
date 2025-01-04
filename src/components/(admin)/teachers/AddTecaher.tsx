@@ -9,7 +9,7 @@ import EditForm from './EditForm';
 
 function AddTeacher() {
 
-
+  // HOOKS
   const params = useSearchParams();
   const id = params.get('id');
   const advisoryData = useGetAdvisorById(id);
@@ -17,7 +17,10 @@ function AddTeacher() {
   // define title and subtitle
   const title = id ? 'Edit Mentor or Advisor' : 'Add Mentor or Advisor';
   const subTitle = id ? 'Edit the mentor or advisor' : 'Add a new mentor or advisor';
-  console.log(advisoryData.data)
+
+
+
+
   return (
     <Card>
       <CardHeader>

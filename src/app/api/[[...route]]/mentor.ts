@@ -1,6 +1,7 @@
 
 import { decodeSignInToken } from "@/lib/authentication/token";
 import { db } from "@/lib/db/db";
+import { deleteImage } from "@/lib/deleteImage";
 import { uploadToCloudinary } from "@/lib/uploadCloudnary";
 import { MType } from "@prisma/client";
 import { Hono } from "hono";
@@ -179,6 +180,16 @@ const mentor: Hono = new Hono()
             if (!token) {
                 return c.json({ success: false, error: "Token not found" }, 401);
             } else {
+
+                const data = await db.teachers.findFirst({ where: { id: c.req.param("id") } })
+                if (!data) {
+                    return c.json({ success: false, error: "not found" }, 404);
+                }
+                const { error } = await deleteImage(data.publicId!);
+                if (error) {
+                    return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+                }
+
                 await db.teachers.delete({
                     where: {
                         id: c.req.param("id"),

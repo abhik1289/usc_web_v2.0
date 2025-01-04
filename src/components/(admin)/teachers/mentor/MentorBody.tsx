@@ -1,15 +1,19 @@
+import React, { useState } from 'react'
 import useGetMentor from '@/hooks/api/mentor/useGetMentor';
-import React from 'react'
 import MentorTableBodyContent from './MentorTableBodyContent';
 import { TableCell, TableRow } from '@/components/ui/table';
+import AlertDialogBox from '../../AlertDialog.tsx/AlertDialog';
 
 
 function MentorBody() {
 
+
+    const [show, setShow] = useState(false);
+    const [id, setId] = useState('');
     const { data: MentorData, isLoading, isError } = useGetMentor();
     const handleEdit = (id: string) => { }
     const handleDelete = (id: string) => { }
-
+    const hanndleConfirmDelete = () => { }
 
     if (isError) {
         return <TableRow>
@@ -44,7 +48,14 @@ function MentorBody() {
                     onEdit={handleEdit}
                 />)
             }
-
+            <AlertDialogBox
+                title="Delete Mentor"
+                description="Are you sure you want to delete this mentor? This action cannot be undone."
+            
+                show={show}
+                setShow={() => setShow(false)}
+                onConfirm={hanndleConfirmDelete}
+            />
         </>
     )
 }

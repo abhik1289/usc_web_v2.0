@@ -69,8 +69,8 @@ function AdvisoryTableBody() {
             />)
         }
             < AlertDialogBox
-                title="Delete Mentor"
-                description="Are you sure you want to delete this mentor? This action cannot be undone."
+                title="Delete Advisor"
+                description="Are you sure you want to delete this advisor? This action cannot be undone."
                 show={showModal}
                 setShow={() => setShowModal(false)
                 }

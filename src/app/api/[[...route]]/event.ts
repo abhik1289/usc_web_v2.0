@@ -68,7 +68,7 @@ const event = new Hono()
         const displayTypeStr = isPublic as string;
         const linkedinUrlStr = linkedinUrl as string;
         const instagramUrlStr = instagramUrl as string;
-        let socialMediaStr = [linkedinUrlStr, instagramUrlStr];
+        const socialMediaStr = [linkedinUrlStr, instagramUrlStr];
         const files = body.profilePhoto;
         if (!files || (Array.isArray(files) && files.length === 0)) {
           return c.json({ messsage: "Please upload image" }, 401)

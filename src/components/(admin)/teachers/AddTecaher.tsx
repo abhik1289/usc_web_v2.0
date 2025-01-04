@@ -31,8 +31,8 @@ function AddTeacher() {
           fullName: advisoryData.data.fullName,
           school: advisoryData.data.school,
           memberType: advisoryData.data.memberType,
-          rolesId: advisoryData.data.rolesId,
-          customPosition: advisoryData.data.customPosition,
+          rolesId:advisoryData.data.memberType==="Mentor"? advisoryData.data.rolesId:"",
+          customPosition:  advisoryData.data.memberType==="Mentor"? advisoryData.data.customPosition:"",
         }}
         imageUrl={advisoryData.data.profilePhoto}
       /> : <AddForm

@@ -22,17 +22,20 @@ function MentorTable() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {mentor.data?.map((data: any) => (
-                        <TableRow key={data.id}>
-                            <TableCell>{data.id}</TableCell>
-                            <TableCell>{data.fullname}</TableCell>
-                            <TableCell>{data.school}</TableCell>
-                            <TableCell>{data.role}</TableCell>
-                            <TableCell>{data.additional_information}</TableCell>
-                            <TableCell>{data.photo}</TableCell>
-                            <TableCell>Action</TableCell>
-                        </TableRow>
-                    ))}
+                    {
+                        mentor.isError ? <TableRow><TableCell colSpan={6}>Error</TableCell></TableRow> :
+                            mentor.isLoading ? <TableRow><TableCell colSpan={6}>Loading...</TableCell></TableRow> : mentor.data.length === 0 ? <TableRow><TableCell colSpan={6}>No data</TableCell></TableRow> :
+                                mentor.data?.map((data: any, i: number) => (
+                                    <TableRow key={data.id}>
+                                        <TableCell>{i + 1}</TableCell>
+                                        <TableCell>{data.fullName}</TableCell>
+                                        <TableCell>{data.school}</TableCell>
+                                        <TableCell>{data.role}</TableCell>
+                                        <TableCell>{data.additional_information}</TableCell>
+                                        <TableCell>{data.photo}</TableCell>
+                                        <TableCell>Action</TableCell>
+                                    </TableRow>
+                                ))}
 
                 </TableBody>
             </Table>

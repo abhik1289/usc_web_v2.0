@@ -8,7 +8,7 @@ function AdvisorHeader() {
     return (
         <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold">Mentor & Advisor</h1>
-            <Button onClick={()=>router.push("/advisor/add")} >Add Member</Button>
+            <Button onClick={()=>router.push("/teachers/add")} >Add Member</Button>
         </div>
     )
 }

@@ -3,10 +3,14 @@ import { Table, TableHeader, TableHead, TableRow, TableBody, TableCell } from '@
 import useGetMentor from '@/hooks/api/mentor/useGetMentor'
 import React from 'react'
 import Image from 'next/image'
+import MentorTableBody from './MentorTableBody'
+import { Teachers } from '@prisma/client'
 function MentorTable() {
 
-    const mentor = useGetMentor()
-    console.log(mentor.data)
+    const { data: MentorData, isLoading } = useGetMentor();
+    const handleEdit = (id: string) => { }
+    const handleDelete = (id: string) => { }
+
     return (
         <CardContent>
             <Table>
@@ -21,26 +25,18 @@ function MentorTable() {
                         <TableHead>Action</TableHead>
                     </TableRow>
                 </TableHeader>
-                <TableBody>
-                    {
-                        mentor.isError ? <TableRow><TableCell colSpan={6}>Error</TableCell></TableRow> :
-                            mentor.isLoading ? <TableRow><TableCell colSpan={6}>Loading...</TableCell></TableRow> : mentor.data.length === 0 ? <TableRow><TableCell colSpan={6}>No data</TableCell></TableRow> :
-                                mentor.data?.map((data: any, i: number) => (
-                                    <TableRow key={data.id}>
-                                        <TableCell>{i + 1}</TableCell>
-                                        <TableCell>{data.fullName}</TableCell>
-                                        <TableCell>{data.school}</TableCell>
-                                        <TableCell>{data.Roles.title}</TableCell>
-                                        <TableCell>{data.customPosition}</TableCell>
-                                        <TableCell>
-                                            <Image src={data.
-profilePhoto} alt={data.fullName} width={50} height={50} />
-                                        </TableCell>
-                                        <TableCell>Action</TableCell>
-                                    </TableRow>
-                                ))}
-
-                </TableBody>
+                {MentorData && MentorData.map((mentor: any, i: number) => <MentorTableBody
+                    index={i}
+                    key={mentor.id}
+                    id={mentor.id}
+                    fullName={mentor.fullName}
+                    school={mentor.school}
+                    role={mentor.Roles.title}
+                    customPosition={mentor.customPosition!}
+                    imageUrl={mentor.profilePhoto}
+                    onDelete={handleDelete}
+                    onEdit={handleEdit}
+                />)}
             </Table>
         </CardContent>
     )

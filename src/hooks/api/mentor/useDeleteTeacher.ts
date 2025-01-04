@@ -19,6 +19,7 @@ export default function useDeleteTeacher({ mType }: { mType: string }) {
                 description: `${isMentor ? "Mentor" : "Advisor"} deleted successfully!`,
             });
             queryClient.invalidateQueries(["mentor"]);
+            queryClient.invalidateQueries(["advisor"]);
         },
         onError: (error: any) => {
             toast({

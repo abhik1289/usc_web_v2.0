@@ -14,6 +14,7 @@ import TeachersSchema, { MType } from "@/schemas/mentor/mentor.schema"
 import SelectionFiled from "../InputFields/SelectionFiled"
 import useGetRoles from "@/hooks/api/role/useGetRoles"
 import useEditTeacher from "@/hooks/api/mentor/useEditTeacher";
+import { useRouter } from "next/navigation";
 
 interface EditFormProps {
   defaultValues: z.infer<typeof TeachersSchema>,
@@ -22,7 +23,7 @@ interface EditFormProps {
   editId: string
 }
 
-function EditForm({ defaultValues, imageUrl, disabled,editId }: EditFormProps) {
+function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) {
 
 
   //STATES
@@ -33,6 +34,7 @@ function EditForm({ defaultValues, imageUrl, disabled,editId }: EditFormProps) {
   //FORM && HOOKS
   const roles = useGetRoles();
   const editTeacher = useEditTeacher(editId);
+  const router = useRouter();
   const form = useForm<z.infer<typeof TeachersSchema>>({
     resolver: zodResolver(TeachersSchema),
     defaultValues,
@@ -71,9 +73,10 @@ function EditForm({ defaultValues, imageUrl, disabled,editId }: EditFormProps) {
 
     editTeacher.mutate(formData, {
       onSuccess: () => {
-        form.reset();
+  
         setImage(null);
         setFile("");
+        router.back();
       }
     })
   }
@@ -104,7 +107,17 @@ function EditForm({ defaultValues, imageUrl, disabled,editId }: EditFormProps) {
               <ImageIcon /> Change Image
             </Button>
 
-          </div> : <Image src={imageUrl} width={100} height={100} alt={defaultValues.fullName} />}
+          </div> : <>
+            <Image src={imageUrl} width={100} height={100} alt={defaultValues.fullName} />
+            <Button
+              type="button"
+              className="mt-2"
+              onClick={handleButtonClick}
+              disabled={editTeacher.isLoading || disabled}
+            >
+              <ImageIcon /> Change Image
+            </Button>
+          </>}
           <div className="img_upload_ip">
 
 
@@ -129,7 +142,7 @@ function EditForm({ defaultValues, imageUrl, disabled,editId }: EditFormProps) {
           />
           <div className="flex gap-3">
             <MentorOrAdvisor
-              disabled={editTeacher.isLoading || disabled||true}
+              disabled={editTeacher.isLoading || disabled || true}
               defaultText="Select Member Type"
               control={form.control}
               label="Select Member Type"

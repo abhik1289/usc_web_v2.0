@@ -128,13 +128,6 @@ const mentor: Hono = new Hono()
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
 
-
-
-
-
-
-
-
     })
     .get("/mentors", async (c) => {
         try {

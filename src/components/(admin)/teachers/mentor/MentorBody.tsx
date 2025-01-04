@@ -1,9 +1,12 @@
+"use client";
+
 import React, { useState } from 'react'
 import useGetMentor from '@/hooks/api/mentor/useGetMentor';
 import MentorTableBodyContent from './MentorTableBodyContent';
 import { TableCell, TableRow } from '@/components/ui/table';
 import AlertDialogBox from '../../AlertDialog.tsx/AlertDialog';
 import useDeleteTeacher from '@/hooks/api/mentor/useDeleteTeacher';
+import { useRouter } from 'next/navigation';
 
 
 function MentorBody() {
@@ -13,7 +16,10 @@ function MentorBody() {
     const [id, setId] = useState<string>('');
     const { data: MentorData, isLoading, isError } = useGetMentor();
     const deleteMutation = useDeleteTeacher({ mType: "mentor" });
-    const handleEdit = (id: string) => { }
+    const router = useRouter();
+    const handleEdit = (id: string) => {
+        router.push(`/teachers/add?id=${id}`)
+    }
     const handleDelete = (id: string) => {
         setId(id);
         setShow(true);

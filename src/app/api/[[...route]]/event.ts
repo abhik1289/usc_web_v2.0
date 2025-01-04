@@ -39,28 +39,28 @@ const event = new Hono()
           linkedinUrl,
           isPublic,
         } = body;
-     
-       
 
-        let startTime1Str = "", endTime1Str = "", startTime2Str = "", endTime2Str = "", startDate1Str = "", endDate1Str = "", startDate2Str = "", endDate2Str = "";
+
+
+        let startTime1Str = "", endTime1Str = "", startTime2Str = "", endTime2Str = "", startDate1Str = "", endDate1Str = "", startDate2Str = "", endDate2Str = "", startDateStr = "", startTimeStr = "", endTimeStr = "";
         const titleStr = title as string;
         const descriptionStr = description as string;
         const locationStr = location as string;
         const eventTypeStr = duration as E_Type;
         if (eventTypeStr === "MULTIPLE") {
-          startTime1Str = startTime1 as string;
-          endTime1Str = endTime1 as string;
-          startTime2Str = startTime2 as string;
-          endTime2Str = endTime2 as string;
           startDate1Str = startDate1 as string
           endDate1Str = endDate1 as string
           startDate2Str = startDate2 as string;
           endDate2Str = endDate2 as string;
+          startTime1Str = startTime1 as string;
+          endTime1Str = endTime1 as string;
+          startTime2Str = startTime2 as string;
+          endTime2Str = endTime2 as string;
+        } else {
+          startDateStr = startDate as string;
+          startTimeStr = startTime as string;
+          endTimeStr = endTime as string;
         }
-        const startDateStr = startDate as string;
-        const startTimeStr = startTime as string;
-        const endTimeStr = endTime as string;
-
 
         const displayTypeStr = isPublic as string;
         const linkedinUrlStr = linkedinUrl as string;
@@ -122,15 +122,14 @@ const event = new Hono()
                     }
                   })
                 } else {
+                  console.log("----------------->", endDate1, endDate2, event.id)
                   await db.eventDateMultitle.create({
                     data: {
-                      startDate1: new Date(startDate1Str),
-                      startDate2: new Date(startDate2Str),
-                      endDate1: new Date(endDate1Str),
-                      endDate2: new Date(endDate2Str),
-                      startTime1: startTime1Str,
-                      startTime2: startTime2Str,
-                      endTime1: endTime1Str,
+                      startDate1: new Date(startDate1Str), // Example start date 1
+                      startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
+                      startTime1: startTime1Str,                       // Example start time 1
+                      endTime1: endTime1Str,                         // Example end time 1
+                      startTime2: startTime2Str,                       // Example start time 2
                       endTime2: endTime2Str,
                       eventId: event.id,
                     }

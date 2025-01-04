@@ -86,11 +86,9 @@ model eventDateSingle {
 model eventDateMultitle {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   startDate1 DateTime
-  endDate1   DateTime
+  startDate2 DateTime
   startTime1 String
   endTime1   String
-  startDate2 DateTime
-  endDate2   DateTime
   startTime2 String
   endTime2   String
   event      Event?   @relation(fields: [eventId], references: [id])

@@ -21,6 +21,7 @@ import SelectionFiled from '../InputFields/SelectionFiled';
 import { Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from '@/hooks/use-toast';
+import { useAddEvents } from '@/hooks/api/events/useAddEvents';
 
 const formSchema = z.object({
     title: z.string().min(2, {
@@ -33,16 +34,16 @@ const formSchema = z.object({
     isPublic: z.boolean(),
     duration: z.enum(['SINGLE', 'MULTIPLE']),
     startDate: z.any(),
-    startTime: z.string(),
-    endTime: z.string(),
+    startTime: z.any(),
+    endTime: z.any(),
     startTime1: z.string(),
     endTime1: z.string().optional().nullable(),
     startTime2: z.string().optional().nullable(),
     endTime2: z.string().optional().nullable(),
     startDate1: z.any().optional().nullable(),
     endDate1: z.any().optional().nullable(),
-    startDate2: z.string().optional().nullable(),
-    endDate2: z.string().optional().nullable(),
+    startDate2: z.any().optional().nullable(),
+    endDate2: z.any().optional().nullable(),
 })
 function AddEventFrom() {
 
@@ -51,6 +52,9 @@ function AddEventFrom() {
     const [image, setImage] = useState<string | null>(null);
     const [file, setFile] = useState<string | null>(null);
     const uploadImgRef = useRef<HTMLInputElement>(null);
+
+
+    const events = useAddEvents();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -134,7 +138,7 @@ function AddEventFrom() {
             formData.append('endDate2', values.endDate2!);
         }
         formData.append('profilePhoto', file);
-
+        events.mutate(formData);
     }
 
 
@@ -181,6 +185,7 @@ function AddEventFrom() {
                                 control={form.control}
                                 placeholder="Enter event title"
                                 label="Title"
+                                disabled={events.isLoading}
                             />
                         </div>
 
@@ -190,6 +195,8 @@ function AddEventFrom() {
                                 control={form.control}
                                 placeholder="Enter a brief description of the event"
                                 label="Description"
+                                disabled={events.isLoading}
+
                             />
                         </div>
 
@@ -199,6 +206,8 @@ function AddEventFrom() {
                                 control={form.control}
                                 placeholder="Enter the event location"
                                 label="Location"
+                                disabled={events.isLoading}
+
                             />
                         </div>
 
@@ -207,6 +216,8 @@ function AddEventFrom() {
                                 control={form.control}
                                 label='Event Duration'
                                 name='duration'
+                                disabled={events.isLoading}
+
                                 infos={durations}
                                 placeholder=''
                                 notFound=''
@@ -218,10 +229,13 @@ function AddEventFrom() {
                                 <CalenderInput
                                     name='startDate'
                                     label='Selcet date'
+
+                                    disabled={events.isLoading}
                                     control={form.control}
                                 />
                                 <InputFiled
                                     type='time'
+                                    disabled={events.isLoading}
                                     control={form.control}
                                     name='startTime'
                                     placeholder=''
@@ -229,6 +243,7 @@ function AddEventFrom() {
                                 />
                                 <InputFiled
                                     type='time'
+                                    disabled={events.isLoading}
                                     control={form.control}
                                     name='endTime'
                                     placeholder=''
@@ -237,11 +252,13 @@ function AddEventFrom() {
                             </div> : <>
                                 <div className="flex w-full gap-4 items-center">
                                     <CalenderInput
+                                        disabled={events.isLoading}
                                         name='startDate1'
                                         label='Starting Date'
                                         control={form.control}
                                     />
                                     <InputFiled
+                                        disabled={events.isLoading}
                                         type='time'
                                         control={form.control}
                                         name='startTime1'
@@ -249,6 +266,7 @@ function AddEventFrom() {
                                         label='Start Time'
                                     />
                                     <InputFiled
+                                        disabled={events.isLoading}
                                         type='time'
                                         control={form.control}
                                         name='endTime1'
@@ -260,18 +278,22 @@ function AddEventFrom() {
                                     <CalenderInput
                                         name='startDate2'
                                         label='End Date'
+                                        disabled={events.isLoading}
                                         control={form.control}
                                     />
                                     <InputFiled
+                                        disabled={events.isLoading}
                                         type='time'
                                         control={form.control}
-                                        name='startDate2'
+                                        name='startTime2'
                                         placeholder=''
                                         label='Start Time'
                                     />
-                                    <InputFiled type='time'
+                                    <InputFiled
+                                        type='time'
+                                        disabled={events.isLoading}
                                         control={form.control}
-                                        name='endDate2'
+                                        name='endTime2'
                                         placeholder=''
                                         label='End Time'
                                     />
@@ -281,6 +303,8 @@ function AddEventFrom() {
 
                         <div className="flex w-full gap-4 items-center">
                             <SwitchFiled
+                                disabled={events.isLoading}
+
                                 control={form.control}
                                 title="Make this event public?"
                                 name="isPublic"
@@ -288,6 +312,8 @@ function AddEventFrom() {
                         </div>
                         <div className="flex w-full gap-4">
                             <InputFiled
+                                disabled={events.isLoading}
+
                                 name="linkedinUrl"
                                 control={form.control}
                                 placeholder="https://linkedin.com/in/username"
@@ -295,6 +321,8 @@ function AddEventFrom() {
                             />
 
                             <InputFiled
+                                disabled={events.isLoading}
+
                                 name="instagramUrl"
                                 control={form.control}
                                 placeholder="https://instagram.com/username"
@@ -303,7 +331,13 @@ function AddEventFrom() {
                         </div>
 
                     </div>
-                    <Button type="submit" className="w-full">Add Event</Button>
+
+                    <Button
+                        disabled={events.isLoading}
+                        type="submit" className="w-full">
+
+                        {events.isLoading ? "Adding..." : "Add"}
+                    </Button>
                 </form>
             </Form>
         </CardContent>

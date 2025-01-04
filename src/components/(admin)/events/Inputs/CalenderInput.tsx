@@ -25,9 +25,10 @@ interface CalenderInputProps {
     control: any;
     label: string;
     name: string;
+    disabled: boolean
 }
 
-function CalenderInput({ control, label,name }: CalenderInputProps) {
+function CalenderInput({ control, label, name, disabled }: CalenderInputProps) {
     return (
         <FormField
             control={control}
@@ -39,6 +40,7 @@ function CalenderInput({ control, label,name }: CalenderInputProps) {
                         <PopoverTrigger asChild>
                             <FormControl>
                                 <Button
+                                    disabled={disabled}
                                     variant={"outline"}
                                     className={cn(
                                         "w-full pl-3 text-left font-normal",
@@ -56,6 +58,7 @@ function CalenderInput({ control, label,name }: CalenderInputProps) {
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
+
                                 mode="single"
                                 onSelect={field.onChange}
                                 disabled={(date) =>

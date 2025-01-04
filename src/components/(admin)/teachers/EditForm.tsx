@@ -19,9 +19,10 @@ import useAddTeacher from "@/hooks/api/mentor/useAddTeacher";
 interface EditFormProps {
   defaultValues: z.infer<typeof TeachersSchema>,
   imageUrl: string
+  disabled?: boolean
 }
 
-function EditForm({ defaultValues, imageUrl }: EditFormProps) {
+function EditForm({ defaultValues, imageUrl, disabled }: EditFormProps) {
 
 
   //STATES
@@ -97,7 +98,7 @@ function EditForm({ defaultValues, imageUrl }: EditFormProps) {
               type="button"
               className="mt-2"
               onClick={handleButtonClick}
-              disabled={insertMentor.isLoading}
+              disabled={insertMentor.isLoading || disabled}
             >
               <ImageIcon /> Change Image
             </Button>
@@ -118,7 +119,7 @@ function EditForm({ defaultValues, imageUrl }: EditFormProps) {
 
           </div>
           <InputFiled
-            disabled={insertMentor.isLoading}
+            disabled={insertMentor.isLoading || disabled}
 
             control={form.control}
             name="fullName"
@@ -126,7 +127,8 @@ function EditForm({ defaultValues, imageUrl }: EditFormProps) {
             label="Full Name"
           />
           <MentorOrAdvisor
-            disabled={insertMentor.isLoading}
+            disabled={insertMentor.isLoading || disabled}
+
 
             defaultText="Select Member Type"
             control={form.control}
@@ -137,7 +139,8 @@ function EditForm({ defaultValues, imageUrl }: EditFormProps) {
           />
           {isAdvisor ? <>
             <InputFiled
-              disabled={insertMentor.isLoading}
+              disabled={insertMentor.isLoading || disabled}
+
 
               control={form.control}
               name="school"
@@ -145,7 +148,8 @@ function EditForm({ defaultValues, imageUrl }: EditFormProps) {
               label="School"
             />
           </> : <><InputFiled
-            disabled={insertMentor.isLoading}
+            disabled={insertMentor.isLoading || disabled}
+
 
             control={form.control}
             name="school"
@@ -153,7 +157,8 @@ function EditForm({ defaultValues, imageUrl }: EditFormProps) {
             label="School"
           />
             <SelectionFiled
-              disabled={insertMentor.isLoading}
+              disabled={insertMentor.isLoading || disabled}
+
 
               placeholder="Select Role"
               name="rolesId"
@@ -164,7 +169,8 @@ function EditForm({ defaultValues, imageUrl }: EditFormProps) {
 
             />
             <InputFiled
-              disabled={insertMentor.isLoading}
+              disabled={insertMentor.isLoading || disabled}
+
 
               control={form.control}
               name="customPosition"
@@ -172,10 +178,11 @@ function EditForm({ defaultValues, imageUrl }: EditFormProps) {
               label="Additional Title"
             /></>}
           <Button
-            disabled={insertMentor.isLoading}
+            disabled={insertMentor.isLoading || disabled}
+
 
             type="submit">{
-              insertMentor.isLoading ? "Adding..." : "Add"
+              insertMentor.isLoading ? "Editing..." : "Edit"
             }</Button>
         </form>
       </Form>

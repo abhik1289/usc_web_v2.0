@@ -10,14 +10,6 @@ import { v4 as uuidv4 } from "uuid";
 
 const mentor: Hono = new Hono()
     .post("/add-member", async (c) => {
-
-
-
-
-
-
-
-
         try {
             const token = getCookie(c, "token");
             if (!token) {
@@ -142,7 +134,8 @@ const mentor: Hono = new Hono()
 
 
 
-    }).get("/mentors", async (c) => {
+    })
+    .get("/mentors", async (c) => {
         try {
             const mentors = await db.teachers.findMany({
                 where: {
@@ -244,6 +237,60 @@ const mentor: Hono = new Hono()
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
     })
+    .post("/update/:id", async (c) => {
+        try {
+            const token = getCookie(c, "token");
+            if (!token) {
+                return c.json({ success: false, error: "Token not found" }, 401);
+            } else {
+                const userToken = decodeSignInToken(token);
+                const { id } = userToken.payload;
+                const body = await c.req.parseBody();
+                const updateId = c.req.param("id");
+                const { fullName, school, rolesId, customPosition, memberType, index } = body;
+
+                const files = body.file;
+
+                //if profile image is not updated
+                if (!files || (Array.isArray(files) && files.length === 0)) {
+                    const teacher = await db.teachers.findFirst({ where: { id: updateId } });
+                    if (!mentor) {
+                        return c.json({ success: false, error: "Mentor not found" }, 404);
+                    } else {
+                        //Type convertion
+                        const fullNameString = fullName as string;
+                        const schoolString = school as string;
+                        const rolesIdString = rolesId ? rolesId as string : "";
+                        const customPositionString = customPosition ? customPosition as string : '';
+                        const indexINT = parseInt(index as string);
+                        const memberTypeString = memberType as MType;
+
+                        const updatedMentor = await db.teachers.update({
+                            where: {
+                                id: updateId,
+                            },
+                            data: {
+                                fullName: fullNameString,
+                                school: schoolString,
+                                rolesId: rolesIdString,
+                                customPosition: customPositionString,
+                                memberType: memberTypeString,
+                                index: indexINT
+                            },
+                        });
+
+                        return c.json({ success: true, updatedMentor }, 200);
+                    }
+
+
+                } else { }
+
+
+            }
+        } catch (error) {
+            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+        }
+    });
 
 export default mentor;
 
@@ -279,6 +326,6 @@ export default mentor;
 //     } catch (error) {
 //         console.log(error);
 
-//         return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+//
 //     }
 // });

@@ -65,7 +65,7 @@ function AddForm() {
     formData.append("school", values.school);
     formData.append("memberType", values.memberType);
     formData.append('file', file);
-    if (form.watch("memberType") === MType[0]) {
+    if (form.watch("memberType") === "Mentor") {
       formData.append("rolesId", values.rolesId!);
       formData.append("customPosition", values.customPosition!);
     }

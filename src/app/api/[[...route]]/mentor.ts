@@ -88,8 +88,8 @@ const mentor: Hono = new Hono()
                                     data: {
                                         fullName: fullNameString,
                                         school: schoolString,
-                                        rolesId: rolesIdString,
-                                        customPosition: customPositionString,
+                                        rolesId: rolesId.toString(),
+                                        customPosition: customPosition.toString(),
                                         index,
                                         memberType: memberTypeString,
                                         userId: id,
@@ -145,22 +145,14 @@ const mentor: Hono = new Hono()
     }).get("/mentors", async (c) => {
         try {
             const mentors = await db.teachers.findMany({
-                where: {
-                    memberType: "Mentor"
-                },
-                include: {
-                    createdBy: {
-                        select: {
-                            firstName: true,
-                        }
-                    },
-                    Roles: {
-                        select: {
-                            title: true
-                        }
-                    }
-                }
+                // where: {
+                //     memberType: "Mentor"
+                // },
+                // include: {
+                 
+                // }
             });
+            console.log(mentors)
             return c.json({ success: true, mentors }, 200);
         } catch (error) {
             console.log(error);
@@ -173,18 +165,10 @@ const mentor: Hono = new Hono()
             const advisors = await db.teachers.findMany({
                 where: { memberType: "Advisor" },
                 include: {
-                    createdBy: {
-                        select: {
-                            firstName: true,
-                        }
-                    },
-                    Roles: {
-                        select: {
-                            title: true
-                        }
-                    }
+                   
                 }
             });
+            console.log(advisors)
             return c.json({ success: true, advisors }, 200);
         } catch (error) {
             console.log(error);

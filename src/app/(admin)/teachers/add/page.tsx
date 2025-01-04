@@ -1,4 +1,4 @@
-import AddTeacher from '@/components/(admin)/advisor/AddTecaher'
+import AddTeacher from '@/components/(admin)/teachers/AddTecaher'
 import React from 'react'
 
 function AddMentorAdvisor() {

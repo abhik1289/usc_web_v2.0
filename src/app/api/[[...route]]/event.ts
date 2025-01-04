@@ -9,6 +9,8 @@ import { E_Type } from "@prisma/client";
 import { uploadToCloudinary } from "@/lib/uploadCloudnary";
 import { v4 as uuidv4 } from 'uuid';
 
+
+
 const event = new Hono()
   .post("/add-event", async (c) => {
     try {
@@ -193,7 +195,25 @@ const event = new Hono()
   })
   .get("/all-events", async (c) => {
     try {
-      const events = await db.event.findMany();
+      const events = await db.event.findMany({
+        include: {
+          eventDateMultitle: {
+            select: {
+              startDate1: true,
+              startDate2: true,
+              endTime1: true,
+              endTime2: true
+            }
+          },
+          eventDateSingle: {
+            select: {
+              endTime: true,
+              startDate: true,
+              startTime: true,
+            }
+          }
+        }
+      })
       return c.json(
         {
           success: true,

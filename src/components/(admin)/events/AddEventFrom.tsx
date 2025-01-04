@@ -138,7 +138,11 @@ function AddEventFrom() {
             formData.append('endDate2', values.endDate2!);
         }
         formData.append('profilePhoto', file);
-        events.mutate(formData);
+        events.mutate(formData,{
+            onSuccess:()=>{
+                form.reset();
+            }
+        });
     }
 
 

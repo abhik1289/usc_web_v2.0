@@ -306,11 +306,11 @@ const event = new Hono()
           where: { id }
         });
         if (!event) {
-          return c.json({ error: "" }, 401)
+          return c.json({ error: "Event not found" }, 401)
         }
         const { error } = await deleteImage(event.publicId!);
         if (error) {
-          return c.json({ message: "" }, 401)
+          return c.json({ message: "Error Occured" }, 401)
         }
         await db.event.delete({
           where: {

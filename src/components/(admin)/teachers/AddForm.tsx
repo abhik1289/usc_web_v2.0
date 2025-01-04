@@ -15,6 +15,7 @@ import SelectionFiled from "../InputFields/SelectionFiled"
 import useGetRoles from "@/hooks/api/role/useGetRoles"
 // import useAddmentor from "@/hooks/api/mentor/useAddTeacher";
 import useAddTeacher from "@/hooks/api/mentor/useAddTeacher";
+import { toast } from "@/hooks/use-toast";
 
 interface AddFormProps {
   defaultValues: z.infer<typeof TeachersSchema>
@@ -55,26 +56,39 @@ function AddForm({ defaultValues }: AddFormProps) {
   function onSubmit(values: z.infer<typeof TeachersSchema>) {
     const formData = new FormData();
     if (!file) {
+      toast({
+        description: "Please upload an image",
+        variant: "destructive",
+      })
       return;
-    }
-    formData.append("fullName", values.fullName);
-    formData.append("school", values.school);
-    formData.append("memberType", values.memberType);
-    formData.append('file', file);
-    if (form.watch("memberType") === "Mentor") {
-      formData.append("rolesId", values.rolesId!);
-      formData.append("customPosition", values.customPosition!);
-    }
+    } else {
+      if (values.memberType === "Mentor" && !values.rolesId && !values.customPosition) {
+        toast({
+          description: "Please select role and enter custom position",
+          variant: "destructive",
+        })
+        return;
+      } else {
+        formData.append("fullName", values.fullName);
+        formData.append("school", values.school);
+        formData.append("memberType", values.memberType);
+        formData.append('file', file);
+        if (form.watch("memberType") === "Mentor") {
+          formData.append("rolesId", values.rolesId!);
+          formData.append("customPosition", values.customPosition!);
+        }
 
-    insertMentor.mutate(formData, {
-      onSuccess: () => {
-        form.reset();
-        setImage(null);
-        setFile(null);
+        insertMentor.mutate(formData, {
+          onSuccess: () => {
+            form.reset();
+            setImage(null);
+            setFile(null);
+          }
+
+        })
       }
-    })
+    }
   }
-
   //LOGIC: if memberType is advisor then show only school field
   const isAdvisor = form.watch("memberType") === MType[1];
 

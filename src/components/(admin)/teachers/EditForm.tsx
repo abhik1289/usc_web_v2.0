@@ -13,8 +13,8 @@ import MentorOrAdvisor from "./input/MentorSelction"
 import TeachersSchema, { MType } from "@/schemas/mentor/mentor.schema"
 import SelectionFiled from "../InputFields/SelectionFiled"
 import useGetRoles from "@/hooks/api/role/useGetRoles"
-import useEditTeacher from "@/hooks/api/mentor/useEditTeacher";
 import { useRouter } from "next/navigation";
+import useEditAdvisor from "@/hooks/api/mentor/useEditAdvisor";
 
 interface EditFormProps {
   defaultValues: z.infer<typeof TeachersSchema>,
@@ -33,7 +33,7 @@ function EditForm({ defaultValues, imageUrl, disabled, editId }: EditFormProps) 
 
   //FORM && HOOKS
   const roles = useGetRoles();
-  const editTeacher = useEditTeacher(editId);
+  const editTeacher = useEditAdvisor(editId);
   const router = useRouter();
   const form = useForm<z.infer<typeof TeachersSchema>>({
     resolver: zodResolver(TeachersSchema),

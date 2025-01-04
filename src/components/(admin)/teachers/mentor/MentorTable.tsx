@@ -19,7 +19,9 @@ function MentorTable() {
                         <TableHead>Action</TableHead>
                     </TableRow>
                 </TableHeader>
-                {/* <MentorBody/> */}
+               {/* <TableBody> */}
+                    <MentorBody />
+               {/* </TableBody> */}
             </Table>
         </CardContent>
     )

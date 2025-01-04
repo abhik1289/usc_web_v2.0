@@ -2,7 +2,7 @@ import { toast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
-export default function useEditTeacher(id: string) {
+export default function useEditAdvisor(id: string) {
     const queryClient = useQueryClient();
     const insertMutation = useMutation({
         mutationFn: async (data: any) => {

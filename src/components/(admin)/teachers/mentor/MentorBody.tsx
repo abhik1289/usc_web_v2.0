@@ -25,7 +25,7 @@ function MentorBody() {
             {
 
                 MentorData && MentorData.map((mentor: any, i: number) => <MentorTableBodyContent
-                    index={i}
+                    index={i+1}
                     key={mentor.id}
                     id={mentor.id}
                     fullName={mentor.fullName}

@@ -5,7 +5,7 @@ import React from 'react'
 export default function useGetAdvisor() {
 
     const query = useQuery({
-        queryKey: ["mentor"],
+        queryKey: ["advisor"],
         queryFn: async () => {
             const res = await axios.get("/api/mentor/advisors");
             return res.data.advisors;

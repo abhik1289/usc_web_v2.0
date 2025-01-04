@@ -2,7 +2,7 @@ import { CardContent } from '@/components/ui/card'
 import { Table, TableHeader, TableHead, TableRow, TableBody, TableCell } from '@/components/ui/table'
 import useGetMentor from '@/hooks/api/mentor/useGetMentor'
 import React from 'react'
-
+import Image from 'next/image'
 function MentorTable() {
 
     const mentor = useGetMentor()
@@ -30,9 +30,12 @@ function MentorTable() {
                                         <TableCell>{i + 1}</TableCell>
                                         <TableCell>{data.fullName}</TableCell>
                                         <TableCell>{data.school}</TableCell>
-                                        <TableCell>{data.role}</TableCell>
-                                        <TableCell>{data.additional_information}</TableCell>
-                                        <TableCell>{data.photo}</TableCell>
+                                        <TableCell>{data.Roles.title}</TableCell>
+                                        <TableCell>{data.customPosition}</TableCell>
+                                        <TableCell>
+                                            <Image src={data.
+profilePhoto} alt={data.fullName} width={50} height={50} />
+                                        </TableCell>
                                         <TableCell>Action</TableCell>
                                     </TableRow>
                                 ))}

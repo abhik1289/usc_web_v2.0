@@ -145,12 +145,16 @@ const mentor: Hono = new Hono()
     }).get("/mentors", async (c) => {
         try {
             const mentors = await db.teachers.findMany({
-                // where: {
-                //     memberType: "Mentor"
-                // },
-                // include: {
-                 
-                // }
+                where: {
+                    memberType: "Mentor"
+                },
+                include: {
+                    Roles: {
+                        select: {
+                            title: true
+                        }
+                    }
+                }
             });
             console.log(mentors)
             return c.json({ success: true, mentors }, 200);
@@ -165,7 +169,7 @@ const mentor: Hono = new Hono()
             const advisors = await db.teachers.findMany({
                 where: { memberType: "Advisor" },
                 include: {
-                   
+
                 }
             });
             console.log(advisors)

@@ -78,7 +78,7 @@ export const TableView = ({ data, onDelete }: Event) => {
                             >
                                 Edit
                             </Button>
-                            <Button variant="destructive" onClick={() => onDelete(event.id)}>
+                            <Button variant="link" className="text-red-400" onClick={() => onDelete(event.id)}>
                                 Delete
                             </Button>
                         </div>

@@ -5,7 +5,7 @@ import useGetMentor from '@/hooks/api/mentor/useGetMentor'
 import { Button } from '@/components/ui/button'
 
 
-interface MentorTableBodyProps {
+interface MentorTableBodyContentProps {
     id: string;
     onDelete: (id: string) => void;
     onEdit: (id: string) => void;
@@ -17,7 +17,7 @@ interface MentorTableBodyProps {
     index: number;
 }
 
-function MentorTableBody({ id, onDelete, onEdit, school, fullName, customPosition, imageUrl, role, index }: MentorTableBodyProps) {
+function MentorTableBodyContent({ id, onDelete, onEdit, school, fullName, customPosition, imageUrl, role, index }: MentorTableBodyContentProps) {
 
  
 
@@ -57,13 +57,8 @@ function MentorTableBody({ id, onDelete, onEdit, school, fullName, customPositio
     )
 }
 
-export default MentorTableBody;
+export default MentorTableBodyContent;
 
 
 
 
-// {
-//     mentor.isError ? <TableRow><TableCell colSpan={6}>Error</TableCell></TableRow> :
-//         mentor.isLoading ? <TableRow><TableCell colSpan={6}>Loading...</TableCell></TableRow> : mentor.data.length === 0 ? <TableRow><TableCell colSpan={6}>No data</TableCell></TableRow> :
-//             mentor.data?.map((data: any, i: number) => (
-// ))}

@@ -13,7 +13,7 @@ interface AdvisorTableBodyContentProps {
     onEdit: (id: string) => void;
 }
 
-function AdvisorTableBodyContent({ i, fullName, school, profilePhoto, id, onDelete,onEdit }: AdvisorTableBodyContentProps) {
+function AdvisorTableBodyContent({ i, fullName, school, profilePhoto, id, onDelete, onEdit }: AdvisorTableBodyContentProps) {
     return (
         <TableRow key={i}>
             <TableCell>{i + 1}</TableCell>

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import React from 'react'
 import AdvisoryTableBody from './AdvisoryTableBody';
 function AdvisorBox() {
@@ -25,7 +25,9 @@ function AdvisorBox() {
                             <TableHead>Action</TableHead>
                         </TableRow>
                     </TableHeader>
-                    <AdvisoryTableBody />
+                    <TableBody>
+                        <AdvisoryTableBody />
+                    </TableBody>
                 </Table>
             </CardContent>
         </Card >

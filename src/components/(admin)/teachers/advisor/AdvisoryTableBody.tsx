@@ -34,41 +34,49 @@ function AdvisoryTableBody() {
             });
         }
     }
-    const handleEdit = (id: string) => { 
+    const handleEdit = (id: string) => {
         router.push(`/teachers/add?id=${id}`)
     }
-    return (
-        <TableBody>
 
-            {
-                advisors.isError ? <TableRow>
-                    <TableCell colSpan={5}>Error fetching data</TableCell>
-                </TableRow> :
-                    advisors.isLoading ? <TableRow>
-                        <TableCell colSpan={5}>Loading...</TableCell>
-                    </TableRow> : advisors.data?.length === 0 ? <TableRow>
-                        <TableCell colSpan={5}>No data available</TableCell>
-                    </TableRow>
-                        :
-                        advisors.data?.map((advisor: any, i: number) => <AdvisorTableBodyContent
-                            onEdit={handleEdit}
-                            key={i}
-                            i={i}
-                            fullName={advisor.fullName}
-                            school={advisor.school}
-                            profilePhoto={advisor.profilePhoto}
-                            id={advisor.id}
-                            onDelete={onDelete}
-                        />)
-            }
-            <AlertDialogBox
+
+    if (advisors.isError) {
+        return <TableRow>
+            <TableCell className='text-red-500' colSpan={5}>Error fetching data</TableCell>
+        </TableRow>
+    }
+    if (advisors.isLoading) {
+        return <TableRow>
+            <TableCell className='text-center' colSpan={5}>Loading...</TableCell> </TableRow>
+    }
+    if (advisors.data?.length === 0) {
+        return <TableRow>
+            <TableCell className='text-center' colSpan={5}>No data</TableCell>
+        </TableRow>
+    }
+
+    return (
+
+        <>{
+            advisors.data?.map((advisor: any, i: number) => <AdvisorTableBodyContent
+                onEdit={handleEdit}
+                key={i}
+                i={i}
+                fullName={advisor.fullName}
+                school={advisor.school}
+                profilePhoto={advisor.profilePhoto}
+                id={advisor.id}
+                onDelete={onDelete}
+            />)
+        }
+            < AlertDialogBox
                 title="Delete Mentor"
                 description="Are you sure you want to delete this mentor? This action cannot be undone."
                 show={showModal}
-                setShow={() => setShowModal(false)}
+                setShow={() => setShowModal(false)
+                }
                 onConfirm={handleDelteConfirm}
-            />
-        </TableBody>
+            /></>
+
     )
 }
 

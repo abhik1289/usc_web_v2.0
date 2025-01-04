@@ -13,18 +13,18 @@ function MentorBody() {
 
     if (isError) {
         return <TableRow>
-            <TableCell colSpan={7}>Error</TableCell>
+            <TableCell className='text-red-400' colSpan={7}>Error</TableCell>
         </TableRow>
     }
     if (isLoading) {
         return <TableRow>
-            <TableCell colSpan={7}>
+            <TableCell className='text-center' colSpan={7}>
                 Loading...
             </TableCell>
         </TableRow>
     }
     if (MentorData && MentorData.length === 0) {
-        return <TableRow><TableCell colSpan={7}>No data</TableCell></TableRow>
+        return <TableRow><TableCell className='text-center' colSpan={7}>No data</TableCell></TableRow>
     }
 
     return (

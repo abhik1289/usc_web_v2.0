@@ -266,7 +266,7 @@ const mentor: Hono = new Hono()
                         return c.json({ success: false, error: "not found" }, 404);
                     } else {
                         //Type convertion
-                        let rolesIdString = "", customPositionString = "";
+                    
                         const fullNameString = fullName as string;
                         const schoolString = school as string;
                         const memberTypeString = memberType as MType;

@@ -1,6 +1,6 @@
 "use client"
 import { CardContent } from '@/components/ui/card'
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import {
     Form,
 } from "@/components/ui/form";
@@ -18,6 +18,8 @@ import CalenderInput from './Inputs/CalenderInput';
 
 import SwitchFiled from '../InputFields/SwitchFiled';
 import SelectionFiled from '../InputFields/SelectionFiled';
+import { Image as ImageIcon } from 'lucide-react';
+import Image from 'next/image';
 
 const formSchema = z.object({
     title: z.string().min(2, {
@@ -42,6 +44,13 @@ const formSchema = z.object({
     endDate2: z.string().optional().nullable(),
 })
 function AddEventFrom() {
+
+
+    //ALL STATES
+    const [image, setImage] = useState<string | null>(null);
+    const [file, setFile] = useState<string | null>(null);
+    const uploadImgRef = useRef<HTMLInputElement>(null);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -79,12 +88,59 @@ function AddEventFrom() {
             { id: 'MULTIPLE', title: 'Multiple Days' },
         ]
     };
+    //ALL FUNCTIONS
+    const handleButtonClick = () => {
+        uploadImgRef.current?.click();
+    }
+    const handleFileChange = (event: any) => {
+        const file = event.target.files[0];
+        setFile(file);
+        if (file) {
+            const reader: any = new FileReader();
+            reader.onload = () => setImage(reader.result);
+            reader.readAsDataURL(file);
+        }
+    };
     console.log(form.watch('duration'))
     return (
         <CardContent>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="flex flex-wrap gap-4 w-full">
+                        {image ? <div className="img_preview_container">
+                            <div className="img_preview  w-[100px] h-[100px]  overflow-hidden">
+                                <Image
+                                    alt=""
+                                    width={100}
+                                    height={100}
+                                    src={image}
+                                />
+                            </div>
+
+
+                            <Button type="button" className="mt-2" onClick={handleButtonClick}>
+                                <ImageIcon /> Change Image
+                            </Button>
+
+                        </div> : <Button type="button" onClick={handleButtonClick}>
+                            <ImageIcon /> Upload Image
+
+                        </Button>}
+                        <div className="img_upload_ip">
+
+
+                            <input
+                                accept="image/*"
+                                name={'profilePhoto'}
+                                onChange={handleFileChange}
+                                ref={uploadImgRef}
+                                hidden
+                                type="file"
+                            />
+
+
+
+                        </div>
                         <div className="flex w-full gap-4">
                             <InputFiled
                                 name="title"

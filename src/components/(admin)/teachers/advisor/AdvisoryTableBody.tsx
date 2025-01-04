@@ -1,12 +1,12 @@
+"use client";
 import React, { useState } from 'react'
-// import TableBody from '../events/TableBody'
 import { TableCell, TableRow, TableBody } from '@/components/ui/table'
 import AdvisorTableBodyContent from './AdvisorTableBodyContent'
 import useGetAdvisor from '@/hooks/api/mentor/useGetAdvisor';
 import AlertDialogBox from '../../AlertDialog.tsx/AlertDialog';
 import useDeleteTeacher from '@/hooks/api/mentor/useDeleteTeacher';
 import { toast } from '@/hooks/use-toast';
-
+import { useRouter } from 'next/navigation';
 function AdvisoryTableBody() {
 
 
@@ -15,6 +15,7 @@ function AdvisoryTableBody() {
 
 
     const advisors = useGetAdvisor();
+    const router = useRouter();
     const deletTeacher = useDeleteTeacher({ mType: "advisor" });
     const onDelete = (id: string) => {
         setShowModal(true);
@@ -31,10 +32,11 @@ function AdvisoryTableBody() {
                     });
                 }
             });
-            // deleteEvent.mutate(deleteId);
         }
     }
-
+    const handleEdit = (id: string) => { 
+        router.push(`/teachers/add?id=${id}`)
+    }
     return (
         <TableBody>
 
@@ -49,6 +51,7 @@ function AdvisoryTableBody() {
                     </TableRow>
                         :
                         advisors.data?.map((advisor: any, i: number) => <AdvisorTableBodyContent
+                            onEdit={handleEdit}
                             key={i}
                             i={i}
                             fullName={advisor.fullName}

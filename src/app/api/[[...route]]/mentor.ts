@@ -199,6 +199,51 @@ const mentor: Hono = new Hono()
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
     })
+    .get("/mentor/:id", async (c) => {
+        try {
+            const token = getCookie(c, "token");
+            if (!token) {
+                return c.json({ success: false, error: "Token not found" }, 401);
+            } else {
+                const mentor = await db.teachers.findFirst({
+                    where: {
+                        id: c.req.param("id"),
+                    },
+                    include: {
+                        Roles: {
+                            select: {
+                                title: true
+                            }
+                        }
+                    }
+                });
+                return c.json({ success: true, mentor }, 200);
+            }
+        } catch (error) {
+            console.log(error);
+
+            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+        }
+    })
+    .get("/advisor/:id", async (c) => {
+        try {
+            const token = getCookie(c, "token");
+            if (!token) {
+                return c.json({ success: false, error: "Token not found" }, 401);
+            } else {
+                const mentor = await db.teachers.findFirst({
+                    where: {
+                        id: c.req.param("id"),
+                    },
+                });
+                return c.json({ success: true, mentor }, 200);
+            }
+        } catch (error) {
+            console.log(error);
+
+            return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
+        }
+    })
 
 export default mentor;
 
@@ -206,37 +251,7 @@ export default mentor;
 
 
 
-// .get("/:id", async (c) => {
-//     try {
-//         const token = getCookie(c, "token");
-//         if (!token) {
-//             return c.json({ success: false, error: "Token not found" }, 401);
-//         } else {
-//             const mentor = await db.teachers.findFirst({
-//                 where: {
-//                     id: c.req.param("id"),
-//                 },
-//                 include: {
-//                     createdBy: {
-//                         select: {
-//                             firstName: true,
-//                         }
-//                     },
-//                     Roles: {
-//                         select: {
-//                             title: true
-//                         }
-//                     }
-//                 }
-//             });
-//             return c.json({ success: true, mentor }, 200);
-//         }
-//     } catch (error) {
-//         console.log(error);
 
-//         return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
-//     }
-// })
 
 // .post("/update/:id", zValidator("json", TeachersSchema), async (c) => {
 //     try {

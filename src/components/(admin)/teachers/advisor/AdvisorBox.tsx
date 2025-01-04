@@ -1,9 +1,12 @@
+import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import React from 'react'
 import AdvisoryTableBody from './AdvisoryTableBody';
-function AdvisorBox() {
 
+
+
+
+function AdvisorBox() {
     return (
         <Card>
             <CardHeader>
@@ -33,5 +36,7 @@ function AdvisorBox() {
         </Card >
     )
 }
+
+
 
 export default AdvisorBox

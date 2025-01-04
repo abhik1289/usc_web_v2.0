@@ -20,6 +20,7 @@ import SwitchFiled from '../InputFields/SwitchFiled';
 import SelectionFiled from '../InputFields/SelectionFiled';
 import { Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
+import { toast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
     title: z.string().min(2, {
@@ -31,15 +32,15 @@ const formSchema = z.object({
     instagramUrl: z.string().url(),
     isPublic: z.boolean(),
     duration: z.enum(['SINGLE', 'MULTIPLE']),
-    startDate: z.string(),
+    startDate: z.any(),
     startTime: z.string(),
     endTime: z.string(),
     startTime1: z.string(),
     endTime1: z.string().optional().nullable(),
     startTime2: z.string().optional().nullable(),
     endTime2: z.string().optional().nullable(),
-    startDate1: z.string().optional().nullable(),
-    endDate1: z.string().optional().nullable(),
+    startDate1: z.any().optional().nullable(),
+    endDate1: z.any().optional().nullable(),
     startDate2: z.string().optional().nullable(),
     endDate2: z.string().optional().nullable(),
 })
@@ -75,12 +76,6 @@ function AddEventFrom() {
 
         },
     })
-    // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
-    }
 
     const durations = {
         data: [
@@ -101,7 +96,48 @@ function AddEventFrom() {
             reader.readAsDataURL(file);
         }
     };
-    console.log(form.watch('duration'))
+    // 2. Define a submit handler.
+    function onSubmit(values: z.infer<typeof formSchema>) {
+        if (!file) {
+            toast({
+                description: "Please upload an image",
+                variant: "destructive",
+            })
+            return;
+        }
+        if (values.duration === 'MULTIPLE' && !values.endDate1 && !values.startTime2 && !values.endTime2 && !values.startDate1 && !values.endDate2 && !values.startDate2 && !values.endDate2) {
+            toast({
+                description: "Please fill all the fields",
+                variant: "destructive",
+            })
+            return;
+        }
+        const formData = new FormData();
+        formData.append('title', values.title);
+        formData.append('description', values.description);
+        formData.append('location', values.location);
+        formData.append('linkedinUrl', values.linkedinUrl);
+        formData.append('instagramUrl', values.instagramUrl);
+        formData.append('isPublic', values.isPublic.toString());
+        formData.append('duration', values.duration);
+        formData.append('startDate', values.startDate);
+        formData.append('startTime', values.startTime);
+        formData.append('endTime', values.endTime);
+        formData.append('startTime1', values.startTime1);
+        if (values.duration === 'MULTIPLE') {
+            formData.append('endTime1', values.endTime1!);
+            formData.append('startTime2', values.startTime2!);
+            formData.append('endTime2', values.endTime2!);
+            formData.append('startDate1', values.startDate1!);
+            formData.append('endDate1', values.endDate1!);
+            formData.append('startDate2', values.startDate2!);
+            formData.append('endDate2', values.endDate2!);
+        }
+        formData.append('profilePhoto', file);
+
+    }
+
+
     return (
         <CardContent>
             <Form {...form}>
@@ -116,8 +152,6 @@ function AddEventFrom() {
                                     src={image}
                                 />
                             </div>
-
-
                             <Button type="button" className="mt-2" onClick={handleButtonClick}>
                                 <ImageIcon /> Change Image
                             </Button>

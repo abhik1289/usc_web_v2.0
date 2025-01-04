@@ -5,14 +5,19 @@ import { eventSchema } from "@/schemas/events/event.shema";
 import { getCookie } from "hono/cookie";
 import { decodeSignInToken } from "@/lib/authentication/token";
 import mongoose from "mongoose";
+import { E_Type } from "@prisma/client";
 
 const event = new Hono()
-  .post("/add-event", zValidator("json", eventSchema), async (c) => {
+  .post("/add-event", async (c) => {
     try {
       const token = getCookie(c, "token");
       if (!token) {
         return c.json({ success: false, error: "Token not found" }, 401);
       } else {
+
+
+        const body = await c.req.parseBody();
+
         const {
           title,
           description,
@@ -26,32 +31,52 @@ const event = new Hono()
           startTime2,
           endTime2,
           displayType,
-          socialMedia,
-        } = c.req.valid("json");
+          instagramUrl,
+          linkedinUrl
+        } = body;
         const userData = decodeSignInToken(token);
 
         const userId = userData.payload.id!;
         const id = new mongoose.Types.ObjectId(userId);
-        console.log("User ID:", userId);
-        console.log(id);
+
         db.user.findUnique({
           where: { email: userData.payload.email },
         });
+
+
+        const titleStr = title as string;
+        const descriptionStr = description as string;
+        const locationStr = location as string;
+        const banner_urlStr = banner_url as string;
+        const eventTypeStr = eventType as E_Type;
+        const startDateStr = startDate as string;
+        const endDateStr = endDate as string;
+        const startTime1Str = startTime1 as string;
+        const endTime1Str = endTime1 as string;
+        const startTime2Str = startTime2 as string;
+        const endTime2Str = endTime2 as string;
+        const displayTypeStr = displayType as string;
+        const linkedinUrlStr = linkedinUrl as string;
+        const instagramUrlStr = instagramUrl as string;
+        let socialMediaStr = [linkedinUrlStr, instagramUrlStr];
+       
+
+
         await db.event.create({
           data: {
-            title,
-            description,
-            location,
-            banner_url,
-            eventType,
-            startDate: new Date(startDate),
-            endDate: endDate ? new Date(endDate) : null,
-            startTime1,
-            endTime1,
-            startTime2,
-            endTime2,
-            displayType,
-            socialMedia,
+            title: titleStr,
+            description: descriptionStr,
+            location: locationStr,
+            banner_url: banner_urlStr,
+            eventType: eventTypeStr,
+            startDate: new Date(startDateStr),
+            endDate: endDate ? new Date(endDateStr) : null,
+            startTime1: startTime1Str,
+            endTime1: endTime1Str,
+            startTime2: startTime2Str,
+            endTime2: endTime2Str,
+            displayType: displayTypeStr === 'true' ? "PUBLIC" : "PRIVATE",
+            socialMedia: socialMediaStr,
           },
         });
       }

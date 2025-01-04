@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import { E_Type } from "@prisma/client";
 import { uploadToCloudinary } from "@/lib/uploadCloudnary";
 import { v4 as uuidv4 } from 'uuid';
+import { deleteImage } from "@/lib/deleteImage";
 
 
 
@@ -300,6 +301,17 @@ const event = new Hono()
       if (!token) {
         return c.json({ success: false, error: "Token not found" }, 401);
       } else {
+        //delete previous img
+        const event = await db.event.findFirst({
+          where: { id }
+        });
+        if (!event) {
+          return c.json({ error: "" }, 401)
+        }
+        const { error } = await deleteImage(event.publicId!);
+        if (error) {
+          return c.json({ message: "" }, 401)
+        }
         await db.event.delete({
           where: {
             id: id,

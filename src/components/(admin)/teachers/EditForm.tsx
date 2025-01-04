@@ -129,7 +129,7 @@ function EditForm({ defaultValues, imageUrl, disabled,editId }: EditFormProps) {
           />
           <div className="flex gap-3">
             <MentorOrAdvisor
-              disabled={editTeacher.isLoading || disabled}
+              disabled={editTeacher.isLoading || disabled||true}
               defaultText="Select Member Type"
               control={form.control}
               label="Select Member Type"

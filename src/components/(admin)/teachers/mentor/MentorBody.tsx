@@ -30,7 +30,7 @@ function MentorBody() {
                     id={mentor.id}
                     fullName={mentor.fullName}
                     school={mentor.school}
-                    role={mentor.Roles.title}
+                    role={mentor?.Roles?.title}
                     customPosition={mentor.customPosition!}
                     imageUrl={mentor.profilePhoto}
                     onDelete={handleDelete}

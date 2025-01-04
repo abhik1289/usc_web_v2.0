@@ -8,7 +8,7 @@ export default function useEditTeacher(id: string) {
         mutationFn: async (data: any) => {
             const formData = data;
 
-            const url = `/api/mentor/update/${id}`;
+            const url = `/api/mentor/update-advisor/${id}`;
 
             const res = await fetch(url, {
                 method: "POST",

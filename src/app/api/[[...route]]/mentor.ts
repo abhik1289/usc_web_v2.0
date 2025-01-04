@@ -237,7 +237,7 @@ const mentor: Hono = new Hono()
             return c.json({ success: false, error: "An unexpected error occurred. Please try again." }, 500);
         }
     })
-    .post("/update/:id", async (c) => {
+    .post("/update-advisor/:id", async (c) => {
         try {
             const token = getCookie(c, "token");
             if (!token) {
@@ -247,8 +247,8 @@ const mentor: Hono = new Hono()
                 const { id } = userToken.payload;
                 const body = await c.req.parseBody();
                 const updateId = c.req.param("id");
-                const { fullName, school, rolesId, customPosition, memberType, index } = body;
-                // console.log(fullName, school, rolesId, customPosition, memberType, index)
+                const { fullName, school, memberType, index } = body;
+
 
 
 
@@ -267,10 +267,6 @@ const mentor: Hono = new Hono()
                         const fullNameString = fullName as string;
                         const schoolString = school as string;
                         const memberTypeString = memberType as MType;
-                        if (memberTypeString === "Mentor") {
-                            customPositionString = customPosition as string;
-                            rolesIdString = rolesId as string;
-                        }
                         const indexINT = parseInt(index as string);
 
                         const updatedMentor = await db.teachers.update({
@@ -278,12 +274,10 @@ const mentor: Hono = new Hono()
                                 id: updateId,
                             },
                             data: {
-                                fullName: "",
-                                school: "",
-                                rolesId: "",
-                                customPosition: "",
+                                fullName: fullNameString,
+                                school: schoolString,
                                 memberType: "Mentor",
-                                index: 8,
+                                index: indexINT,
                                 userId: id
                             },
                         });

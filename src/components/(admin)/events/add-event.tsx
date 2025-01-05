@@ -50,9 +50,11 @@ export default function EventForm() {
             instagramUrl: event.data && event.data.socialMedia[1],
             isPublic: event.data && event.data.displayType,
             duration: event.data && event.data.eventType,
-            startDate: event.data && "",
-            startTime: event.data && "",
-            endTime: event.data && "",
+            //THIS IS FOR SINGLE DAY EVENT
+            startDate: event.data && event.data.eventType === "SINGLE" ? event.data.eventDateSingle.startDate : "",
+            startTime: event.data && event.data.eventType === "SINGLE" ? event.data.eventDateSingle.startTime : "",
+            endTime: event.data && event.data.eventType === "SINGLE" ? event.data.eventDateSingle.endTime : "",
+            //THIS IS FOR MULTIPLE DAY EVENT
             startTime1: event.data && event.data.startTime1,
             endTime1: event.data && event.data.endTime1,
             startTime2: event.data && event.data.startTime2,

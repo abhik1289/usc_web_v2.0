@@ -505,7 +505,7 @@ const event = new Hono()
         }
 
         if (!files || (Array.isArray(files) && files.length === 0)) {
-console.log("----------------->THIS EVENT IS")
+
           //image is not updated
           await db.event.update(
             {

@@ -46,7 +46,10 @@ const TableBodyBox: React.FC<TableBodyBoxProps> = ({ handleDeleteEvent }: TableB
                 />)
             }
         </TableBody>
-        <EventChangeVisibility />
+        <EventChangeVisibility
+            open={showDialog}
+            setOpen={setShowDialog}
+        />
     </>
 };
 

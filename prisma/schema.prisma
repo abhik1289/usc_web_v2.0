@@ -62,6 +62,7 @@ model Event {
   updatedAt         DateTime           @updatedAt
   eventDateSingle   eventDateSingle?
   eventDateMultitle eventDateMultitle?
+  index             Int                @default(0)
 }
 
 enum D_TYPE {
@@ -96,18 +97,19 @@ model eventDateMultitle {
 }
 
 model Champions {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
   profilePhoto String
-  fullName     String
-  role         Roles    @relation(fields: [rolesId], references: [id])
-  coverPhoto   String
-  description  String
-  index        Int
-  createdBy    User     @relation(fields: [userId], references: [id])
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  userId       String   @db.ObjectId
-  rolesId      String   @db.ObjectId
+
+  fullName    String
+  role        Roles    @relation(fields: [rolesId], references: [id])
+  coverPhoto  String
+  description String
+  index       Int
+  createdBy   User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String   @db.ObjectId
+  rolesId     String   @db.ObjectId
 }
 
 model Testimonials {

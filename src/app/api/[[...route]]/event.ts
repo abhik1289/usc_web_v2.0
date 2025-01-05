@@ -509,6 +509,27 @@ const event = new Hono()
                 userId: id,
               },
             });
+          if (eventTypeStr === "SINGLE") {
+            await db.eventDateSingle.update({
+              where: { id: eventId }, data: {
+                startDate: startDateStr,
+                startTime: startTimeStr,
+                endTime: endTimeStr,
+              }
+            })
+          } else {
+            await db.eventDateMultitle.update({
+              where: { id: eventId }, data: {
+                startDate1: new Date(startDate1Str), // Example start date 1
+                startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
+                startTime1: startTime1Str,                       // Example start time 1
+                endTime1: endTime1Str,                         // Example end time 1
+                startTime2: startTime2Str,                       // Example start time 2
+                endTime2: endTime2Str,
+                eventId: event.id,
+              }
+            })
+          }
           console.log("==================>EVENT UPDATED SUCCESSFUL")
           return c.json({ success: true, message: "Successfuly Updated" }, 200);
         }

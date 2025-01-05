@@ -48,7 +48,7 @@ export default function EventForm() {
             location: event.data && event.data.location,
             linkedinUrl: event.data && event.data.socialMedia[0],
             instagramUrl: event.data && event.data.socialMedia[1],
-            isPublic: event.data && event.data.displayType,
+            isPublic: event.data && event.data.displayType === "PRIVATE" ? false : true,
             duration: event.data && event.data.eventType,
             //THIS IS FOR SINGLE DAY EVENT
             startDate: event.data && event.data.eventType === "SINGLE" ? event.data.eventDateSingle.startDate : "",

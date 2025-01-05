@@ -4,11 +4,16 @@
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import AddEventFrom from "./AddEventFrom";
 import { useSearchParams } from "next/navigation";
+import useGetEventById from "@/hooks/api/events/useGetEventById";
 export default function EventForm() {
 
 
   const params = useSearchParams();
   const id = params.get("id");
+
+  const event = useGetEventById(id);
+
+  //
 
 
 

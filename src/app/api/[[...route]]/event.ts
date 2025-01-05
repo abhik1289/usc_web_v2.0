@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Context, Hono } from "hono";
 import { db } from "@/lib/db/db";
 import { zValidator } from "@hono/zod-validator";
 import { eventSchema } from "@/schemas/events/event.shema";
@@ -390,6 +390,34 @@ const event = new Hono()
         500
       );
     }
-  });
+  })
+  .get("/:id", async (c: Context) => {
+    try {
+      const token = getCookie(c, "token");
+      if (token) {
+        return c.json({ success: false, error: "Token not found" }, 401);
+      } else {
+        const Eid = c.req.param("id");
+        const event = await db.event.findFirst({
+          where: {
+            id: Eid,
+          }
+        });
+        return c.json({
+          success: true,
+          event
+        }, 200);
+      }
+    } catch (error) {
+
+      return c.json(
+        {
+          success: false,
+          error: "An unexpected error occurred. Please try again.",
+        },
+        500
+      );
+    }
+  })
 
 export { event };

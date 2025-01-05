@@ -165,27 +165,6 @@ const event = new Hono()
               }
             })
           );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
       }
       return c.json(
@@ -454,45 +433,50 @@ const event = new Hono()
         } = body;
 
         let startTime1Str = "", endTime1Str = "", startTime2Str = "", endTime2Str = "", startDate1Str = "", endDate1Str = "", startDate2Str = "", endDate2Str = "", startDateStr = "", startTimeStr = "", endTimeStr = "";
-        const titleStr = title as string;
-        const descriptionStr = description as string;
-        const locationStr = location as string;
-        const eventTypeStr = duration as E_Type;
-        if (eventTypeStr === "MULTIPLE") {
-          startDate1Str = startDate1 as string
-          endDate1Str = endDate1 as string
-          startDate2Str = startDate2 as string;
-          endDate2Str = endDate2 as string;
-          startTime1Str = startTime1 as string;
-          endTime1Str = endTime1 as string;
-          startTime2Str = startTime2 as string;
-          endTime2Str = endTime2 as string;
-        } else {
-          startDateStr = startDate as string;
-          startTimeStr = startTime as string;
-          endTimeStr = endTime as string;
-        }
 
-        const displayTypeStr = isPublic as string;
-        const linkedinUrlStr = linkedinUrl as string;
-        const instagramUrlStr = instagramUrl as string;
-        const socialMediaStr = [linkedinUrlStr, instagramUrlStr];
         const files = body.profilePhoto;
 
         const eventId = c.req.param("id");
+        // console.log("--------------------->", titleStr, descriptionStr, locationStr, eventTypeStr, displayTypeStr, socialMediaStr, startDate1Str, startTimeStr, endTimeStr);
 
         const event = await db.event.findFirst({
           where: {
             id: eventId,
           },
         });
-        // console.log(event)
-        if (!event) {
-          return c.json({ error: "Event not found" }, 401)
-        }
+        // // console.log(event)
+        // if (!event) {
+        //   return c.json({ error: "Event not found" }, 401)
+        // }
 
+        // console.log("THIS IS TIGGERED AND")
         if (!files || (Array.isArray(files) && files.length === 0)) {
+          const titleStr = title as string;
+          const descriptionStr = description as string;
+          const locationStr = location as string;
+          const eventTypeStr = duration as E_Type;
+          if (eventTypeStr === "MULTIPLE") {
+            startDate1Str = startDate1 as string
+            endDate1Str = endDate1 as string
+            startDate2Str = startDate2 as string;
+            endDate2Str = endDate2 as string;
+            startTime1Str = startTime1 as string;
+            endTime1Str = endTime1 as string;
+            startTime2Str = startTime2 as string;
+            endTime2Str = endTime2 as string;
+          } else {
+            startDateStr = startDate as string;
+            startTimeStr = startTime as string;
+            endTimeStr = endTime as string;
+          }
 
+          const displayTypeStr = isPublic as string;
+          const linkedinUrlStr = linkedinUrl as string;
+          const instagramUrlStr = instagramUrl as string;
+          const socialMediaStr = [linkedinUrlStr, instagramUrlStr];
+          console.log("--------------------->", titleStr, descriptionStr, locationStr, eventTypeStr, displayTypeStr, socialMediaStr, startDate1Str, startTimeStr, endTimeStr);
+
+          
           //image is not updated
           await db.event.update(
             {
@@ -526,7 +510,7 @@ const event = new Hono()
                 endTime1: endTime1Str,                         // Example end time 1
                 startTime2: startTime2Str,                       // Example start time 2
                 endTime2: endTime2Str,
-                eventId: event.id,
+                eventId: event?.id,
               }
             })
           }
@@ -536,7 +520,29 @@ const event = new Hono()
         else {
           // if files is not an array, convert it to an array
           const fileArray = Array.isArray(files) ? files : [files];
+          const titleStr = title as string;
+          const descriptionStr = description as string;
+          const locationStr = location as string;
+          const eventTypeStr = duration as E_Type;
+          if (eventTypeStr === "MULTIPLE") {
+            startDate1Str = startDate1 as string
+            endDate1Str = endDate1 as string
+            startDate2Str = startDate2 as string;
+            endDate2Str = endDate2 as string;
+            startTime1Str = startTime1 as string;
+            endTime1Str = endTime1 as string;
+            startTime2Str = startTime2 as string;
+            endTime2Str = endTime2 as string;
+          } else {
+            startDateStr = startDate as string;
+            startTimeStr = startTime as string;
+            endTimeStr = endTime as string;
+          }
 
+          const displayTypeStr = isPublic as string;
+          const linkedinUrlStr = linkedinUrl as string;
+          const instagramUrlStr = instagramUrl as string;
+          const socialMediaStr = [linkedinUrlStr, instagramUrlStr];
           await Promise.all(
             fileArray.map(async (file) => {
               if (!(file instanceof File)) {

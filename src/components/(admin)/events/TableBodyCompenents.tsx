@@ -83,6 +83,11 @@ export const TableView = ({ data, onDelete, onEdit, onVisibility }: Event) => {
                             </Button>
                         </div>
                     </TableCell>
+                    <EventChangeVisibility
+                        open={showDialog}
+                        setOpen={handleOpen}
+                        visibility={event.displayType === "PRIVATE"?"Private":"Public" }
+                    />
                 </TableRow>
             ))}
         </>

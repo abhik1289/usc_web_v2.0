@@ -27,6 +27,9 @@ const TableBodyBox: React.FC<TableBodyBoxProps> = ({ handleDeleteEvent }: TableB
         setShowDialog(true);
         // setDeleteId(id);
     }
+    const handleOpen =()=>{
+        setShowDialog(false);
+    }
 
 
     return <>
@@ -46,10 +49,7 @@ const TableBodyBox: React.FC<TableBodyBoxProps> = ({ handleDeleteEvent }: TableB
                 />)
             }
         </TableBody>
-        <EventChangeVisibility
-            open={showDialog}
-            setOpen={setShowDialog}
-        />
+       
     </>
 };
 

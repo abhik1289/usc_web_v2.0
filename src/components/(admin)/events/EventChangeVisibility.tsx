@@ -15,21 +15,26 @@ import { Label } from "@/components/ui/label"
 
 interface EventChangeVisibilityProps {
   open: boolean;
-  setOpen: (open: boolean) => void;
+  setOpen: () => void;
+  visibility: "Private" | "Public";
 }
 
-function EventChangeVisibility({ open, setOpen }: EventChangeVisibilityProps) {
+function EventChangeVisibility({ open, setOpen, visibility }: EventChangeVisibilityProps) {
   return (
 
-    <Dialog open={open} onOpenChange={(open) => setOpen(!open)}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>
+            {visibility === "Private" ? "Make it Public" : "Make it Private"}
+          </DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            {visibility === "Private"
+              ? "Your profile is currently private. Click save to make it public."
+              : "Your profile is currently public. Click save to make it private."}
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        {/* <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
               Name
@@ -42,7 +47,7 @@ function EventChangeVisibility({ open, setOpen }: EventChangeVisibilityProps) {
             </Label>
             <Input id="username" value="@peduarte" className="col-span-3" />
           </div>
-        </div>
+        </div> */}
         <DialogFooter>
           <Button type="submit">Save changes</Button>
         </DialogFooter>

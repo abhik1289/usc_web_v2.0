@@ -14,8 +14,7 @@ interface TableBodyBoxProps {
 const TableBodyBox: React.FC<TableBodyBoxProps> = ({ handleDeleteEvent }: TableBodyBoxProps) => {
 
 
-    const [showDialog, setShowDialog] = useState(false);
-    const [Id, setId] = useState<string>("");
+   
 
     const events = useGetEvents();
     const router = useRouter();
@@ -23,14 +22,7 @@ const TableBodyBox: React.FC<TableBodyBoxProps> = ({ handleDeleteEvent }: TableB
     const handleEdit = (id: string) => {
         router.push(`/events/add?id=${id}`)
     }
-    const handleVisibility = (id: string) => {
-        setShowDialog(true);
-        // setDeleteId(id);
-    }
-    const handleOpen =()=>{
-        setShowDialog(false);
-    }
-
+   
 
     return <>
         <TableBody>
@@ -45,7 +37,7 @@ const TableBodyBox: React.FC<TableBodyBoxProps> = ({ handleDeleteEvent }: TableB
                     onEdit={handleEdit}
                     data={events.data}
                     onDelete={handleDeleteEvent}
-                    onVisibility={handleVisibility}
+              
                 />)
             }
         </TableBody>

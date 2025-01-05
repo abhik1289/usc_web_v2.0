@@ -4,11 +4,12 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
+import { useState } from "react";
+import EventChangeVisibility from "./EventChangeVisibility";
 interface Event {
     data: any
     onDelete: (id: string) => void;
     onEdit: (id: string) => void;
-    onVisibility: (id: string) => void;
 }
 
 export const ErrorHandle: React.FC = () => (
@@ -35,7 +36,17 @@ export const ZeroDataTable: React.FC = () => (
     </TableRow>
 );
 
-export const TableView = ({ data, onDelete, onEdit, onVisibility }: Event) => {
+export const TableView = ({ data, onDelete, onEdit }: Event) => {
+    const [showDialog, setShowDialog] = useState(false);
+    const [Id, setId] = useState<string>("");
+    const handleVisibility = (id: string) => {
+        setShowDialog(true);
+        // setDeleteId(id);
+    }
+    const handleOpen = () => {
+        setShowDialog(false);
+    }
+
     return (
         <>
             {data.map((event: any, i: number) => (
@@ -60,7 +71,7 @@ export const TableView = ({ data, onDelete, onEdit, onVisibility }: Event) => {
                     </TableCell>
                     <TableCell>{event.location}</TableCell>
                     <TableCell>
-                        <Button onClick={() => onVisibility(event.id)} variant={"outline"}>
+                        <Button onClick={() => handleVisibility(event.id)} variant={"outline"}>
                             {
                                 event.displayType === "PRIVATE" ? "Make Public" : "Make Private"
                             }
@@ -86,7 +97,7 @@ export const TableView = ({ data, onDelete, onEdit, onVisibility }: Event) => {
                     <EventChangeVisibility
                         open={showDialog}
                         setOpen={handleOpen}
-                        visibility={event.displayType === "PRIVATE"?"Private":"Public" }
+                        visibility={event.displayType === "PRIVATE" ? "Private" : "Public"}
                     />
                 </TableRow>
             ))}

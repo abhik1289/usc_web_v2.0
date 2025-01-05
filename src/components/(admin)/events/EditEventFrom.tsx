@@ -40,6 +40,7 @@ const formSchema = z.object({
     endDate1: z.any().optional().nullable(),
     startDate2: z.any().optional().nullable(),
     endDate2: z.any().optional().nullable(),
+    index: z.string()
 })
 
 interface AddEventFromProps {
@@ -213,6 +214,13 @@ function EditEventFrom({ defaultValues, disable, bannerUrl, eId }: AddEventFromP
                                 disabled={events.isLoading || disable}
 
 
+                            />
+                            <InputFiled
+                                name="index"
+                                control={form.control}
+                                placeholder="0/1/.."
+                                label="Sequence Number"
+                                disabled={events.isLoading || disable}
                             />
                         </div>
 

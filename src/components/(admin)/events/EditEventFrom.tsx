@@ -48,9 +48,10 @@ const formSchema = z.object({
 
 interface AddEventFromProps {
     defaultValues: z.infer<typeof formSchema>,
+    disable: boolean
 }
 
-function AddEventFrom({ defaultValues }: AddEventFromProps) {
+function EditEventFrom({ defaultValues, disable }: AddEventFromProps) {
 
 
     //ALL STATES
@@ -174,7 +175,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                 control={form.control}
                                 placeholder="Enter event title"
                                 label="Title"
-                                disabled={events.isLoading}
+                                disabled={events.isLoading || disable}
                             />
                         </div>
 
@@ -184,7 +185,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                 control={form.control}
                                 placeholder="Enter a brief description of the event"
                                 label="Description"
-                                disabled={events.isLoading}
+                                disabled={events.isLoading || disable}
 
 
                             />
@@ -196,7 +197,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                 control={form.control}
                                 placeholder="Enter the event location"
                                 label="Location"
-                                disabled={events.isLoading}
+                                disabled={events.isLoading || disable}
 
 
                             />
@@ -207,7 +208,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                 control={form.control}
                                 label='Event Duration'
                                 name='duration'
-                                disabled={events.isLoading}
+                                disabled={events.isLoading || disable}
 
 
                                 infos={durations}
@@ -222,13 +223,13 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                     name='startDate'
                                     label='Selcet date'
 
-                                    disabled={events.isLoading}
+                                    disabled={events.isLoading || disable}
 
                                     control={form.control}
                                 />
                                 <InputFiled
                                     type='time'
-                                    disabled={events.isLoading}
+                                    disabled={events.isLoading || disable}
 
                                     control={form.control}
                                     name='startTime'
@@ -237,7 +238,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                 />
                                 <InputFiled
                                     type='time'
-                                    disabled={events.isLoading}
+                                    disabled={events.isLoading || disable}
 
                                     control={form.control}
                                     name='endTime'
@@ -247,14 +248,14 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                             </div> : <>
                                 <div className="flex w-full gap-4 items-center">
                                     <CalenderInput
-                                        disabled={events.isLoading}
+                                        disabled={events.isLoading || disable}
 
                                         name='startDate1'
                                         label='Starting Date'
                                         control={form.control}
                                     />
                                     <InputFiled
-                                        disabled={events.isLoading}
+                                        disabled={events.isLoading || disable}
 
                                         type='time'
                                         control={form.control}
@@ -263,7 +264,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                         label='Start Time'
                                     />
                                     <InputFiled
-                                        disabled={events.isLoading}
+                                        disabled={events.isLoading || disable}
 
                                         type='time'
                                         control={form.control}
@@ -276,12 +277,12 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                     <CalenderInput
                                         name='startDate2'
                                         label='End Date'
-                                        disabled={events.isLoading}
+                                        disabled={events.isLoading || disable}
 
                                         control={form.control}
                                     />
                                     <InputFiled
-                                        disabled={events.isLoading}
+                                        disabled={events.isLoading || disable}
 
                                         type='time'
                                         control={form.control}
@@ -291,7 +292,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                     />
                                     <InputFiled
                                         type='time'
-                                        disabled={events.isLoading}
+                                        disabled={events.isLoading || disable}
 
                                         control={form.control}
                                         name='endTime2'
@@ -304,7 +305,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
 
                         <div className="flex w-full gap-4 items-center">
                             <SwitchFiled
-                                disabled={events.isLoading}
+                                disabled={events.isLoading || disable}
 
 
                                 control={form.control}
@@ -314,7 +315,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                         </div>
                         <div className="flex w-full gap-4">
                             <InputFiled
-                                disabled={events.isLoading}
+                                disabled={events.isLoading || disable}
 
 
                                 name="linkedinUrl"
@@ -324,7 +325,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                             />
 
                             <InputFiled
-                                disabled={events.isLoading}
+                                disabled={events.isLoading || disable}
 
 
                                 name="instagramUrl"
@@ -337,7 +338,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                     </div>
 
                     <Button
-                        disabled={events.isLoading}
+                        disabled={events.isLoading || disable}
 
                         type="submit" className="w-full">
 
@@ -349,4 +350,4 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
     )
 }
 
-export default AddEventFrom
+export default EditEventFrom

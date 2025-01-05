@@ -5,7 +5,7 @@ import axios from 'axios';
 export default function useGetEventById(id?: string | null) {
     const query = useQuery({
         enabled: !!id,
-        queryKey: ["events"],
+        queryKey: ["events",id],
         queryFn: () => axios.get(`/api/event/${id}`).then((res) => res.data.event),
     });
     return query;

@@ -394,7 +394,7 @@ const event = new Hono()
   .get("/:id", async (c: Context) => {
     try {
       const token = getCookie(c, "token");
-      if (token) {
+      if (!token) {
         return c.json({ success: false, error: "Token not found" }, 401);
       } else {
         const Eid = c.req.param("id");

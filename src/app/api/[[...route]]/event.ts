@@ -449,8 +449,11 @@ const event = new Hono()
         //   return c.json({ error: "Event not found" }, 401)
         // }
 
+
+        
         // console.log("THIS IS TIGGERED AND")
         if (!files || (Array.isArray(files) && files.length === 0)) {
+        console.log("THSIS IS CALL---------------------------------------<")
           const titleStr = title as string;
           const descriptionStr = description as string;
           const locationStr = location as string;
@@ -476,7 +479,7 @@ const event = new Hono()
           const socialMediaStr = [linkedinUrlStr, instagramUrlStr];
           console.log("--------------------->", titleStr, descriptionStr, locationStr, eventTypeStr, displayTypeStr, socialMediaStr, startDate1Str, startTimeStr, endTimeStr);
 
-          
+
           //image is not updated
           await db.event.update(
             {

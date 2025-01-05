@@ -62,7 +62,7 @@ model Event {
   updatedAt         DateTime           @updatedAt
   eventDateSingle   eventDateSingle?
   eventDateMultitle eventDateMultitle?
-  index             Int                @default(0)
+  index             Int?                @default(0)
 }
 
 enum D_TYPE {

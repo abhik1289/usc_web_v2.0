@@ -101,6 +101,17 @@ const event = new Hono()
               if (res.success && res.result) {
                 //upload new image urls
                 const { secure_url, public_id } = res.result;
+
+
+                //calculate index
+                const events = await db.event.findMany({});
+                let index;
+                if (events.length === 0) {
+                  index = 0;
+                } else {
+                  index = events.length + 1;
+                }
+
                 const event = await db.event.create({
                   data: {
                     title: titleStr,
@@ -112,6 +123,7 @@ const event = new Hono()
                     displayType: displayTypeStr === 'true' ? "PUBLIC" : "PRIVATE",
                     socialMedia: socialMediaStr,
                     userId: id,
+                    index
                   },
                 });
 

@@ -6,6 +6,7 @@ import {
 import Image from "next/image";
 import { useState } from "react";
 import EventChangeVisibility from "./EventChangeVisibility";
+import { useChangeVisibility } from "@/hooks/api/events/useChangeVisibility";
 interface Event {
     data: any
     onDelete: (id: string) => void;
@@ -39,9 +40,13 @@ export const ZeroDataTable: React.FC = () => (
 export const TableView = ({ data, onDelete, onEdit }: Event) => {
     const [showDialog, setShowDialog] = useState(false);
     const [Id, setId] = useState<string>("");
-    const handleVisibility = (id: string) => {
-        setShowDialog(true);
-        // setDeleteId(id);
+    const visibility = useChangeVisibility()
+    const handleVisibility = () => {
+        visibility.mutate({ id: Id }, {
+            onSuccess: () => {
+                setShowDialog(false);
+            }
+        })
     }
     const handleOpen = () => {
         setShowDialog(false);
@@ -59,7 +64,7 @@ export const TableView = ({ data, onDelete, onEdit }: Event) => {
                             }-${event.eventDateSingle.endTime}]`
                         ) : (
                             <span>
-                               
+
                                 {new Date(event.eventDateMultitle.startDate1).toLocaleDateString()} [
                                 {event.eventDateMultitle.startTime1}-{event.eventDateMultitle.endTime1}] <br />
                                 {new Date(event.eventDateMultitle.startDate2).toLocaleDateString()} [
@@ -69,7 +74,10 @@ export const TableView = ({ data, onDelete, onEdit }: Event) => {
                     </TableCell>
                     <TableCell>{event.location}</TableCell>
                     <TableCell>
-                        <Button onClick={() => handleVisibility(event.id)} variant={"outline"}>
+                        <Button onClick={() => {
+                            setShowDialog(true);
+                            setId(event.id);
+                        }} variant={"outline"}>
                             {
                                 event.displayType === "PRIVATE" ? "Make Public" : "Make Private"
                             }
@@ -93,6 +101,7 @@ export const TableView = ({ data, onDelete, onEdit }: Event) => {
                         </div>
                     </TableCell>
                     <EventChangeVisibility
+                        onSubmit={handleVisibility}
                         open={showDialog}
                         setOpen={handleOpen}
                         visibility={event.displayType === "PRIVATE" ? "Private" : "Public"}

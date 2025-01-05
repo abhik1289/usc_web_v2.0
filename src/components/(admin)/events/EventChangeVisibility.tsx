@@ -17,9 +17,10 @@ interface EventChangeVisibilityProps {
   open: boolean;
   setOpen: () => void;
   visibility: "Private" | "Public";
+  onSubmit: () => void;
 }
 
-function EventChangeVisibility({ open, setOpen, visibility }: EventChangeVisibilityProps) {
+function EventChangeVisibility({ open, setOpen, visibility,onSubmit }: EventChangeVisibilityProps) {
   return (
 
     <Dialog open={open} onOpenChange={setOpen}>
@@ -34,9 +35,9 @@ function EventChangeVisibility({ open, setOpen, visibility }: EventChangeVisibil
               : "Your event is currently public. Click save to make it private."}
           </DialogDescription>
         </DialogHeader>
-      
+
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <Button onClick={onSubmit} type="submit">Save changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

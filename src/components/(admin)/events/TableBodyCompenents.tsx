@@ -8,6 +8,7 @@ interface Event {
     data: any
     onDelete: (id: string) => void;
     onEdit: (id: string) => void;
+    onVisibility: (id: string) => void;
 }
 
 export const ErrorHandle: React.FC = () => (
@@ -34,7 +35,7 @@ export const ZeroDataTable: React.FC = () => (
     </TableRow>
 );
 
-export const TableView = ({ data, onDelete, onEdit }: Event) => {
+export const TableView = ({ data, onDelete, onEdit, onVisibility }: Event) => {
     return (
         <>
             {data.map((event: any, i: number) => (
@@ -58,6 +59,14 @@ export const TableView = ({ data, onDelete, onEdit }: Event) => {
                         )}
                     </TableCell>
                     <TableCell>{event.location}</TableCell>
+                    <TableCell>
+                        <Button onClick={() => onVisibility(event.id)} variant={"outline"}>
+                            {
+                                event.displayType === "PRIVATE" ? "Make Public" : "Make Private"
+                            }
+                        </Button>
+                    </TableCell>
+
                     <TableCell>
                         <Image src={event.banner_url} width={100} height={100} alt={event.title} />
                     </TableCell>

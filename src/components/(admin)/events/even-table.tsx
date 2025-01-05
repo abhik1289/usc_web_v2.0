@@ -48,6 +48,8 @@ const EventTable: React.FC = () => {
             <TableHead>Title</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Venue</TableHead>
+            <TableHead>Status</TableHead>
+
             <TableHead>Image</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>

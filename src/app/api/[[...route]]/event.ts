@@ -210,21 +210,8 @@ const event = new Hono()
     try {
       const events = await db.event.findMany({
         include: {
-          eventDateMultitle: {
-            select: {
-              startDate1: true,
-              startDate2: true,
-              endTime1: true,
-              endTime2: true
-            }
-          },
-          eventDateSingle: {
-            select: {
-              endTime: true,
-              startDate: true,
-              startTime: true,
-            }
-          }
+          eventDateMultitle: true,
+          eventDateSingle: true
         }
       })
       return c.json(
@@ -522,7 +509,7 @@ const event = new Hono()
                 userId: id,
               },
             });
-            console.log("==================>EVENT UPDATED SUCCESSFUL")
+          console.log("==================>EVENT UPDATED SUCCESSFUL")
           return c.json({ success: true, message: "Successfuly Updated" }, 200);
         }
         else {

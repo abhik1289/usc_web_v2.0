@@ -59,9 +59,7 @@ export const TableView = ({ data, onDelete, onEdit }: Event) => {
                             }-${event.eventDateSingle.endTime}]`
                         ) : (
                             <span>
-                                {
-                                    console.log(event.eventDateMultitle.startTime1)
-                                }
+                               
                                 {new Date(event.eventDateMultitle.startDate1).toLocaleDateString()} [
                                 {event.eventDateMultitle.startTime1}-{event.eventDateMultitle.endTime1}] <br />
                                 {new Date(event.eventDateMultitle.startDate2).toLocaleDateString()} [

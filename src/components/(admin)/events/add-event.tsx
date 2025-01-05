@@ -55,14 +55,15 @@ export default function EventForm() {
             startTime: event.data && event.data.eventType === "SINGLE" ? event.data.eventDateSingle.startTime : "",
             endTime: event.data && event.data.eventType === "SINGLE" ? event.data.eventDateSingle.endTime : "",
             //THIS IS FOR MULTIPLE DAY EVENT
-            startTime1: event.data && event.data.startTime1,
-            endTime1: event.data && event.data.endTime1,
-            startTime2: event.data && event.data.startTime2,
-            endTime2: event.data && event.data.endTime2,
-            startDate1: event.data && event.data.startDate1,
-            endDate1: event.data && event.data.endDate1,
-            startDate2: event.data && event.data.startDate2,
-            endDate2: event.data && event.data.endDate2,
+            startDate1: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.startDate1 : "",
+            startDate2: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.startDate2 : "",
+            startTime1: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.startTime1 : "",
+            endTime1: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.endTime1 : "",
+            startTime2: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.startTime2 : "",
+            endTime2: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.endTime2 : "",
+            //GARBAGE
+            endDate1: event.data && event.data.eventType === "MULTIPLE" ? event.data.endDate1 : "",
+            endDate2: event.data && "",
           }}
           bannerUrl={event.data && event.data.banner_url}
           disable={event.isLoading}

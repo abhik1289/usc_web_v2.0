@@ -45,7 +45,12 @@ const formSchema = z.object({
     startDate2: z.any().optional().nullable(),
     endDate2: z.any().optional().nullable(),
 })
-function AddEventFrom() {
+
+interface AddEventFromProps {
+    defaultValues: z.infer<typeof formSchema>
+}
+
+function AddEventFrom({ defaultValues }: AddEventFromProps) {
 
 
     //ALL STATES
@@ -58,27 +63,7 @@ function AddEventFrom() {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            title: "",
-            description: "",
-            location: "",
-            linkedinUrl: "",
-            instagramUrl: "",
-            isPublic: false,
-            duration: 'SINGLE',
-            startDate: "",
-            startTime: "",
-            endTime: "",
-            startTime1: "",
-            endTime1: "",
-            startTime2: "",
-            endTime2: "",
-            startDate1: "",
-            endDate1: "",
-            startDate2: "",
-            endDate2: "",
-
-        },
+        defaultValues
     })
 
     const durations = {
@@ -138,8 +123,8 @@ function AddEventFrom() {
             formData.append('endDate2', values.endDate2!);
         }
         formData.append('profilePhoto', file);
-        events.mutate(formData,{
-            onSuccess:()=>{
+        events.mutate(formData, {
+            onSuccess: () => {
                 form.reset();
             }
         });

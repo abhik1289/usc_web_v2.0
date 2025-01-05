@@ -48,7 +48,7 @@ interface AddEventFromProps {
 }
 
 function EditEventFrom({ defaultValues, disable, bannerUrl }: AddEventFromProps) {
-console.log(bannerUrl)
+
 
     //ALL STATES
     const [image, setImage] = useState<string | null>(null);
@@ -84,13 +84,7 @@ console.log(bannerUrl)
     };
     // 2. Define a submit handler.
     function onSubmit(values: z.infer<typeof formSchema>) {
-        if (!file) {
-            toast({
-                description: "Please upload an image",
-                variant: "destructive",
-            })
-            return;
-        }
+        
         if (values.duration === 'MULTIPLE' && !values.endDate1 && !values.startTime2 && !values.endTime2 && !values.startDate1 && !values.endDate2 && !values.startDate2 && !values.endDate2) {
             toast({
                 description: "Please fill all the fields",
@@ -119,7 +113,7 @@ console.log(bannerUrl)
             formData.append('startDate2', values.startDate2!);
             formData.append('endDate2', values.endDate2!);
         }
-        formData.append('profilePhoto', file);
+        formData.append('profilePhoto', file!);
         events.mutate(formData, {
             onSuccess: () => {
                 form.reset();

@@ -67,6 +67,7 @@ export default function EventForm() {
           }}
           bannerUrl={event.data && event.data.banner_url}
           disable={event.isLoading}
+          eId={id}
         /> :
           <AddEventFrom defaultValues={{
             title: "",

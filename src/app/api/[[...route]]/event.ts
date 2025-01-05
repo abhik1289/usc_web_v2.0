@@ -454,8 +454,6 @@ const event = new Hono()
           isPublic,
         } = body;
 
-
-
         let startTime1Str = "", endTime1Str = "", startTime2Str = "", endTime2Str = "", startDate1Str = "", endDate1Str = "", startDate2Str = "", endDate2Str = "", startDateStr = "", startTimeStr = "", endTimeStr = "";
         const titleStr = title as string;
         const descriptionStr = description as string;
@@ -489,17 +487,18 @@ const event = new Hono()
             id: eventId,
           },
         });
+        // console.log(event)
         if (!event) {
           return c.json({ error: "Event not found" }, 401)
         }
 
         if (!files || (Array.isArray(files) && files.length === 0)) {
-
+console.log("----------------->THIS EVENT IS")
           //image is not updated
           await db.event.update(
             {
               where: {
-                id: c.req.param("id"),
+                id: eventId,
               },
               data: {
                 title: titleStr,
@@ -511,6 +510,7 @@ const event = new Hono()
                 userId: id,
               },
             });
+            console.log("==================>EVENT UPDATED SUCCESSFUL")
           return c.json({ success: true, message: "Successfuly Updated" }, 200);
         }
         else {

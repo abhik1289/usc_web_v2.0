@@ -17,6 +17,7 @@ import { Edit2Icon, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from '@/hooks/use-toast';
 import { useAddEvents } from '@/hooks/api/events/useAddEvents';
+import { useUpdateEvent } from '@/hooks/api/events/useUpadteEvents';
 
 const formSchema = z.object({
     title: z.string().min(2, {
@@ -44,10 +45,11 @@ const formSchema = z.object({
 interface AddEventFromProps {
     defaultValues: z.infer<typeof formSchema>,
     disable: boolean,
-    bannerUrl: string
+    bannerUrl: string,
+    eId: string
 }
 
-function EditEventFrom({ defaultValues, disable, bannerUrl }: AddEventFromProps) {
+function EditEventFrom({ defaultValues, disable, bannerUrl, eId }: AddEventFromProps) {
 
 
     //ALL STATES
@@ -56,7 +58,7 @@ function EditEventFrom({ defaultValues, disable, bannerUrl }: AddEventFromProps)
     const uploadImgRef = useRef<HTMLInputElement>(null);
 
 
-    const events = useAddEvents();
+    const events = useUpdateEvent(eId);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -84,7 +86,7 @@ function EditEventFrom({ defaultValues, disable, bannerUrl }: AddEventFromProps)
     };
     // 2. Define a submit handler.
     function onSubmit(values: z.infer<typeof formSchema>) {
-        
+
         if (values.duration === 'MULTIPLE' && !values.endDate1 && !values.startTime2 && !values.endTime2 && !values.startDate1 && !values.endDate2 && !values.startDate2 && !values.endDate2) {
             toast({
                 description: "Please fill all the fields",
@@ -116,11 +118,11 @@ function EditEventFrom({ defaultValues, disable, bannerUrl }: AddEventFromProps)
         formData.append('profilePhoto', file!);
         events.mutate(formData, {
             onSuccess: () => {
-                form.reset();
+                // form.reset();
             }
         });
     }
-
+    console.log(form.formState.errors)
 
     return (
         <CardContent>
@@ -353,7 +355,7 @@ function EditEventFrom({ defaultValues, disable, bannerUrl }: AddEventFromProps)
 
                         type="submit" className="w-full">
 
-                        {events.isLoading ? "Adding..." : "Add"}
+                        {events.isLoading ? "Updating..." : "Update"}
                     </Button>
                 </form>
             </Form>

@@ -13,16 +13,18 @@ export default function EventForm() {
 
   const event = useGetEventById(id);
 
-  //
+  //Dynamic event title and description
+  const title = id ? `Edit Event: ${event.data.event.title}` : 'Add New Event';
+  const description = id ? `Edit the details for event "${event.data.event.title}"` : 'Create a new event';
 
 
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Add Event</CardTitle>
+        <CardTitle>{title}</CardTitle>
         <CardDescription>
-          Fill out the form below to create a new event. Provide details like title, date, venue, and description to ensure all participants have the necessary information.
+          {description}
         </CardDescription>
       </CardHeader>
       <AddEventFrom defaultValues={{

@@ -7,6 +7,7 @@ import Image from "next/image";
 interface Event {
     data: any
     onDelete: (id: string) => void;
+    onEdit: (id: string) => void;
 }
 
 export const ErrorHandle: React.FC = () => (
@@ -33,7 +34,7 @@ export const ZeroDataTable: React.FC = () => (
     </TableRow>
 );
 
-export const TableView = ({ data, onDelete }: Event) => {
+export const TableView = ({ data, onDelete, onEdit }: Event) => {
     return (
         <>
             {data.map((event: any, i: number) => (
@@ -64,7 +65,7 @@ export const TableView = ({ data, onDelete }: Event) => {
                         <div className="flex space-x-2">
                             <Button
                                 variant="link"
-                                onClick={() => console.log(`Edit event with ID: ${event.id}`)}
+                                onClick={() => onEdit(event.id)}
                             >
                                 Edit
                             </Button>

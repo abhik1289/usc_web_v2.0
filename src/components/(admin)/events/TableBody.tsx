@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useRouter } from 'next/navigation';
 import { TableBody } from '@/components/ui/table';
 import useGetEvents from '@/hooks/api/events/useGetEvents';
 import { ErrorHandle, HandleLoading, TableView, ZeroDataTable } from './TableBodyCompenents';
@@ -8,8 +8,18 @@ interface TableBodyBoxProps {
     handleDeleteEvent: (id: string) => void;
 }
 
+
+
+
 const TableBodyBox: React.FC<TableBodyBoxProps> = ({ handleDeleteEvent }: TableBodyBoxProps) => {
     const events = useGetEvents();
+    const router = useRouter();
+
+    const handleEdit = (id: string) => {
+        router.push(`/events/add?id=${id}`)
+    }
+
+
     return <TableBody>
         {events.isError ? (
             <ErrorHandle />
@@ -19,6 +29,7 @@ const TableBodyBox: React.FC<TableBodyBoxProps> = ({ handleDeleteEvent }: TableB
             <ZeroDataTable />
         ) : (
             events.data && <TableView
+                onEdit={handleEdit}
                 data={events.data}
                 onDelete={handleDeleteEvent}
             />)

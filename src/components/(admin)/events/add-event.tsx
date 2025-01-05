@@ -64,7 +64,7 @@ export default function EventForm() {
             //GARBAGE
             endDate1: event.data && event.data.eventType === "MULTIPLE" ? event.data.endDate1 : "",
             endDate2: event.data && "",
-            index: event.data && event.data.index || 0
+            index: event.data && event.data.index?.toString() || '0'
           }}
           bannerUrl={event.data && event.data.banner_url}
           disable={event.isLoading}

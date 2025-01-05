@@ -401,6 +401,10 @@ const event = new Hono()
         const event = await db.event.findFirst({
           where: {
             id: Eid,
+          },
+          include: {
+            eventDateMultitle: true,
+            eventDateSingle: true
           }
         });
         return c.json({

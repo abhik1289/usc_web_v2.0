@@ -26,8 +26,9 @@ export default function EventForm() {
       </p>
     </div>
   }
-
-
+  console.log(event.data?.eventDateSingle)
+  const { endTime, startDate, startTime } = event.data && event.data?.eventDateSingle;
+  // const { startDate1, startDate2, endTime1, endTime2 } = event.data && event.data.eventDateMultitle;
 
   return (
     <Card>
@@ -45,13 +46,13 @@ export default function EventForm() {
             title: event.data && event.data.title,
             description: event.data && event.data.description,
             location: event.data && event.data.location,
-            linkedinUrl: event.data && event.data.linkedinUrl,
-            instagramUrl: event.data && event.data.instagramUrl,
+            linkedinUrl: event.data && event.data.socialMedia[0],
+            instagramUrl: event.data && event.data.socialMedia[1],
             isPublic: event.data && event.data.displayType,
             duration: event.data && event.data.eventType,
-            startDate: event.data && event.data.startDate,
-            startTime: event.data && event.data.startTime,
-            endTime: event.data && event.data.endTime,
+            startDate: event.data && "",
+            startTime: event.data && "",
+            endTime: event.data && endTime,
             startTime1: event.data && event.data.startTime1,
             endTime1: event.data && event.data.endTime1,
             startTime2: event.data && event.data.startTime2,

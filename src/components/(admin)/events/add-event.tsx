@@ -62,6 +62,7 @@ export default function EventForm() {
             startDate2: event.data && event.data.startDate2,
             endDate2: event.data && event.data.endDate2,
           }}
+          bannerUrl={event.data && event.data.banner_url}
           disable={event.isLoading}
         /> :
           <AddEventFrom defaultValues={{

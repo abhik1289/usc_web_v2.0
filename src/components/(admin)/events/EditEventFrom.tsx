@@ -18,7 +18,7 @@ import CalenderInput from './Inputs/CalenderInput';
 
 import SwitchFiled from '../InputFields/SwitchFiled';
 import SelectionFiled from '../InputFields/SelectionFiled';
-import { Image as ImageIcon } from 'lucide-react';
+import { Edit2Icon, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from '@/hooks/use-toast';
 import { useAddEvents } from '@/hooks/api/events/useAddEvents';
@@ -48,11 +48,12 @@ const formSchema = z.object({
 
 interface AddEventFromProps {
     defaultValues: z.infer<typeof formSchema>,
-    disable: boolean
+    disable: boolean,
+    bannerUrl: string
 }
 
-function EditEventFrom({ defaultValues, disable }: AddEventFromProps) {
-
+function EditEventFrom({ defaultValues, disable, bannerUrl }: AddEventFromProps) {
+console.log(bannerUrl)
 
     //ALL STATES
     const [image, setImage] = useState<string | null>(null);
@@ -137,23 +138,44 @@ function EditEventFrom({ defaultValues, disable }: AddEventFromProps) {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="flex flex-wrap gap-4 w-full">
-                        {image ? <div className="img_preview_container">
-                            <div className="img_preview  w-[100px] h-[100px]  overflow-hidden">
-                                <Image
-                                    alt=""
-                                    width={100}
-                                    height={100}
-                                    src={image}
-                                />
+                        {bannerUrl && (
+                            <div className="flex flex-col">
+                                <div className="image w-[100px] h-[100px] relative">
+                                    <Image
+                                        width={100}
+                                        height={100}
+                                        // className="rounded-full"
+                                        alt={defaultValues.title}
+                                        src={image ? image : bannerUrl}
+                                    />
+                                </div>
+                                <div className="edit_btn mt-2">
+                                    <Button
+                                        onClick={handleButtonClick}
+                                        type="button"
+                                        className="w-[70px]"
+                                    >
+                                        <Edit2Icon size={20} />
+                                        Edit
+                                    </Button>
+                                    <div className="img_upload_ip">
+
+
+                                        <input
+                                            accept="image/*"
+                                            name={'photoUrl'}
+                                            onChange={handleFileChange}
+                                            ref={uploadImgRef}
+                                            hidden
+                                            type="file"
+                                        />
+
+
+
+                                    </div>
+                                </div>
                             </div>
-                            <Button type="button" className="mt-2" onClick={handleButtonClick}>
-                                <ImageIcon /> Change Image
-                            </Button>
-
-                        </div> : <Button type="button" onClick={handleButtonClick}>
-                            <ImageIcon /> Upload Image
-
-                        </Button>}
+                        )}
                         <div className="img_upload_ip">
 
 

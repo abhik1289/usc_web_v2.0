@@ -27,7 +27,7 @@ export default function EventForm() {
     </div>
   }
   console.log(event.data?.eventDateSingle)
-  const { endTime, startDate, startTime } = event.data && event.data?.eventDateSingle;
+  // const { endTime, startDate, startTime } = event.data && event.data?.eventDateSingle;
   // const { startDate1, startDate2, endTime1, endTime2 } = event.data && event.data.eventDateMultitle;
 
   return (
@@ -52,7 +52,7 @@ export default function EventForm() {
             duration: event.data && event.data.eventType,
             startDate: event.data && "",
             startTime: event.data && "",
-            endTime: event.data && endTime,
+            endTime: event.data && "",
             startTime1: event.data && event.data.startTime1,
             endTime1: event.data && event.data.endTime1,
             startTime2: event.data && event.data.startTime2,

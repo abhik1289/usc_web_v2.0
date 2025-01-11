@@ -18,7 +18,7 @@ import Image from 'next/image';
 import { toast } from '@/hooks/use-toast';
 import { useAddEvents } from '@/hooks/api/events/useAddEvents';
 
-const formSchema = z.object({
+export const EvenFormSchema = z.object({
     title: z.string().min(2, {
         message: "Username must be at least 2 characters.",
     }),
@@ -42,10 +42,17 @@ const formSchema = z.object({
     //FOR ONLINE
     startDateO: z.any().optional().nullable(),
     endDateO: z.any().optional().nullable(),
-})
+});
+export const durations = {
+    data: [
+        { id: 'SINGLE', title: 'Single Day' },
+        { id: 'MULTIPLE', title: 'Multiple Days' },
+        { id: 'ONLINE', title: 'Virtual' },
+    ]
+};
 
 interface AddEventFromProps {
-    defaultValues: z.infer<typeof formSchema>,
+    defaultValues: z.infer<typeof EvenFormSchema>,
 }
 
 function AddEventFrom({ defaultValues }: AddEventFromProps) {
@@ -59,18 +66,12 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
 
     const events = useAddEvents();
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof EvenFormSchema>>({
+        resolver: zodResolver(EvenFormSchema),
         defaultValues
     })
 
-    const durations = {
-        data: [
-            { id: 'SINGLE', title: 'Single Day' },
-            { id: 'MULTIPLE', title: 'Multiple Days' },
-            { id: 'ONLINE', title: 'Virtual' },
-        ]
-    };
+
     //ALL FUNCTIONS
     const handleButtonClick = () => {
         uploadImgRef.current?.click();
@@ -85,7 +86,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
         }
     };
     // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof EvenFormSchema>) {
         if (!file) {
             toast({
                 description: "Please upload an image",

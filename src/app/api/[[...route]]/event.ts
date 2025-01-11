@@ -434,214 +434,103 @@ const event = new Hono()
           startTime2,
           endTime2,
           startDate1,
-          endDate1,
           startDate2,
-          endDate2,
           instagramUrl,
           linkedinUrl,
           isPublic,
+          startDateO,
+          endDateO,
+          index
         } = body;
-
-        let startTime1Str = "", endTime1Str = "", startTime2Str = "", endTime2Str = "", startDate1Str = "", endDate1Str = "", startDate2Str = "", endDate2Str = "", startDateStr = "", startTimeStr = "", endTimeStr = "";
+        let startTime1Str = "", endTime1Str = "", startTime2Str = "", endTime2Str = "", startDate1Str = "", endDate1Str = "", startDate2Str = "", endDate2Str = "", startDateStr = "", startTimeStr = "", endTimeStr = "", startDateOStr = "", endDateOStr = "";
+        const titleStr = title as string;
+        const descriptionStr = description as string;
+        const locationStr = location as string;
+        const linkedinUrlStr = linkedinUrl as string;
+        const instagramUrlStr = instagramUrl as string;
+        const socialMediaStr = [linkedinUrlStr, instagramUrlStr];
+        const indexStr = parseInt(index as string);
+        const eventTypeStr = duration as E_Type;
+        if (eventTypeStr === "MULTIPLE") {
+          startDate1Str = startDate1 as string
+          startDate2Str = startDate2 as string;
+          startTime1Str = startTime1 as string;
+          endTime1Str = endTime1 as string;
+          startTime2Str = startTime2 as string;
+          endTime2Str = endTime2 as string;
+        } else if (eventTypeStr === "SINGLE") {
+          startDateStr = startDate as string;
+          startTimeStr = startTime as string;
+          endTimeStr = endTime as string;
+        } else {
+          //THIS IS FOR ONLINE
+          startDateOStr = startDateO as string;
+          endDateOStr = endDateO as string;
+        }
 
         const files = body.profilePhoto;
 
         const eventId = c.req.param("id");
-        // console.log("--------------------->", titleStr, descriptionStr, locationStr, eventTypeStr, displayTypeStr, socialMediaStr, startDate1Str, startTimeStr, endTimeStr);
-
-        const event = await db.event.findFirst({
+        const previousData = await db.event.findUnique({ where: { id: eventId } });
+        const event = await db.event.update({
           where: {
             id: eventId,
-          },
-        });
-        // // console.log(event)
-        // if (!event) {
-        //   return c.json({ error: "Event not found" }, 401)
-        // }
 
-
-
-        // console.log("THIS IS TIGGERED AND")
-        if (!files || (Array.isArray(files) && files.length === 0)) {
-          console.log("THSIS IS CALL---------------------------------------<")
-          const titleStr = title as string;
-          const descriptionStr = description as string;
-          const locationStr = location as string;
-          const eventTypeStr = duration as E_Type;
-          if (eventTypeStr === "MULTIPLE") {
-            startDate1Str = startDate1 as string
-            endDate1Str = endDate1 as string
-            startDate2Str = startDate2 as string;
-            endDate2Str = endDate2 as string;
-            startTime1Str = startTime1 as string;
-            endTime1Str = endTime1 as string;
-            startTime2Str = startTime2 as string;
-            endTime2Str = endTime2 as string;
-          } else {
-            startDateStr = startDate as string;
-            startTimeStr = startTime as string;
-            endTimeStr = endTime as string;
+          }, data: {
+            title: titleStr,
+            description: descriptionStr,
+            location: locationStr,
+            eventType: eventTypeStr,
+            displayType: isPublic === 'true' ? "PUBLIC" : "PRIVATE",
+            socialMedia: socialMediaStr,
+            userId: id,
+            index: indexStr
           }
-
-          const displayTypeStr = isPublic as string;
-          const linkedinUrlStr = linkedinUrl as string;
-          const instagramUrlStr = instagramUrl as string;
-          const socialMediaStr = [linkedinUrlStr, instagramUrlStr];
-          console.log("--------------------->", titleStr, descriptionStr, locationStr, eventTypeStr, displayTypeStr, socialMediaStr, startDate1Str, startTimeStr, endTimeStr);
-
-
-          //image is not updated
-          await db.event.update(
-            {
-              where: {
-                id: eventId,
-              },
-              data: {
-                title: titleStr,
-                description: descriptionStr,
-                location: locationStr,
-                eventType: eventTypeStr,
-                displayType: displayTypeStr === 'true' ? "PUBLIC" : "PRIVATE",
-                socialMedia: socialMediaStr,
-                userId: id,
-              },
-            });
+        });
+        //if event is single, now update into Multiple
+        // delete previous date single obje
+        // create new date multiple object
+        // update it if (define single is null and multiple is not null)
+        if (previousData?.eventType === event.eventType) {
           if (eventTypeStr === "SINGLE") {
             await db.eventDateSingle.update({
-              where: { id: eventId }, data: {
-                startDate: startDateStr,
+              where: {
+                eventId: event.id
+              }, data: {
+                startDate: new Date(startDateStr),
                 startTime: startTimeStr,
-                endTime: endTimeStr,
+                endTime: endTimeStr
               }
             })
-          } else {
+          } else if (eventTypeStr === "MULTIPLE") {
             await db.eventDateMultitle.update({
-              where: { id: eventId }, data: {
+              where: {
+                eventId: event.id
+              }, data: {
                 startDate1: new Date(startDate1Str), // Example start date 1
                 startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
                 startTime1: startTime1Str,                       // Example start time 1
                 endTime1: endTime1Str,                         // Example end time 1
                 startTime2: startTime2Str,                       // Example start time 2
                 endTime2: endTime2Str,
-                eventId: event?.id,
               }
             })
           }
-          console.log("==================>EVENT UPDATED SUCCESSFUL")
-          return c.json({ success: true, message: "Successfuly Updated" }, 200);
-        }
-        else {
-          // if files is not an array, convert it to an array
-          const fileArray = Array.isArray(files) ? files : [files];
-          const titleStr = title as string;
-          const descriptionStr = description as string;
-          const locationStr = location as string;
-          const eventTypeStr = duration as E_Type;
-          if (eventTypeStr === "MULTIPLE") {
-            startDate1Str = startDate1 as string
-            endDate1Str = endDate1 as string
-            startDate2Str = startDate2 as string;
-            endDate2Str = endDate2 as string;
-            startTime1Str = startTime1 as string;
-            endTime1Str = endTime1 as string;
-            startTime2Str = startTime2 as string;
-            endTime2Str = endTime2 as string;
-          } else {
-            startDateStr = startDate as string;
-            startTimeStr = startTime as string;
-            endTimeStr = endTime as string;
-          }
-
-          const displayTypeStr = isPublic as string;
-          const linkedinUrlStr = linkedinUrl as string;
-          const instagramUrlStr = instagramUrl as string;
-          const socialMediaStr = [linkedinUrlStr, instagramUrlStr];
-          await Promise.all(
-            fileArray.map(async (file) => {
-              if (!(file instanceof File)) {
-                return c.json(
-                  {
-                    message: "Invalid file type",
-                    error: "Expected a file upload but received something else",
-                    received: typeof file,
-                  },
-                  400
-                );
-              }
-              //for file upload
-              const buffer = await file.arrayBuffer();
-              const mimeType = file.type;
-              const encoding = "base64";
-              const base64Data = Buffer.from(buffer).toString("base64");
-              const randomId = uuidv4();
-              const fileUri = "data:" + randomId + mimeType + ";" + encoding + "," + base64Data;
-              // load into a buffer for later use
-              const res = await uploadToCloudinary(fileUri, file.name, "testimonial");
-              if (res.success && res.result) {
-                //upload new image urls
-                const { secure_url, public_id } = res.result;
-                const event = await db.event.create({
-                  data: {
-                    title: titleStr,
-                    description: descriptionStr,
-                    location: locationStr,
-                    banner_url: secure_url,
-                    publicId: public_id,
-                    eventType: eventTypeStr,
-                    displayType: displayTypeStr === 'true' ? "PUBLIC" : "PRIVATE",
-                    socialMedia: socialMediaStr,
-                    userId: id,
-                  },
-                });
-
-                if (eventTypeStr === "SINGLE") {
-                  await db.eventDateSingle.create({
-                    data: {
-                      startDate: new Date(startDateStr),
-                      startTime: startTimeStr,
-                      endTime: endTimeStr,
-                      eventId: event.id,
-                    }
-                  })
-                } else {
-                  console.log("----------------->", endDate1, endDate2, event.id)
-                  await db.eventDateMultitle.create({
-                    data: {
-                      startDate1: new Date(startDate1Str), // Example start date 1
-                      startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
-                      startTime1: startTime1Str,                       // Example start time 1
-                      endTime1: endTime1Str,                         // Example end time 1
-                      startTime2: startTime2Str,                       // Example start time 2
-                      endTime2: endTime2Str,
-                      eventId: event.id,
-                    }
-                  })
-                }
-
-                return c.json(
-                  {
-                    success: true,
-                    message: "Leads added ",
-                  },
-                  201
-                );
-              } else {
-                console.log("This is error called");
-
-                return c.json({ message: "File Upload Failed" }, 401);
+          else {
+            await db.eventVirtual.update({
+              where: {
+                eventId: event.id
+              }, data: {
+                startDate: new Date(startDateOStr),
+                endDate: new Date(endDateOStr),
               }
             })
-          );
+          }
+        } else {
 
         }
+
       }
-      return c.json(
-        {
-          success: true,
-          message: "Event successfully added",
-        },
-        201
-      );
     } catch (error) {
       console.error("Sign-in error:", error);
       return c.json(

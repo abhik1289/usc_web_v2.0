@@ -92,19 +92,23 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                 variant: "destructive",
             })
             return;
-        }
-        if (values.duration === 'MULTIPLE' && !values.startTime2 && !values.endTime2 && !values.startDate1 && !values.startDate2) {
+        } else if (values.duration === 'MULTIPLE' && (!values.startTime2 || !values.endTime2 || !values.startDate1 || !values.startDate2 || !values.startTime1 || !values.startTime2)) {
             toast({
                 description: "Please fill all the fields",
                 variant: "destructive",
             })
             return;
-        }
-        if (values.duration === "ONLINE" && !values.startDateO && !values.endDateO) {
+        } else if (values.duration === "ONLINE" && (!values.startDateO || !values.endDateO)) {
             toast({
                 description: "Please fill start and end Date",
                 variant: "destructive",
             });
+            return;
+        } else if (values.duration === "SINGLE" && (!values.startDate || !values.startTime || !values.endTime)) {
+            toast({
+                description: "Please fill all the fields",
+                variant: "destructive",
+            })
             return;
         }
         const formData = new FormData();
@@ -163,7 +167,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                             <ImageIcon /> Upload Image
 
                         </Button>}
-                        
+
                         <div className="img_upload_ip">
 
 

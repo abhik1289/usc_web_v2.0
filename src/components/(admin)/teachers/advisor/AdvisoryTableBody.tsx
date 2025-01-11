@@ -46,7 +46,8 @@ function AdvisoryTableBody() {
     }
     if (advisors.isLoading) {
         return <TableRow>
-            <TableCell className='text-center' colSpan={5}>Loading...</TableCell> </TableRow>
+            <TableCell className='text-center' colSpan={5}>Loading...</TableCell>
+        </TableRow>
     }
     if (advisors.data?.length === 0) {
         return <TableRow>

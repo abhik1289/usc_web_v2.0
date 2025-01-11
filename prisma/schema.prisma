@@ -62,7 +62,8 @@ model Event {
   updatedAt         DateTime           @updatedAt
   eventDateSingle   eventDateSingle?
   eventDateMultitle eventDateMultitle?
-  index             Int?                @default(0)
+  index             Int?               @default(0)
+  eventVirtual      eventVirtual?
 }
 
 enum D_TYPE {
@@ -71,8 +72,17 @@ enum D_TYPE {
 }
 
 enum E_Type {
+  ONLINE
   SINGLE
   MULTIPLE
+}
+
+model eventVirtual {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  startDate DateTime
+  endDate   DateTime
+  event     Event?   @relation(fields: [eventId], references: [id])
+  eventId   String?  @unique @db.ObjectId
 }
 
 model eventDateSingle {

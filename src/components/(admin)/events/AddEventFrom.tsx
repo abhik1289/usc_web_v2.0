@@ -32,18 +32,21 @@ const formSchema = z.object({
     linkedinUrl: z.string().url(),
     instagramUrl: z.string().url(),
     isPublic: z.boolean(),
-    duration: z.enum(['SINGLE', 'MULTIPLE']),
+    duration: z.enum(['SINGLE', 'MULTIPLE', 'ONLINE']),
+    //FOR SINGLE DAY
     startDate: z.any(),
     startTime: z.any(),
     endTime: z.any(),
-    startTime1: z.string(),
-    endTime1: z.string().optional().nullable(),
-    startTime2: z.string().optional().nullable(),
-    endTime2: z.string().optional().nullable(),
-    startDate1: z.any().optional().nullable(),
-    endDate1: z.any().optional().nullable(),
-    startDate2: z.any().optional().nullable(),
-    endDate2: z.any().optional().nullable(),
+    //FOR MULTIPLE DAY
+    startTime1: z.string(), //
+    endTime1: z.string().optional().nullable(),//
+    startTime2: z.string().optional().nullable(),//
+    endTime2: z.string().optional().nullable(),//
+    startDate1: z.any().optional().nullable(), //
+    startDate2: z.any().optional().nullable(),//
+    //FOR ONLINE
+    startDateO: z.any().optional().nullable(),
+    endDateO: z.any().optional().nullable(),
 })
 
 interface AddEventFromProps {
@@ -70,6 +73,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
         data: [
             { id: 'SINGLE', title: 'Single Day' },
             { id: 'MULTIPLE', title: 'Multiple Days' },
+            { id: 'ONLINE', title: 'Virtual' },
         ]
     };
     //ALL FUNCTIONS
@@ -94,11 +98,18 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
             })
             return;
         }
-        if (values.duration === 'MULTIPLE' && !values.endDate1 && !values.startTime2 && !values.endTime2 && !values.startDate1 && !values.endDate2 && !values.startDate2 && !values.endDate2) {
+        if (values.duration === 'MULTIPLE' && !values.startTime2 && !values.endTime2 && !values.startDate1 && !values.startDate2) {
             toast({
                 description: "Please fill all the fields",
                 variant: "destructive",
             })
+            return;
+        }
+        if (values.duration === "ONLINE" && !values.startDateO && !values.endDateO) {
+            toast({
+                description: "Please fill start and end Date",
+                variant: "destructive",
+            });
             return;
         }
         const formData = new FormData();
@@ -109,18 +120,21 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
         formData.append('instagramUrl', values.instagramUrl);
         formData.append('isPublic', values.isPublic.toString());
         formData.append('duration', values.duration);
-        formData.append('startDate', values.startDate);
-        formData.append('startTime', values.startTime);
-        formData.append('endTime', values.endTime);
-        formData.append('startTime1', values.startTime1);
-        if (values.duration === 'MULTIPLE') {
+        if (values.duration === "SINGLE") {
+            formData.append('startDate', values.startDate);
+            formData.append('startTime', values.startTime);
+            formData.append('endTime', values.endTime);
+        } else if (values.duration === 'MULTIPLE') {
+            formData.append('startTime1', values.startTime1);
             formData.append('endTime1', values.endTime1!);
             formData.append('startTime2', values.startTime2!);
             formData.append('endTime2', values.endTime2!);
             formData.append('startDate1', values.startDate1!);
-            formData.append('endDate1', values.endDate1!);
             formData.append('startDate2', values.startDate2!);
-            formData.append('endDate2', values.endDate2!);
+        } else {
+            //THIS IS FOR VIRTUAL EVENT
+            formData.append('startDateO', values.startDateO);
+            formData.append('startTimeO', values.endDateO);
         }
         formData.append('profilePhoto', file);
         events.mutate(formData, {
@@ -136,6 +150,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="flex flex-wrap gap-4 w-full">
+                        {/* image upload filed */}
                         {image ? <div className="img_preview_container">
                             <div className="img_preview  w-[100px] h-[100px]  overflow-hidden">
                                 <Image
@@ -153,6 +168,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                             <ImageIcon /> Upload Image
 
                         </Button>}
+                        //image upload i/p
                         <div className="img_upload_ip">
 
 
@@ -229,7 +245,6 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                 <InputFiled
                                     type='time'
                                     disabled={events.isLoading}
-
                                     control={form.control}
                                     name='startTime'
                                     placeholder=''
@@ -238,13 +253,12 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                 <InputFiled
                                     type='time'
                                     disabled={events.isLoading}
-
                                     control={form.control}
                                     name='endTime'
                                     placeholder=''
                                     label='End Time'
                                 />
-                            </div> : <>
+                            </div> : form.watch('duration') === 'MULTIPLE' ? <>
                                 <div className="flex w-full gap-4 items-center">
                                     <CalenderInput
                                         disabled={events.isLoading}
@@ -277,7 +291,6 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                         name='startDate2'
                                         label='End Date'
                                         disabled={events.isLoading}
-
                                         control={form.control}
                                     />
                                     <InputFiled
@@ -299,6 +312,19 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                         label='End Time'
                                     />
                                 </div>
+                            </> : <>
+                                <CalenderInput
+                                    name='startDate'
+                                    label='End Date'
+                                    disabled={events.isLoading}
+                                    control={form.control}
+                                />
+                                <CalenderInput
+                                    name='endDate'
+                                    label='End Date'
+                                    disabled={events.isLoading}
+                                    control={form.control}
+                                />
                             </>}
 
 

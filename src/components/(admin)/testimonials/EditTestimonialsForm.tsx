@@ -31,7 +31,8 @@ import useEditTestimonial from "@/hooks/api/testimonials/useEditTestimonials";
 import { useRef, useState } from 'react';
 import { Edit2Icon } from "lucide-react";
 import Image from "next/image";
-import { Role } from "@prisma/client";
+import { useRouter } from "next/navigation";
+// import { Role } from "@prisma/client";
 interface AddTestimonialsFormInterface {
   defaultValues: {
     fullName: string;
@@ -52,13 +53,14 @@ export const EditTestimonialsForm = ({
   editId,
 }: AddTestimonialsFormInterface) => {
 
+  //STATES
   const [image, setImage] = useState<string | null>(null);
   const [file, setFile] = useState<string | null>(null);
-
+  //REFS
   const uploadImgRef = useRef<HTMLInputElement>(null);
-
+  //HOOKS
   const roles = useGetRoles();
-
+  const router = useRouter();
   // Form setup using react-hook-form and Zod for validation
   const form = useForm<z.infer<typeof testimonialSchema>>({
     resolver: zodResolver(testimonialSchema),
@@ -69,10 +71,6 @@ export const EditTestimonialsForm = ({
 
 
   // Handle form submission
-
-
-
-
   const handleButtonClick = () => {
     uploadImgRef.current?.click();
   }
@@ -99,8 +97,12 @@ export const EditTestimonialsForm = ({
     formData.append('photoUrl', values.photoUrl);
 
 
-    editTestimonialMutation.mutate(formData);
-  
+    editTestimonialMutation.mutate(formData), {
+      onSuccess: () => {
+        router.back();
+      }
+    };
+
   };
   return (
     <Form {...form}>

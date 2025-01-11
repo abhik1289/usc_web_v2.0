@@ -92,6 +92,9 @@ export const AddTestimonialsForm = ({
       InsertTestimonial.mutate(formData, {
         onSuccess: () => {
           form.reset();
+          // rset image and file
+          setImage("");
+          setFile("");
         }
       });
     }

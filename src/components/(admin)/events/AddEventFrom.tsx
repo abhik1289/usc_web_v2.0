@@ -139,6 +139,8 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
         events.mutate(formData, {
             onSuccess: () => {
                 form.reset();
+                setImage("");
+                setFile("");
             }
         });
     }

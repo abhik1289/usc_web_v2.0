@@ -1,9 +1,13 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 export default function useEditTestimonial(id: string) {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const insertMutation = useMutation({
     mutationFn: async (data: any) => {
       const formData = data;
@@ -13,18 +17,14 @@ export default function useEditTestimonial(id: string) {
         method: 'POST',
         body: formData
       })
-
-      
-      console.log("------------------>",res);
-      // console.log(res.data);
-
       return res;
     },
     onSuccess: () => {
       toast({
-        description: "Testimonial added successfully!",
+        description: "Testimonial updated successfully!",
       });
       queryClient.invalidateQueries(["testimonials"]);
+      router.push("/testimonials");
     },
     onError: (error: any) => {
       console.log(error);

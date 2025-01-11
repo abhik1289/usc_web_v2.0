@@ -100,7 +100,8 @@ export const EditTestimonialsForm = ({
 
     editTestimonialMutation.mutate(formData), {
       onSuccess: () => {
-        router.back();
+        console.log("THIS IS TIGGERING")
+        router.push("/testimonials");
       }
     };
 
@@ -116,6 +117,7 @@ export const EditTestimonialsForm = ({
           onClick={handleButtonClick}
           uploadImgRef={uploadImgRef}
           form={form.control}
+          disabled={isLoading || editTestimonialMutation.isLoading}
         />
         {/* Full Name Field */}
         <FormField

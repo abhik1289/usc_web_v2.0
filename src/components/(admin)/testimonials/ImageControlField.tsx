@@ -3,20 +3,21 @@ import Image from 'next/image';
 import { Edit2Icon } from 'lucide-react';
 import { FormField } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-function ImageControlField({ imageUrl, imageAlt, onClick, uploadImgRef, form, onChange, image }: {
+function ImageControlField({ imageUrl, imageAlt, onClick, uploadImgRef, form, onChange, image, disabled }: {
     imageUrl: string,
     imageAlt: string,
     onClick: () => void,
     uploadImgRef: React.RefObject<HTMLInputElement | null>,
     form: any,
     onChange: (event: any) => void,
-    image: string | null
+    image: string | null,
+    disabled: boolean
 }) {
     return (
         <div>
             {imageUrl && (
                 <div className="flex flex-col">
-                    <div className="image w-[70px] h-[70px] rounded-full relative">
+                    <div className="image w-[70px] h-[70px] overflow-hidden rounded-full relative">
                         <Image
                             width={100}
                             height={100}
@@ -27,6 +28,7 @@ function ImageControlField({ imageUrl, imageAlt, onClick, uploadImgRef, form, on
                     </div>
                     <div className="edit_btn mt-2">
                         <Button
+                            disabled={disabled}
                             onClick={onClick}
                             type="button"
                             className="w-[70px]"

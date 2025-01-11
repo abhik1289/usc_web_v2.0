@@ -32,6 +32,7 @@ import { useRef, useState } from 'react';
 import { Edit2Icon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import ImageControlField from "./ImageControlField";
 // import { Role } from "@prisma/client";
 interface AddTestimonialsFormInterface {
   defaultValues: {
@@ -107,50 +108,15 @@ export const EditTestimonialsForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-
-        {defaultValues.photoUrl && (
-          <div className="flex flex-col">
-            <div className="image w-[70px] h-[70px] rounded-full relative">
-              <Image
-                width={100}
-                height={100}
-                className="rounded-full"
-                alt={defaultValues.fullName}
-                src={image ? image : defaultValues.photoUrl}
-              />
-            </div>
-            <div className="edit_btn mt-2">
-              <Button
-                onClick={handleButtonClick}
-                type="button"
-                className="w-[70px]"
-              >
-                <Edit2Icon size={20} />
-                Edit
-              </Button>
-              <div className="img_upload_ip">
-                <FormField
-
-                  control={form.control}
-                  name="photoUrl"
-                  render={({ field }) => (
-
-                    <input
-                      accept="image/*"
-                      name={'photoUrl'}
-                      onChange={handleFileChange}
-                      ref={uploadImgRef}
-                      hidden
-                      type="file"
-                    />
-
-                  )}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
+        <ImageControlField
+          onChange={handleFileChange}
+          image={image}
+          imageUrl={defaultValues.photoUrl}
+          imageAlt={defaultValues.fullName}
+          onClick={handleButtonClick}
+          uploadImgRef={uploadImgRef}
+          form={form.control}
+        />
         {/* Full Name Field */}
         <FormField
           control={form.control}

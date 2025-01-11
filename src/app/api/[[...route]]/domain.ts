@@ -164,6 +164,7 @@ const domain = new Hono()
         );
       }
     } catch (error) {
+      // if(a===b)
       console.error("Sign-in error:", error);
       return c.json(
         {

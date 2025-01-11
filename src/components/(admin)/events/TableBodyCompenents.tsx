@@ -60,15 +60,17 @@ export const TableView = ({ data, onDelete, onEdit }: Event) => {
                     <TableCell>{event.title}</TableCell>
                     <TableCell>
                         {event.eventType === "SINGLE" ? (
-                            `${new Date(event.eventDateSingle.startDate).toLocaleDateString()} [${event.eventDateSingle.startTime
-                            }-${event.eventDateSingle.endTime}]`
+                            `${new Date(event?.eventDateSingle?.startDate).toLocaleDateString()} [${event.eventDateSingle.startTime
+                            }-${event?.eventDateSingle?.endTime}]`
+                        ) : event.eventType === "ONLINE" ? (
+                            `${new Date(event?.eventVirtual?.startDate).toLocaleDateString()}-${new Date(event?.eventVirtual?.endDate).toLocaleDateString()} `
                         ) : (
                             <span>
 
-                                {new Date(event.eventDateMultitle.startDate1).toLocaleDateString()} [
-                                {event.eventDateMultitle.startTime1}-{event.eventDateMultitle.endTime1}] <br />
-                                {new Date(event.eventDateMultitle.startDate2).toLocaleDateString()} [
-                                {event.eventDateMultitle.startTime2}-{event.eventDateMultitle.endTime2}]
+                                {new Date(event?.eventDateMultitle?.startDate1).toLocaleDateString()} [
+                                {event?.eventDateMultitle?.startTime1}-{event?.eventDateMultitle?.endTime1}] <br />
+                                {new Date(event?.eventDateMultitle?.startDate2).toLocaleDateString()} [
+                                {event?.eventDateMultitle?.startTime2}-{event?.eventDateMultitle?.endTime2}]
                             </span>
                         )}
                     </TableCell>

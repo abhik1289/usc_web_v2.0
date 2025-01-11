@@ -35,9 +35,7 @@ const event = new Hono()
           startTime2,
           endTime2,
           startDate1,
-          endDate1,
           startDate2,
-          endDate2,
           instagramUrl,
           linkedinUrl,
           isPublic,
@@ -201,7 +199,8 @@ const event = new Hono()
       const events = await db.event.findMany({
         include: {
           eventDateMultitle: true,
-          eventDateSingle: true
+          eventDateSingle: true,
+          eventVirtual: true
         }
       })
       return c.json(

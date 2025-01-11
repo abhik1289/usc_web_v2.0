@@ -163,7 +163,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                             <ImageIcon /> Upload Image
 
                         </Button>}
-                        //image upload i/p
+                        
                         <div className="img_upload_ip">
 
 
@@ -283,7 +283,7 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                 </div>
                                 <div className="flex w-full gap-4 items-center">
                                     <CalenderInput
-                                        name='startDate2'
+                                        name='startDateO'
                                         label='End Date'
                                         disabled={events.isLoading}
                                         control={form.control}
@@ -309,13 +309,13 @@ function AddEventFrom({ defaultValues }: AddEventFromProps) {
                                 </div>
                             </> : <>
                                 <CalenderInput
-                                    name='startDate'
-                                    label='End Date'
+                                    name='startDateO'
+                                    label='Start Date'
                                     disabled={events.isLoading}
                                     control={form.control}
                                 />
                                 <CalenderInput
-                                    name='endDate'
+                                    name='endDateO'
                                     label='End Date'
                                     disabled={events.isLoading}
                                     control={form.control}

@@ -156,7 +156,6 @@ const champions = new Hono()
 
           const { id } = userToken.payload;
           const { index } = c.req.valid("json");
-          console.log(index)
           const Tid = c.req.param("id");
           await db.champions.update({
             where: {

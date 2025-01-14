@@ -102,7 +102,6 @@ const domain = new Hono()
             },
           },
         });
-        console.log(domainGroups);
         return c.json({ success: true, domainGroups: domainGroups });
       }
     } catch (error) {
@@ -383,7 +382,6 @@ const domain = new Hono()
   .get("/domain-details/:id", async (c) => {
     try {
       const id = c.req.param("id");
-      console.log(id)
       const domain = await db.domainDetails.findFirst({ where: { id: id },include:{
         domainGroup:{
           select:{
@@ -391,7 +389,6 @@ const domain = new Hono()
           }
         }
       } });
-      console.log(domain)
       if (!domain) {
         return c.json({ success: false, error: "Invalid Id" }, 400);
       } else {

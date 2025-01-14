@@ -1,8 +1,11 @@
+"use client";
+
 import { Card, CardFooter } from '@/components/ui/card'
 import React from 'react'
 import Image from 'next/image';
 import AlertDialogBox from '../AlertDialog.tsx/AlertDialog';
 import useDeleteChampion from '@/hooks/api/champions/useDeleteChampion';
+import { useRouter } from 'next/navigation';
 
 
 export interface CahmpionCardInterface {
@@ -21,6 +24,10 @@ export default function ChampionCard({ coverPhoto, fullName, role, profilePhoto,
     const [showDialog, setShowDialog] = React.useState(false);
     const [deleteId, setDeleteId] = React.useState<string>("");
     const deleteMutation = useDeleteChampion(deleteId);
+    const router = useRouter();
+    const onEdit = () => {
+        router.push(`/champion/add?id=${id}`);
+    }
     const onDelete = () => {
         setShowDialog(true);
         setDeleteId(id);
@@ -52,7 +59,7 @@ export default function ChampionCard({ coverPhoto, fullName, role, profilePhoto,
             </div>
             <CardFooter className='w-full border border-t flex items-center pt-4 border-b-0 border-l-0 border-r-0'>
                 <div className=" w-full flex gap-4 justify-center">
-                    <button className='btn text-blue-400 hover:text-blue-600 transition-all duration-200' >Edit</button>
+                    <button onClick={onEdit} className='btn text-blue-400 hover:text-blue-600 transition-all duration-200' >Edit</button>
                     <button onClick={onDelete} className='btn text-red-500 hover:text-purple-600 transition-all duration-200'>Delete</button>
                 </div>
             </CardFooter>

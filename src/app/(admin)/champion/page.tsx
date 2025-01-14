@@ -5,27 +5,17 @@ import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import ChampionsBox from "@/components/(admin)/champion/ChampionsBox";
+import { useRouter } from "next/navigation";
 export default function ChampionPage() {
   
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-
-
-
-
-  
-
-
+    const router = useRouter();
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Champions</h1>
         <Button
-          onClick={() => {
-          
-            setIsDialogOpen(true);
-          }}
+          onClick={() => router.push("/champion/add")} 
         >
           Add Champion
         </Button>

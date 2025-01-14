@@ -7,6 +7,7 @@ import champions from "./champions";
 import domain from "./domain";
 import { leads } from "./leads";
 import mentor from "./mentor";
+import basic from "./basic";
 const app = new Hono().basePath("/api");
 
 
@@ -18,7 +19,9 @@ const _routePath = app
   .route("/champions", champions)
   .route("/domain", domain)
   .route("/leads", leads)
-  .route("/mentor", mentor);
+  .route("/mentor", mentor)
+  .route("/basic", basic);
+
   // /api/testimonials/add
 export const GET = handle(app);
 export const POST = handle(app);

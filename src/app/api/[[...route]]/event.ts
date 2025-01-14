@@ -222,67 +222,6 @@ const event = new Hono()
       );
     }
   })
-  .post("/edit-event/:id", zValidator("json", eventSchema), async (c) => {
-    try {
-      const id = c.req.param("id");
-      const token = getCookie(c, "token");
-      if (!token) {
-        return c.json({ success: false, error: "Token not found" }, 401);
-      } else {
-        const {
-          title,
-          description,
-          location,
-          banner_url,
-          eventType,
-          startDate,
-          endDate,
-          startTime1,
-          endTime1,
-          startTime2,
-          endTime2,
-          displayType,
-          socialMedia,
-        } = c.req.valid("json");
-        // await db.event.update({
-        //   where: {
-        //     id: id,
-        //   },
-        //   data: {
-        //     title,
-        //     description,
-        //     location,
-        //     banner_url,
-        //     eventType,
-        //     startDate: new Date(startDate),
-        //     endDate: endDate ? new Date(endDate) : null,
-        //     startTime1,
-        //     endTime1,
-        //     startTime2,
-        //     endTime2,
-        //     displayType,
-        //     socialMedia,
-        //   },
-        // });
-        return c.json(
-          {
-            success: true,
-            message: "Event modified successfully",
-          },
-          201
-        );
-      }
-    } catch (error) {
-      console.error("Sign-in error:", error);
-      return c.json(
-        {
-          success: false,
-          error: "An unexpected error occurred. Please try again.",
-        },
-        500
-      );
-    }
-  })
   .get("/delete-event/:id", async (c) => {
     try {
       const id = c.req.param("id");
@@ -469,9 +408,7 @@ const event = new Hono()
           startDateOStr = startDateO as string;
           endDateOStr = endDateO as string;
         }
-
-        const files = body.profilePhoto;
-        let updatedData = {
+        const updatedData = {
           titleStr,
           descriptionStr,
           locationStr,
@@ -492,10 +429,70 @@ const event = new Hono()
           startDateOStr,
           endDateOStr
         };
+        const files = body.profilePhoto;
         const eventId = c.req.param("id");
         const previousData = await db.event.findUnique({ where: { id: eventId } });
+        if (!previousData) {
+          return c.json({ message: "Event not found" }, 401);
+        }
+        if (!files || (Array.isArray(files) && files.length === 0)) {
+          await updateEventDetails({ eventId, updatedData, previousData })
+          return c.json(
+            {
+              success: true,
+              message: "Event successfully updated",
+            },
+            201);
+        } else {
+          // if files is not an array, convert it to an array
+          const fileArray = Array.isArray(files) ? files : [files];
 
-        await updateEventDetails({ eventId, updatedData, previousData })
+          await Promise.all(
+            fileArray.map(async (file) => {
+              if (!(file instanceof File)) {
+                return c.json(
+                  {
+                    message: "Invalid file type",
+                    error: "Expected a file upload but received something else",
+                    received: typeof file,
+                  },
+                  400
+                );
+              }
+              //for file upload
+              const buffer = await file.arrayBuffer();
+              const mimeType = file.type;
+              const encoding = "base64";
+              const base64Data = Buffer.from(buffer).toString("base64");
+              const randomId = uuidv4();
+              const fileUri = "data:" + randomId + mimeType + ";" + encoding + "," + base64Data;
+              // load into a buffer for later use
+              const res = await uploadToCloudinary(fileUri, file.name, "testimonial");
+              if (res.success && res.result) {
+                //upload new image urls
+                const { secure_url, public_id } = res.result;
+                //delete previous img
+
+                const { error } = await deleteImage(previousData.publicId!);
+                if (error) {
+                  return c.json({ message: "Error Occured" }, 401)
+                }
+                let updatedDataWithImg = { ...updatedData, banner_url: secure_url, publicId: public_id }
+                await updateEventDetails({ eventId, updatedData: updatedDataWithImg, previousData })
+                return c.json(
+                  {
+                    success: true,
+                    message: "Event successfully updated",
+                  },
+                  201);
+              } else {
+                console.log("This is error called");
+
+                return c.json({ message: "File Upload Failed" }, 401);
+              }
+            })
+          );
+        }
       }
     } catch (error) {
       console.error("Sign-in error:", error);
@@ -512,165 +509,3 @@ const event = new Hono()
 export { event };
 
 
-
-// const event = await db.event.update({
-//   where: {
-//     id: eventId,
-
-//   }, data: {
-//     title: titleStr,
-//     description: descriptionStr,
-//     location: locationStr,
-//     eventType: eventTypeStr,
-//     displayType: isPublic === 'true' ? "PUBLIC" : "PRIVATE",
-//     socialMedia: socialMediaStr,
-//     userId: id,
-//     index: indexStr
-//   }
-// });
-// //if event is single, now update into Multiple
-// // delete previous date single obje
-// // create new date multiple object
-// // update it if (define single is null and multiple is not null)
-// if (previousData?.eventType === event.eventType) {
-//   if (eventTypeStr === "SINGLE") {
-//     await db.eventDateSingle.update({
-//       where: {
-//         eventId: event.id
-//       }, data: {
-//         startDate: new Date(startDateStr),
-//         startTime: startTimeStr,
-//         endTime: endTimeStr
-//       }
-//     })
-//   } else if (eventTypeStr === "MULTIPLE") {
-//     await db.eventDateMultitle.update({
-//       where: {
-//         eventId: event.id
-//       }, data: {
-//         startDate1: new Date(startDate1Str), // Example start date 1
-//         startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
-//         startTime1: startTime1Str,                       // Example start time 1
-//         endTime1: endTime1Str,                         // Example end time 1
-//         startTime2: startTime2Str,                       // Example start time 2
-//         endTime2: endTime2Str,
-//       }
-//     })
-//   }
-//   else {
-//     await db.eventVirtual.update({
-//       where: {
-//         eventId: event.id
-//       }, data: {
-//         startDate: new Date(startDateOStr),
-//         endDate: new Date(endDateOStr),
-//       }
-//     })
-//   }
-// } else {
-//   //change event type
-//   // 1)  SINGLE TO MULTIPLE
-//   if (previousData?.eventType === "SINGLE" && eventTypeStr === "MULTIPLE") {
-
-//     //  a) delete single date
-//     await db.eventDateSingle.delete({
-//       where: {
-//         eventId: event.id
-//       }
-//     });
-//     //  b) create multiple date
-//     await db.eventDateMultitle.create({
-//       data: {
-//         eventId: event.id,
-//         startDate1: new Date(startDate1Str), // Example start date 1
-//         startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
-//         startTime1: startTime1Str,                       // Example start time 1
-//         endTime1: endTime1Str,                         // Example end time 1
-//         startTime2: startTime2Str,                       // Example start time 2
-//         endTime2: endTime2Str,
-//       }
-//     })
-//   }
-//   //SINGLE TO ONLINE
-//   else if (previousData?.eventType === "SINGLE" && eventTypeStr === "ONLINE") {
-//     await db.eventDateSingle.delete({
-//       where: {
-//         eventId: event.id
-//       }
-//     });
-//     await db.eventVirtual.create({
-//       data: {
-//         startDate: new Date(startDateOStr),
-//         endDate: new Date(endDateOStr),
-//         eventId: event.id
-//       }
-//     })
-//   }
-//   //MULTIPLE TO SINGLE
-//   else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "SINGLE") {
-//     await db.eventDateMultitle.delete({
-//       where: {
-//         eventId: event.id
-//       }
-//     });
-//     await db.eventDateSingle.create({
-//       data: {
-//         eventId: event.id,
-//         startDate: new Date(startDateStr),
-//         startTime: startTimeStr,
-//         endTime: endTimeStr
-//       }
-//     })
-//   }
-//   //MULTIPLE TO ONLINE
-//   else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "ONLINE") {
-//     await db.eventDateMultitle.delete({
-//       where: {
-//         eventId: event.id
-//       }
-//     });
-//     await db.eventVirtual.create({
-//       data: {
-//         startDate: new Date(startDateOStr),
-//         endDate: new Date(endDateOStr),
-//         eventId: event.id
-//       }
-//     })
-//   }
-//   //ONLINE TO SINGLE
-//   else if (previousData?.eventType === "ONLINE" && eventTypeStr === "SINGLE") {
-//     await db.eventVirtual.delete({
-//       where: {
-//         eventId: event.id
-//       }
-//     });
-//     await db.eventDateSingle.create({
-//       data: {
-//         eventId: event.id,
-//         startDate: new Date(startDateStr),
-//         startTime: startTimeStr,
-//         endTime: endTimeStr
-//       }
-//     })
-//   }
-//   //ONLINE TO MULTIPLE
-//   else if (previousData?.eventType === "ONLINE" && eventTypeStr === "MULTIPLE") {
-//     await db.eventVirtual.delete({
-//       where: {
-//         eventId: event.id
-//       }
-//     });
-//     await db.eventDateMultitle.create({
-//       data: {
-//         eventId: event.id,
-//         startDate1: new Date(startDate1Str), // Example start date 1
-//         startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
-//         startTime1: startTime1Str,                       // Example start time 1
-//         endTime1: endTime1Str,                         // Example end time 1
-//         startTime2: startTime2Str,                       // Example start time 2
-//         endTime2: endTime2Str,
-//       }
-//     })
-//   }
-// }
-//end here

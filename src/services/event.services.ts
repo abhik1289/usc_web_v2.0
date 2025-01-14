@@ -28,19 +28,38 @@ export async function updateEventDetails({ eventId, updatedData, previousData }:
     } = updatedData;
 
     // Update the main event details
-    const event = await db.event.update({
-        where: { id: eventId },
-        data: {
-            title: titleStr,
-            description: descriptionStr,
-            location: locationStr,
-            eventType: eventTypeStr,
-            displayType: isPublic === "true" ? "PUBLIC" : "PRIVATE",
-            socialMedia: socialMediaStr,
-            userId: id,
-            index: indexStr,
-        },
-    });
+    let event;
+    if (updatedData.banner_url) {
+        event = await db.event.update({
+            where: { id: eventId },
+            data: {
+                title: titleStr,
+                description: descriptionStr,
+                location: locationStr,
+                eventType: eventTypeStr,
+                displayType: isPublic === "true" ? "PUBLIC" : "PRIVATE",
+                socialMedia: socialMediaStr,
+                userId: id,
+                index: indexStr,
+                banner_url: updatedData.banner_url,
+                publicId: updatedData.publicId,
+            },
+        });
+    } else {
+        event = await db.event.update({
+            where: { id: eventId },
+            data: {
+                title: titleStr,
+                description: descriptionStr,
+                location: locationStr,
+                eventType: eventTypeStr,
+                displayType: isPublic === "true" ? "PUBLIC" : "PRIVATE",
+                socialMedia: socialMediaStr,
+                userId: id,
+                index: indexStr,
+            },
+        });
+    }
     let dateData = {
         startDateStr,
         startTimeStr,

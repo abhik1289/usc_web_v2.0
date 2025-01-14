@@ -59,7 +59,7 @@ const leads = new Hono()
             coreMemberPositionIdStr = cString(body.coreMemberPositionId);
           }
           const isCurrentStr = body.isCurrent as string;
-       
+
 
 
 
@@ -187,11 +187,10 @@ const leads = new Hono()
         } = body;
 
 
-        const files = body.image;
+        const files = body.profilePhoto;
 
-
+        let coreMemberPositionIdStr = "";
         const fullNameStr = fullName as string;
-        const coreMemberPositionIdStr = coreMemberPositionId as string;
         const domainGroupIdStr = domainGroupId as string;
         const domainNameIdStr = domainNameId as string;
         const githubUrlStr = githubUrl as string;
@@ -200,6 +199,9 @@ const leads = new Hono()
         const emailStr = email as string;
         const portfolioUrlStr = email as string;
         const isCoreMemberStr = isCoreMember as string;
+        if (isCoreMemberStr === 'true') {
+          coreMemberPositionIdStr = cString(body.coreMemberPositionId);
+        }
         const isCurrentStr = isCurrent as string;
         const indexINT = parseInt(index as string);
 
@@ -213,7 +215,7 @@ const leads = new Hono()
             data: {
               fullName: fullNameStr,
               isCoreMember: isCoreMemberStr === 'true' ? true : false,
-              coreMemberPositionId: coreMemberPositionIdStr,
+              coreMemberPositionId: isCoreMemberStr === 'true' ? coreMemberPositionIdStr : null,
               isCurrent: isCurrentStr === 'true' ? true : false,
               domainGroupId: domainGroupIdStr,
               domainNameId: domainNameIdStr,
@@ -289,7 +291,7 @@ const leads = new Hono()
                   data: {
                     fullName: fullNameStr,
                     isCoreMember: isCoreMemberStr === 'true' ? true : false,
-                    coreMemberPositionId: coreMemberPositionIdStr,
+                    coreMemberPositionId: isCoreMemberStr === 'true' ? coreMemberPositionIdStr : null,
                     isCurrent: isCurrentStr === 'true' ? true : false,
                     profilePhoto: secure_url,
                     domainGroupId: domainGroupIdStr,
@@ -314,7 +316,7 @@ const leads = new Hono()
                 return c.json(
                   {
                     success: true,
-                    message: "Leads added ",
+                    message: "Leads Updated ",
                   },
                   201
                 );

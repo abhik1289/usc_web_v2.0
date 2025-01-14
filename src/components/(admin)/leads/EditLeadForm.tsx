@@ -80,7 +80,7 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
             reader.readAsDataURL(file);
         }
     };
-    console.log(filteredDomainDetails)
+
     const onSubmit = (values: z.infer<typeof LeadsSchema>) => {
 
         console.log(values)
@@ -104,7 +104,6 @@ export default function EditLeadForm({ defaultValues, id, disabled }: EditLeadFo
         formData.append('coreMemberPositionId', values.coreMemberPositionId!);
         formData.append('profilePhoto', file!);
         formData.append('index', values.index!);
-        formData.append('image', file!);
         editMutation.mutate(formData, {
             onSuccess: () => {
                 router.back();

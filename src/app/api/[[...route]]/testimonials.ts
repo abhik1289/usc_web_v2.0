@@ -13,7 +13,6 @@ const testimonials = new Hono()
   .post("/add", async (c) => {
     try {
       const body = await c.req.parseBody();
-      console.log("--------------->", body)
       const { fullName, rolesId, text } = body;
 
       const token = getCookie(c, "token");
@@ -23,7 +22,6 @@ const testimonials = new Hono()
         const userToken = decodeSignInToken(token);
         const { id } = userToken.payload;
         const testimonials = await db.testimonials.findMany();
-        console.log("-------------->", testimonials);
         let index;
         if (testimonials.length === 0) {
           index = 1;
@@ -292,24 +290,13 @@ const testimonials = new Hono()
                     publicId: public_id
                   }
                 });
-                console.log("This is called", secure_url, public_id);
                 return c.json({ message: "successfully updated" }, 200);
               } else {
-                console.log("This is error called");
 
                 return c.json({ message: "File Upload Failed" }, 401);
               }
             })
           );
-
-
-
-
-
-
-
-
-
         }
       }
     } catch (error) {

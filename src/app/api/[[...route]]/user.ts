@@ -31,7 +31,6 @@ export const user = new Hono<{ Variables: Variables }>()
     try {
       // Extract email and password from the validated request
       const { email, password } = await c.req.json();
-      // console.log(email, password)
       // Check if the user exists in the database
       const existingUser: User | null = await getUserByEmail(email);
       if (!existingUser) {
@@ -225,9 +224,7 @@ export const user = new Hono<{ Variables: Variables }>()
   })
   .post("/set-up-profile", zValidator("json", setUpAccount), async (c) => {
     try {
-      console.log("This is a test");
       const { last_name, first_name, password, token } = await c.req.json();
-      console.log(last_name, first_name, password, token);
       const data: any = decodeActiveToken(token);
       const email = data.email!;
       const existingUser = await getUserByEmail(email);
@@ -286,7 +283,6 @@ export const user = new Hono<{ Variables: Variables }>()
   .get("/get-user", async (c) => {
     try {
       const token = getCookie(c, "token");
-      console.log(token);
       if (!token) {
         return c.json(
           {
@@ -299,7 +295,6 @@ export const user = new Hono<{ Variables: Variables }>()
         const user: SignInTokenPayload = decodeSignInToken(token);
         const email = user.payload.email!;
         const infos = await getUserByEmail(email);
-        console.log("------------------>", infos);
         return c.json(
           {
             infos,
@@ -336,7 +331,6 @@ export const user = new Hono<{ Variables: Variables }>()
   .get("/get-users", async (c) => {
     try {
       const token = getCookie(c, "token");
-      console.log(token);
       if (!token) {
         return c.json(
           {
@@ -347,7 +341,6 @@ export const user = new Hono<{ Variables: Variables }>()
         );
       } else {
         const users: User[] | null = await db.user.findMany();
-        console.log(users);
         if (users && users.length === 0) {
           return c.json(
             {
@@ -412,7 +405,6 @@ export const user = new Hono<{ Variables: Variables }>()
   .get("/:id", async (c) => {
     try {
       const token = getCookie(c, "token");
-      console.log(token);
       if (!token) {
         return c.json(
           {

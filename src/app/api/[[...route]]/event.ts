@@ -169,7 +169,7 @@ const event = new Hono()
                   201
                 );
               } else {
-                console.log("This is error called");
+            
 
                 return c.json({ message: "File Upload Failed" }, 401);
               }
@@ -268,7 +268,6 @@ const event = new Hono()
     try {
       const id = c.req.param("id");
       const token = getCookie(c, "token");
-      // console.log("HELLO");
       if (!token) {
         return c.json({ success: false, error: "Token not found" }, 401);
       } else {
@@ -486,8 +485,6 @@ const event = new Hono()
                   },
                   201);
               } else {
-                console.log("This is error called");
-
                 return c.json({ message: "File Upload Failed" }, 401);
               }
             })

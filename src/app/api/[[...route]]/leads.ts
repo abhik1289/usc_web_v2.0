@@ -36,7 +36,6 @@ const leads = new Hono()
           githubUrl, instagramUrl, linkedinUrl, email,
         } = body;
 
-        // console.log(body)
         const files = body.profilePhoto;
 
         //if profile image is not updated
@@ -85,7 +84,6 @@ const leads = new Hono()
               const base64Data = Buffer.from(buffer).toString("base64");
               const randomId = uuidv4();
               const fileUri = "data:" + randomId + mimeType + ";" + encoding + "," + base64Data;
-              console.log("FILE URI IS", fileUri)
               // load into a buffer for later use
               const res = await uploadToCloudinary(fileUri, file.name, "testimonial");
               if (res.success && res.result) {
@@ -138,7 +136,6 @@ const leads = new Hono()
                   201
                 );
               } else {
-                console.log("This is error called");
 
                 return c.json({ message: "File Upload Failed" }, 401);
               }
@@ -189,14 +186,6 @@ const leads = new Hono()
 
         const files = body.image;
 
-        // console.log(fullName,
-        //   isCoreMember,
-        //   coreMemberPositionId,
-        //   isCurrent,
-        //   profilePhoto,
-        //   domainGroupId,
-        //   domainNameId,
-        //   githubUrl, instagramUrl, linkedinUrl, email, index)
 
         const fullNameStr = fullName as string;
         const coreMemberPositionIdStr = coreMemberPositionId as string;
@@ -327,7 +316,7 @@ const leads = new Hono()
                   201
                 );
               } else {
-                console.log("This is error called");
+
 
                 return c.json({ message: "File Upload Failed" }, 401);
               }
@@ -459,15 +448,6 @@ const leads = new Hono()
         } else {
           const { isCurrent } = c.req.valid("json");
           const id = c.req.param("id");
-          // const lead = await db.leads.findFirst({
-          //   where: {
-          //     id: c.req.param("id"),
-          //   },
-          // });
-          // console.log(lead);
-          // await db.leads.delete({
-          //   where: { id },
-          // });
           await db.leads.update({
             where: {
               id: id,
@@ -506,8 +486,6 @@ const leads = new Hono()
         const deletedLead = await db.leads.delete({
           where: { id: leadId },
         });
-
-        console.log("Lead deleted:", deletedLead);
         return c.json(
           {
             success: true,

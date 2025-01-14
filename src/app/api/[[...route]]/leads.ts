@@ -35,7 +35,14 @@ const leads = new Hono()
           domainNameId,
           githubUrl, instagramUrl, linkedinUrl, email,
         } = body;
-
+console.log( fullName,
+  isCoreMember,
+  coreMemberPositionId,
+  isCurrent,
+  profilePhoto,
+  domainGroupId,
+  domainNameId,
+  githubUrl, instagramUrl, linkedinUrl, email,)
         const files = body.profilePhoto;
 
         //if profile image is not updated
@@ -44,10 +51,9 @@ const leads = new Hono()
         } else {
 
 
-
+          let coreMemberPositionIdStr = "";
           //convert to string
           const fullNameStr = cString(body.fullName);
-          const coreMemberPositionIdStr = cString(body.coreMemberPositionId);
           const domainGroupIdStr = cString(body.domainGroupId);
           const domainNameIdStr = cString(body.domainNameId);
           const githubUrlStr = cString(body.githubUrl);
@@ -56,8 +62,11 @@ const leads = new Hono()
           const emailStr = cString(body.email);
           const portfolioUrlStr = cString(body.portfolioUrl);
           const isCoreMemberStr = body.isCoreMember as string;
+          if (isCoreMemberStr === 'true') {
+            coreMemberPositionIdStr = cString(body.coreMemberPositionId);
+          }
           const isCurrentStr = body.isCurrent as string;
-
+          console.log(fullNameStr, domainGroupIdStr, domainNameIdStr, githubUrlStr, instagramUrlStr, linkedinUrlStr, emailStr, portfolioUrlStr, isCoreMemberStr, isCurrentStr, coreMemberPositionIdStr);
 
 
 
@@ -86,6 +95,7 @@ const leads = new Hono()
               const fileUri = "data:" + randomId + mimeType + ";" + encoding + "," + base64Data;
               // load into a buffer for later use
               const res = await uploadToCloudinary(fileUri, file.name, "testimonial");
+              console.log(res)
               if (res.success && res.result) {
 
                 const leads = await db.leads.findMany();
@@ -107,7 +117,7 @@ const leads = new Hono()
                   data: {
                     fullName: fullNameStr,
                     isCoreMember: isCoreMemberStr === 'true' ? true : false,
-                    coreMemberPositionId: coreMemberPositionIdStr,
+                    coreMemberPositionId: isCoreMemberStr === 'true' ? coreMemberPositionIdStr : null,
                     isCurrent: isCurrentStr === 'true' ? true : false,
                     profilePhoto: secure_url,
                     domainGroupId: domainGroupIdStr,

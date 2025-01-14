@@ -79,6 +79,7 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
 
 
     function onSubmit(values: z.infer<typeof LeadsSchema>) {
+        console.log(values)
         if (!file) {
             toast({
                 description: "Please upload an image",
@@ -96,12 +97,12 @@ export default function AddLeadForm({ defaultValues }: AddLeadFormProps) {
             const formData = new FormData();
             formData.append('fullName', values.fullName);
             formData.append('email', values.Social.email);
-            values.Social.githubUrl && formData.append('githubUrl', values.Social.githubUrl);
-            values.Social.instagramUrl && formData.append('instagramUrl', values.Social.instagramUrl);
-            values.Social.linkedinUrl && formData.append('linkedinUrl', values.Social.linkedinUrl);
-            values.Social.portfolioUrl && formData.append('portfolioUrl', values.Social.portfolioUrl);
-            values.isCoreMember && formData.append('isCoreMember', values.isCoreMember.toString());
-            formData.append('isCurrent', values.isCurrent.toString());
+            formData.append('githubUrl', values.Social.githubUrl ? values.Social.githubUrl : "");
+            formData.append('instagramUrl', values.Social.instagramUrl ? values.Social.instagramUrl : '');
+            values.Social.linkedinUrl && formData.append('linkedinUrl', values.Social.linkedinUrl ? values.Social.linkedinUrl : "");
+            formData.append('portfolioUrl', values.Social.portfolioUrl ? values.Social.portfolioUrl : "");
+            values.isCoreMember && formData.append('isCoreMember', values.isCoreMember ? 'true' : 'false');
+            formData.append('isCurrent', values.isCurrent ? 'true' : 'false');
             formData.append('domainGroupId', values.domainGroupId);
             formData.append('domainNameId', values.domainNameId);
             values.coreMemberPositionId && formData.append('coreMemberPositionId', values.coreMemberPositionId);

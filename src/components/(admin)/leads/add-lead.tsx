@@ -42,10 +42,10 @@ function AddLead() {
             coreMemberPositionId: lead.data && lead.data.coreMemberPositionId,
             Social: {
               email: lead.data && lead.data.Social.email,
-              linkedinUrl: lead.data && lead.data.Social.linkedinUrl,
-              githubUrl: lead.data && lead.data.Social.githubUrl,
-              instagramUrl: lead.data && lead.data.Social.instagramUrl,
-              portfolioUrl: lead.data && lead.data.Social.portfolioUrl,
+              linkedinUrl: lead.data && lead.data.Social.linkedinUrl ? lead.data.Social.linkedinUrl : "",
+              githubUrl: lead.data && lead.data.Social.githubUrl? lead.data.Social.githubUrl : "",
+              instagramUrl: lead.data && lead.data.Social.instagramUrl? lead.data.Social.instagramUrl : "",
+              portfolioUrl: lead.data && lead.data.Social.portfolioUrl? lead.data.Social.portfolioUrl : "",
             },
           }}
         /> : <AddLeadForm

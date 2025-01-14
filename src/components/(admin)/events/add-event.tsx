@@ -62,8 +62,6 @@ export default function EventForm() {
             startTime2: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.startTime2 : "",
             endTime2: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.endTime2 : "",
             //GARBAGE
-            endDate1: event.data && event.data.eventType === "MULTIPLE" ? event.data.endDate1 : "",
-            endDate2: event.data && "",
             index: event.data && event.data.index?.toString() || '0'
           }}
           bannerUrl={event.data && event.data.banner_url}
@@ -86,9 +84,9 @@ export default function EventForm() {
             startTime2: "",
             endTime2: "",
             startDate1: "",
-            endDate1: "",
+            // endDate1: "",
             startDate2: "",
-            endDate2: "",
+            // endDate2: "",
           }} />}
     </Card>
   );

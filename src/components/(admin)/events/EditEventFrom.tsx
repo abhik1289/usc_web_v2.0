@@ -21,9 +21,12 @@ import { useUpdateEvent } from '@/hooks/api/events/useUpadteEvents';
 import { durations, EvenFormSchema } from './AddEventFrom';
 
 
+const extendsSchema = EvenFormSchema.extend({
+    index: z.string()
+})
 
 interface AddEventFromProps {
-    defaultValues: z.infer<typeof EvenFormSchema>,
+    defaultValues: z.infer<typeof extendsSchema>,
     disable: boolean,
     bannerUrl: string,
     eId: string

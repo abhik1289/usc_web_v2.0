@@ -564,7 +564,9 @@ const event = new Hono()
                 eventId: event.id
               }
             })
-          } else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "SINGLE") {
+          } 
+          //MULTIPLE TO SINGLE
+          else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "SINGLE") {
             await db.eventDateMultitle.delete({
               where: {
                 eventId: event.id
@@ -578,7 +580,9 @@ const event = new Hono()
                 endTime: endTimeStr
               }
             })
-          } else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "ONLINE") {
+          } 
+          //MULTIPLE TO ONLINE
+          else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "ONLINE") {
             await db.eventDateMultitle.delete({
               where: {
                 eventId: event.id
@@ -591,7 +595,9 @@ const event = new Hono()
                 eventId: event.id
               }
             })
-          } else if (previousData?.eventType === "ONLINE" && eventTypeStr === "SINGLE") {
+          } 
+          //ONLINE TO SINGLE
+          else if (previousData?.eventType === "ONLINE" && eventTypeStr === "SINGLE") {
             await db.eventVirtual.delete({
               where: {
                 eventId: event.id
@@ -605,7 +611,9 @@ const event = new Hono()
                 endTime: endTimeStr
               }
             })
-          } else if (previousData?.eventType === "ONLINE" && eventTypeStr === "MULTIPLE") {
+          } 
+          //ONLINE TO MULTIPLE
+          else if (previousData?.eventType === "ONLINE" && eventTypeStr === "MULTIPLE") {
             await db.eventVirtual.delete({
               where: {
                 eventId: event.id

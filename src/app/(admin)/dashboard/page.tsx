@@ -5,18 +5,18 @@ import { dashboardCArdList } from "@/app/context/dashBoardLayout";
 
 import useAuthStore from "@/store/Auth";
 import { useTheme } from "next-themes";
+import { useBasic } from "@/hooks/api/home/getBasic";
 
 function HomePage() {
 
+   
 
-  const { setTheme } = useTheme();
 
 
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       <div className="flex w-full flex-wrap gap-2">
-        <button onClick={() => setTheme("dark")}>DARK</button>
         {dashboardCArdList.map((item, i) => (
           <div
             className="w-5/12  rounded-xl bg-muted/50 p-4 flex gap-3 items-center"

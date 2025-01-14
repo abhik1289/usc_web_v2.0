@@ -13,7 +13,7 @@ export default function EventForm() {
   const id = params.get("id");
 
   const event = useGetEventById(id);
-  console.log(event.data)
+  // console.log(event.data)
   //Dynamic event title and description
   const title = id ? `Edit Event: ${event.data && event.data.title}` : 'Add New Event';
   const description = id ? `Edit the details for event "${event.data && event.data.title}"` : 'Create a new event';

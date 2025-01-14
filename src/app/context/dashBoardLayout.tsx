@@ -9,7 +9,11 @@ import { FaUsers } from "react-icons/fa";
 import { RiUserShared2Fill } from "react-icons/ri";
 import { SiGoogledomains } from "react-icons/si";
 import DashBoardHeader from "@/components/(admin)/header/dashboard-header";
-
+import { GiChampions } from "react-icons/gi";
+import { VscFeedback } from "react-icons/vsc";
+import { FaUserTie } from "react-icons/fa";
+import { FaUserLarge } from "react-icons/fa6";
+import { SiCloudflareworkers } from "react-icons/si";
 export const dashboardCArdList = [
   {
     id: 1,
@@ -33,7 +37,31 @@ export const dashboardCArdList = [
     id: 4,
     number: 9,
     title: "Domains",
-    icon: <SiGoogledomains />,
+    icon: <SiCloudflareworkers />,
+  },
+  {
+    id: 5,
+    number: 9,
+    title: "Advisors",
+    icon: <FaUserLarge />,
+  },
+  {
+    id: 6,
+    number: 9,
+    title: "Mentors",
+    icon: <FaUserTie />,
+  },
+  {
+    id: 7,
+    number: 9,
+    title: "Testimonials",
+    icon: <VscFeedback />,
+  },
+  {
+    id: 8,
+    number: 9,
+    title: "Champions",
+    icon: <GiChampions />,
   },
 ];
 
@@ -46,9 +74,9 @@ export default function DashBoardLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <DashBoardHeader/>
+        <DashBoardHeader />
         {children}
-       
+
       </SidebarInset>
     </SidebarProvider>
   );

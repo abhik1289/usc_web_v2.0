@@ -39,14 +39,14 @@ const basic = new Hono()
                 return c.json({
                     success: true,
                     data: {
-                        events,
-                        currentLeads,
-                        formertLeads,
-                        domains,
-                        textnimials,
-                        champions,
-                        mentors,
-                        advisors
+                        event: events.length,
+                        currentLead: currentLeads.length,
+                        formertLead: formertLeads.length,
+                        domain: domains.length,
+                        textnimial: textnimials.length,
+                        champion: champions.length,
+                        mentor: mentors.length,
+                        advisor: advisors.length
                     }
                 }, 200);
             }

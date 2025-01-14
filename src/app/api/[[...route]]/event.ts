@@ -393,7 +393,8 @@ const event = new Hono()
           },
           include: {
             eventDateMultitle: true,
-            eventDateSingle: true
+            eventDateSingle: true,
+            eventVirtual: true
           }
         });
         return c.json({
@@ -564,7 +565,7 @@ const event = new Hono()
                 eventId: event.id
               }
             })
-          } 
+          }
           //MULTIPLE TO SINGLE
           else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "SINGLE") {
             await db.eventDateMultitle.delete({
@@ -580,7 +581,7 @@ const event = new Hono()
                 endTime: endTimeStr
               }
             })
-          } 
+          }
           //MULTIPLE TO ONLINE
           else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "ONLINE") {
             await db.eventDateMultitle.delete({
@@ -595,7 +596,7 @@ const event = new Hono()
                 eventId: event.id
               }
             })
-          } 
+          }
           //ONLINE TO SINGLE
           else if (previousData?.eventType === "ONLINE" && eventTypeStr === "SINGLE") {
             await db.eventVirtual.delete({
@@ -611,7 +612,7 @@ const event = new Hono()
                 endTime: endTimeStr
               }
             })
-          } 
+          }
           //ONLINE TO MULTIPLE
           else if (previousData?.eventType === "ONLINE" && eventTypeStr === "MULTIPLE") {
             await db.eventVirtual.delete({

@@ -13,7 +13,7 @@ export default function EventForm() {
   const id = params.get("id");
 
   const event = useGetEventById(id);
-  console.log(event)
+  console.log(event.data)
   //Dynamic event title and description
   const title = id ? `Edit Event: ${event.data && event.data.title}` : 'Add New Event';
   const description = id ? `Edit the details for event "${event.data && event.data.title}"` : 'Create a new event';
@@ -61,7 +61,9 @@ export default function EventForm() {
             endTime1: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.endTime1 : "",
             startTime2: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.startTime2 : "",
             endTime2: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.endTime2 : "",
-            index: event.data && event.data.index?.toString() || '0'
+            index: event.data && event.data.index?.toString() || '0',
+            startDateO: event.data && event.data.eventType === "ONLINE" ? event.data?.eventVirtual?.startDate : "",
+            endDateO: event.data && event.data.eventType === "ONLINE" ? event.data?.eventVirtual?.endDate : "",
           }}
           bannerUrl={event.data && event.data.banner_url}
           disable={event.isLoading}

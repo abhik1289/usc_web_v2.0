@@ -33,7 +33,7 @@ interface AddEventFromProps {
 }
 
 function EditEventFrom({ defaultValues, disable, bannerUrl, eId }: AddEventFromProps) {
-
+console.log(defaultValues.endDateO)
 
     //ALL STATES
     const [image, setImage] = useState<string | null>(null);

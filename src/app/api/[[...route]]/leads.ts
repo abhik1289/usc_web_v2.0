@@ -35,14 +35,7 @@ const leads = new Hono()
           domainNameId,
           githubUrl, instagramUrl, linkedinUrl, email,
         } = body;
-console.log( fullName,
-  isCoreMember,
-  coreMemberPositionId,
-  isCurrent,
-  profilePhoto,
-  domainGroupId,
-  domainNameId,
-  githubUrl, instagramUrl, linkedinUrl, email,)
+
         const files = body.profilePhoto;
 
         //if profile image is not updated
@@ -66,7 +59,7 @@ console.log( fullName,
             coreMemberPositionIdStr = cString(body.coreMemberPositionId);
           }
           const isCurrentStr = body.isCurrent as string;
-          console.log(fullNameStr, domainGroupIdStr, domainNameIdStr, githubUrlStr, instagramUrlStr, linkedinUrlStr, emailStr, portfolioUrlStr, isCoreMemberStr, isCurrentStr, coreMemberPositionIdStr);
+       
 
 
 

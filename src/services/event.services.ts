@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/db";
 
-async function updateEventDetails({ eventId, updatedData, previousData }: {
+export async function updateEventDetails({ eventId, updatedData, previousData }: {
     eventId: string,
     updatedData: any,
     previousData: any

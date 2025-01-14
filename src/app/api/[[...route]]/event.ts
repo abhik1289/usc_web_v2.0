@@ -9,6 +9,7 @@ import { E_Type } from "@prisma/client";
 import { uploadToCloudinary } from "@/lib/uploadCloudnary";
 import { v4 as uuidv4 } from 'uuid';
 import { deleteImage } from "@/lib/deleteImage";
+import { updateEventDetails } from "@/services/event.services";
 
 
 
@@ -470,171 +471,31 @@ const event = new Hono()
         }
 
         const files = body.profilePhoto;
-
+        let updatedData = {
+          titleStr,
+          descriptionStr,
+          locationStr,
+          eventTypeStr,
+          isPublic,
+          socialMediaStr,
+          id,
+          indexStr,
+          startDateStr,
+          startTimeStr,
+          endTimeStr,
+          startDate1Str,
+          startDate2Str,
+          startTime1Str,
+          endTime1Str,
+          startTime2Str,
+          endTime2Str,
+          startDateOStr,
+          endDateOStr
+        };
         const eventId = c.req.param("id");
         const previousData = await db.event.findUnique({ where: { id: eventId } });
-        const event = await db.event.update({
-          where: {
-            id: eventId,
 
-          }, data: {
-            title: titleStr,
-            description: descriptionStr,
-            location: locationStr,
-            eventType: eventTypeStr,
-            displayType: isPublic === 'true' ? "PUBLIC" : "PRIVATE",
-            socialMedia: socialMediaStr,
-            userId: id,
-            index: indexStr
-          }
-        });
-        //if event is single, now update into Multiple
-        // delete previous date single obje
-        // create new date multiple object
-        // update it if (define single is null and multiple is not null)
-        if (previousData?.eventType === event.eventType) {
-          if (eventTypeStr === "SINGLE") {
-            await db.eventDateSingle.update({
-              where: {
-                eventId: event.id
-              }, data: {
-                startDate: new Date(startDateStr),
-                startTime: startTimeStr,
-                endTime: endTimeStr
-              }
-            })
-          } else if (eventTypeStr === "MULTIPLE") {
-            await db.eventDateMultitle.update({
-              where: {
-                eventId: event.id
-              }, data: {
-                startDate1: new Date(startDate1Str), // Example start date 1
-                startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
-                startTime1: startTime1Str,                       // Example start time 1
-                endTime1: endTime1Str,                         // Example end time 1
-                startTime2: startTime2Str,                       // Example start time 2
-                endTime2: endTime2Str,
-              }
-            })
-          }
-          else {
-            await db.eventVirtual.update({
-              where: {
-                eventId: event.id
-              }, data: {
-                startDate: new Date(startDateOStr),
-                endDate: new Date(endDateOStr),
-              }
-            })
-          }
-        } else {
-          //change event type
-          // 1)  SINGLE TO MULTIPLE
-          if (previousData?.eventType === "SINGLE" && eventTypeStr === "MULTIPLE") {
-
-            //  a) delete single date
-            await db.eventDateSingle.delete({
-              where: {
-                eventId: event.id
-              }
-            });
-            //  b) create multiple date
-            await db.eventDateMultitle.create({
-              data: {
-                eventId: event.id,
-                startDate1: new Date(startDate1Str), // Example start date 1
-                startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
-                startTime1: startTime1Str,                       // Example start time 1
-                endTime1: endTime1Str,                         // Example end time 1
-                startTime2: startTime2Str,                       // Example start time 2
-                endTime2: endTime2Str,
-              }
-            })
-          }
-          //SINGLE TO ONLINE
-          else if (previousData?.eventType === "SINGLE" && eventTypeStr === "ONLINE") {
-            await db.eventDateSingle.delete({
-              where: {
-                eventId: event.id
-              }
-            });
-            await db.eventVirtual.create({
-              data: {
-                startDate: new Date(startDateOStr),
-                endDate: new Date(endDateOStr),
-                eventId: event.id
-              }
-            })
-          }
-          //MULTIPLE TO SINGLE
-          else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "SINGLE") {
-            await db.eventDateMultitle.delete({
-              where: {
-                eventId: event.id
-              }
-            });
-            await db.eventDateSingle.create({
-              data: {
-                eventId: event.id,
-                startDate: new Date(startDateStr),
-                startTime: startTimeStr,
-                endTime: endTimeStr
-              }
-            })
-          }
-          //MULTIPLE TO ONLINE
-          else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "ONLINE") {
-            await db.eventDateMultitle.delete({
-              where: {
-                eventId: event.id
-              }
-            });
-            await db.eventVirtual.create({
-              data: {
-                startDate: new Date(startDateOStr),
-                endDate: new Date(endDateOStr),
-                eventId: event.id
-              }
-            })
-          }
-          //ONLINE TO SINGLE
-          else if (previousData?.eventType === "ONLINE" && eventTypeStr === "SINGLE") {
-            await db.eventVirtual.delete({
-              where: {
-                eventId: event.id
-              }
-            });
-            await db.eventDateSingle.create({
-              data: {
-                eventId: event.id,
-                startDate: new Date(startDateStr),
-                startTime: startTimeStr,
-                endTime: endTimeStr
-              }
-            })
-          }
-          //ONLINE TO MULTIPLE
-          else if (previousData?.eventType === "ONLINE" && eventTypeStr === "MULTIPLE") {
-            await db.eventVirtual.delete({
-              where: {
-                eventId: event.id
-              }
-            });
-            await db.eventDateMultitle.create({
-              data: {
-                eventId: event.id,
-                startDate1: new Date(startDate1Str), // Example start date 1
-                startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
-                startTime1: startTime1Str,                       // Example start time 1
-                endTime1: endTime1Str,                         // Example end time 1
-                startTime2: startTime2Str,                       // Example start time 2
-                endTime2: endTime2Str,
-              }
-            })
-          }
-        }
-        //end here
-
+        await updateEventDetails({ eventId, updatedData, previousData })
       }
     } catch (error) {
       console.error("Sign-in error:", error);
@@ -649,3 +510,167 @@ const event = new Hono()
   })
 
 export { event };
+
+
+
+// const event = await db.event.update({
+//   where: {
+//     id: eventId,
+
+//   }, data: {
+//     title: titleStr,
+//     description: descriptionStr,
+//     location: locationStr,
+//     eventType: eventTypeStr,
+//     displayType: isPublic === 'true' ? "PUBLIC" : "PRIVATE",
+//     socialMedia: socialMediaStr,
+//     userId: id,
+//     index: indexStr
+//   }
+// });
+// //if event is single, now update into Multiple
+// // delete previous date single obje
+// // create new date multiple object
+// // update it if (define single is null and multiple is not null)
+// if (previousData?.eventType === event.eventType) {
+//   if (eventTypeStr === "SINGLE") {
+//     await db.eventDateSingle.update({
+//       where: {
+//         eventId: event.id
+//       }, data: {
+//         startDate: new Date(startDateStr),
+//         startTime: startTimeStr,
+//         endTime: endTimeStr
+//       }
+//     })
+//   } else if (eventTypeStr === "MULTIPLE") {
+//     await db.eventDateMultitle.update({
+//       where: {
+//         eventId: event.id
+//       }, data: {
+//         startDate1: new Date(startDate1Str), // Example start date 1
+//         startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
+//         startTime1: startTime1Str,                       // Example start time 1
+//         endTime1: endTime1Str,                         // Example end time 1
+//         startTime2: startTime2Str,                       // Example start time 2
+//         endTime2: endTime2Str,
+//       }
+//     })
+//   }
+//   else {
+//     await db.eventVirtual.update({
+//       where: {
+//         eventId: event.id
+//       }, data: {
+//         startDate: new Date(startDateOStr),
+//         endDate: new Date(endDateOStr),
+//       }
+//     })
+//   }
+// } else {
+//   //change event type
+//   // 1)  SINGLE TO MULTIPLE
+//   if (previousData?.eventType === "SINGLE" && eventTypeStr === "MULTIPLE") {
+
+//     //  a) delete single date
+//     await db.eventDateSingle.delete({
+//       where: {
+//         eventId: event.id
+//       }
+//     });
+//     //  b) create multiple date
+//     await db.eventDateMultitle.create({
+//       data: {
+//         eventId: event.id,
+//         startDate1: new Date(startDate1Str), // Example start date 1
+//         startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
+//         startTime1: startTime1Str,                       // Example start time 1
+//         endTime1: endTime1Str,                         // Example end time 1
+//         startTime2: startTime2Str,                       // Example start time 2
+//         endTime2: endTime2Str,
+//       }
+//     })
+//   }
+//   //SINGLE TO ONLINE
+//   else if (previousData?.eventType === "SINGLE" && eventTypeStr === "ONLINE") {
+//     await db.eventDateSingle.delete({
+//       where: {
+//         eventId: event.id
+//       }
+//     });
+//     await db.eventVirtual.create({
+//       data: {
+//         startDate: new Date(startDateOStr),
+//         endDate: new Date(endDateOStr),
+//         eventId: event.id
+//       }
+//     })
+//   }
+//   //MULTIPLE TO SINGLE
+//   else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "SINGLE") {
+//     await db.eventDateMultitle.delete({
+//       where: {
+//         eventId: event.id
+//       }
+//     });
+//     await db.eventDateSingle.create({
+//       data: {
+//         eventId: event.id,
+//         startDate: new Date(startDateStr),
+//         startTime: startTimeStr,
+//         endTime: endTimeStr
+//       }
+//     })
+//   }
+//   //MULTIPLE TO ONLINE
+//   else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "ONLINE") {
+//     await db.eventDateMultitle.delete({
+//       where: {
+//         eventId: event.id
+//       }
+//     });
+//     await db.eventVirtual.create({
+//       data: {
+//         startDate: new Date(startDateOStr),
+//         endDate: new Date(endDateOStr),
+//         eventId: event.id
+//       }
+//     })
+//   }
+//   //ONLINE TO SINGLE
+//   else if (previousData?.eventType === "ONLINE" && eventTypeStr === "SINGLE") {
+//     await db.eventVirtual.delete({
+//       where: {
+//         eventId: event.id
+//       }
+//     });
+//     await db.eventDateSingle.create({
+//       data: {
+//         eventId: event.id,
+//         startDate: new Date(startDateStr),
+//         startTime: startTimeStr,
+//         endTime: endTimeStr
+//       }
+//     })
+//   }
+//   //ONLINE TO MULTIPLE
+//   else if (previousData?.eventType === "ONLINE" && eventTypeStr === "MULTIPLE") {
+//     await db.eventVirtual.delete({
+//       where: {
+//         eventId: event.id
+//       }
+//     });
+//     await db.eventDateMultitle.create({
+//       data: {
+//         eventId: event.id,
+//         startDate1: new Date(startDate1Str), // Example start date 1
+//         startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
+//         startTime1: startTime1Str,                       // Example start time 1
+//         endTime1: endTime1Str,                         // Example end time 1
+//         startTime2: startTime2Str,                       // Example start time 2
+//         endTime2: endTime2Str,
+//       }
+//     })
+//   }
+// }
+//end here

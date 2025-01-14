@@ -527,7 +527,102 @@ const event = new Hono()
             })
           }
         } else {
-              
+          //change event type
+          // 1)  SINGLE TO MULTIPLE
+          if (previousData?.eventType === "SINGLE" && eventTypeStr === "MULTIPLE") {
+
+            //  a) delete single date
+            await db.eventDateSingle.delete({
+              where: {
+                eventId: event.id
+              }
+            });
+            //  b) create multiple date
+            await db.eventDateMultitle.create({
+              data: {
+                eventId: event.id,
+                startDate1: new Date(startDate1Str), // Example start date 1
+                startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
+                startTime1: startTime1Str,                       // Example start time 1
+                endTime1: endTime1Str,                         // Example end time 1
+                startTime2: startTime2Str,                       // Example start time 2
+                endTime2: endTime2Str,
+              }
+            })
+          }
+          //SINGLE TO ONLINE
+          else if (previousData?.eventType === "SINGLE" && eventTypeStr === "ONLINE") {
+            await db.eventDateSingle.delete({
+              where: {
+                eventId: event.id
+              }
+            });
+            await db.eventVirtual.create({
+              data: {
+                startDate: new Date(startDateOStr),
+                endDate: new Date(endDateOStr),
+                eventId: event.id
+              }
+            })
+          } else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "SINGLE") {
+            await db.eventDateMultitle.delete({
+              where: {
+                eventId: event.id
+              }
+            });
+            await db.eventDateSingle.create({
+              data: {
+                eventId: event.id,
+                startDate: new Date(startDateStr),
+                startTime: startTimeStr,
+                endTime: endTimeStr
+              }
+            })
+          } else if (previousData?.eventType === "MULTIPLE" && eventTypeStr === "ONLINE") {
+            await db.eventDateMultitle.delete({
+              where: {
+                eventId: event.id
+              }
+            });
+            await db.eventVirtual.create({
+              data: {
+                startDate: new Date(startDateOStr),
+                endDate: new Date(endDateOStr),
+                eventId: event.id
+              }
+            })
+          } else if (previousData?.eventType === "ONLINE" && eventTypeStr === "SINGLE") {
+            await db.eventVirtual.delete({
+              where: {
+                eventId: event.id
+              }
+            });
+            await db.eventDateSingle.create({
+              data: {
+                eventId: event.id,
+                startDate: new Date(startDateStr),
+                startTime: startTimeStr,
+                endTime: endTimeStr
+              }
+            })
+          } else if (previousData?.eventType === "ONLINE" && eventTypeStr === "MULTIPLE") {
+            await db.eventVirtual.delete({
+              where: {
+                eventId: event.id
+              }
+            });
+            await db.eventDateMultitle.create({
+              data: {
+                eventId: event.id,
+                startDate1: new Date(startDate1Str), // Example start date 1
+                startDate2: new Date(startDate2Str), // Example start date 2 // Example end date 2
+                startTime1: startTime1Str,                       // Example start time 1
+                endTime1: endTime1Str,                         // Example end time 1
+                startTime2: startTime2Str,                       // Example start time 2
+                endTime2: endTime2Str,
+              }
+            })
+          }
         }
 
       }

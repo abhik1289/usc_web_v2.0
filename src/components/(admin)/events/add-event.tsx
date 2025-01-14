@@ -61,33 +61,36 @@ export default function EventForm() {
             endTime1: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.endTime1 : "",
             startTime2: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.startTime2 : "",
             endTime2: event.data && event.data.eventType === "MULTIPLE" ? event.data.eventDateMultitle.endTime2 : "",
-            //GARBAGE
             index: event.data && event.data.index?.toString() || '0'
           }}
           bannerUrl={event.data && event.data.banner_url}
           disable={event.isLoading}
           eId={id}
         /> :
-          <AddEventFrom defaultValues={{
-            title: "",
-            description: "",
-            location: "",
-            linkedinUrl: "",
-            instagramUrl: "",
-            isPublic: false,
-            duration: 'SINGLE',
-            startDate: "",
-            startTime: "",
-            endTime: "",
-            startTime1: "",
-            endTime1: "",
-            startTime2: "",
-            endTime2: "",
-            startDate1: "",
-            // endDate1: "",
-            startDate2: "",
-            // endDate2: "",
-          }} />}
+          <AddEventFrom
+            defaultValues={{
+              title: "",
+              description: "",
+              location: "",
+              linkedinUrl: "",
+              instagramUrl: "",
+              isPublic: false,
+              duration: 'SINGLE',
+              startDate: "",
+              startTime: "",
+              endTime: "",
+              startTime1: "",
+              endTime1: "",
+              startTime2: "",
+              endTime2: "",
+              startDate1: "",
+              // endDate1: "",
+              startDate2: "",
+              startDateO: "",
+              endDateO: ""
+              // endDate2: "",
+            }}
+          />}
     </Card>
   );
 

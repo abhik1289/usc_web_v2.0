@@ -262,7 +262,7 @@ function EditEventFrom({ defaultValues, disable, bannerUrl, eId }: AddEventFromP
                                     placeholder=''
                                     label='End Time'
                                 />
-                            </div> : <>
+                            </div> : form.watch('duration') === 'MULTIPLE' ? <>
                                 <div className="flex w-full gap-4 items-center">
                                     <CalenderInput
                                         disabled={events.isLoading || disable}
@@ -317,6 +317,19 @@ function EditEventFrom({ defaultValues, disable, bannerUrl, eId }: AddEventFromP
                                         label='End Time'
                                     />
                                 </div>
+                            </> : <>
+                                <CalenderInput
+                                    name='startDateO'
+                                    label='Start Date'
+                                    disabled={events.isLoading || disable}
+                                    control={form.control}
+                                />
+                                <CalenderInput
+                                    name='endDateO'
+                                    label='End Date'
+                                    disabled={events.isLoading || disable}
+                                    control={form.control}
+                                />
                             </>}
 
 

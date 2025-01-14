@@ -22,6 +22,9 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import useAuthStore from "@/store/Auth";
+import useHomeDetails from "@/store/HomeDetails";
+
+import { useBasic } from "@/hooks/api/home/getBasic";
 
 // Define schema using Zod
 const signInSchema = z.object({
@@ -39,6 +42,8 @@ type SignInFormValues = z.infer<typeof signInSchema>;
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const basic = useBasic();
+  const { setUp } = useHomeDetails();
   const { toast } = useToast();
   const { signIn } = useAuthStore();
   // React Hook Form integration with Zod
@@ -63,6 +68,16 @@ export default function SignInForm() {
         // Successful sign-in logic (e.g., store the token, redirect the user)
         const user = response.data.user;
         signIn(user.email, user.role, user.name);
+        setUp(
+          basic.data.event,
+          basic.data.currentLead,
+          basic.data.formertLead,
+          basic.data.domain,
+          basic.data.textnimial,
+          basic.data.champion,
+          basic.data.mentor,
+          basic.data.advisor,
+        )
         toast({
           description: "Sign-in successful",
         });
